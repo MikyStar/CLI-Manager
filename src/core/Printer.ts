@@ -21,6 +21,7 @@ export namespace Printer
 			toReturn = [ ...toReturn, ...result ]
 		})
 
+		toReturn.push('')
 		toReturn.push( getBoardStats( board ) )
 
 		return toReturn
@@ -32,9 +33,12 @@ export namespace Printer
 	
 		const tasks = Task.straightTasks( board )
 
-		config.states.forEach( state =>
+		config.states.forEach( ( state, index ) =>
 		{
-			const count = tasks.filter( task => task.name === state.name ).length
+			const count = tasks.filter( task => task.state === state.name ).length
+
+			if( ( index !== 0 ) && ( index !== config.states.length ) )
+				toReturn += ' • '
 
 			toReturn += chalk.hex( state.hexColor )( count + ' ' + state.name )
 		});
