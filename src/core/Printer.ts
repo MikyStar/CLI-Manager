@@ -2,7 +2,7 @@ import chalk from 'chalk'
 
 import { config } from './ConfigFile'
 import { Board } from './ConfigFile'
-import { ITask } from './Task'
+import { ITask, Task } from './Task'
 
 ////////////////////////////////////////
 
@@ -20,6 +20,24 @@ export namespace Printer
 
 			toReturn = [ ...toReturn, ...result ]
 		})
+
+		toReturn.push( getBoardStats( board ) )
+
+		return toReturn
+	}
+
+	export const getBoardStats = ( board : Board ) : string =>
+	{
+		let toReturn = ' '
+	
+		const tasks = Task.straightTasks( board )
+
+		config.states.forEach( state =>
+		{
+			const count = tasks.filter( task => task.name === state.name ).length
+
+			toReturn += chalk.hex( state.hexColor )( count + ' ' + state.name )
+		});
 
 		return toReturn
 	}
