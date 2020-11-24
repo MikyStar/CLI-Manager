@@ -6,32 +6,30 @@ import path from 'path';
 export interface Task
 {
 	name : string,
-	board: string,
 	id: string // For subtasks : mainTask.subNumber
 	subtasks : Task[],
 	dependencies : string[], // Tasks IDS
 	timestamp: Date,
 	state: string,
-
 }
 
-// TODO I got to work a lot with ids 
+export interface Board
+{
+	name: string,
+	tasks: Task[],
+}
 
 export class Config
 {
+
 	scripts : string[]
 	editor : string
-	boards:
-	{
-		name: string,
-		tasks: Task[],
-	}
+	boards: Board[]
 	states :
 	{
 		name: string,
 		hexColor: string
-	}[] // todo, wip, done
-	defaultBoard: string
+	}[]
 
 	////////////////////////////////////////
 
@@ -39,22 +37,27 @@ export class Config
 	{
 		const workingDirectory = path.join( process.cwd(), filePath )
 
-		console.log('path', workingDirectory)
-
-		fs.readFile( workingDirectory, { encoding: 'utf8' }, ( err, data ) =>
+		try
 		{
-			if( err )
-			{
-				console.error("Can't file tasks.json in current working directory")
+			const data = fs.readFileSync( workingDirectory, { encoding: 'utf8', flag: 'r' } )
+			const json = JSON.parse( data )
 
-				process.exit(-1)
-			}
-			else
-			{
-				console.log(data)
-			}
-		});
+			this.scripts = json.scripts
+			this.editor = json.editor
+			this.boards = json.boards
+			this.states = json.states
+		}
+		catch( err )
+		{
+			console.error("Can't find tasks.json in current working directory, run 'tasks init'")
+
+			process.exit(-1)
+		}
 	}
 
 	////////////////////////////////////////
 }
+
+////////////////////////////////////////
+
+export const config = new Config('tasks.json')

@@ -1,5 +1,6 @@
-import { Config } from './core/ConfigFile'
+import { config } from './core/ConfigFile'
 
 ////////////////////////////////////////
 
-const config = new Config( 'tasks.json' )
+console.log('conf', config)
+console.log('conf', config)
