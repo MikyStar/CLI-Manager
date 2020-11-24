@@ -1,0 +1,35 @@
+{
+    "editor": "nvim",
+    "scripts": [],
+    "states":
+    [
+        { "name": "todo", "hexColor": "#ff8f00" },
+        { "name": "wip", "hexColor": "#ab47bc" },
+        { "name": "done", "hexColor": "#66bb6a" }
+    ],
+    "boards":
+    [
+        {
+            "name": "backlog",
+            "tasks":
+            [
+                {
+                    "name": "Add way more actions",
+                    "board": "v0.1.0",
+                    "id": 0,
+                    "state": "todo"
+                },
+                {
+                    "name": "And some more",
+                    "board": "v0.1.0",
+                    "id": 1,
+                    "state": "todo"
+                }
+            ]
+        },
+        {
+            "name": "v0.1.0",
+            "tasks": []
+        }
+    ]
+}
