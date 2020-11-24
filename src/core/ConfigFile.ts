@@ -1,21 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 
-import { ITask } from './Task';
+import { IBoard } from './Board';
 
 ////////////////////////////////////////
-
-export interface Board
-{
-	name: string,
-	tasks: ITask[],
-}
 
 export class Config
 {
 	scripts : string[]
 	editor : string
-	boards: Board[]
+	boards: IBoard[]
 	states :
 	{
 		name: string,

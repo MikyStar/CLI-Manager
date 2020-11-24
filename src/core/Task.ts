@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import { Board } from './ConfigFile'
+import { IBoard } from './Board'
 import { config } from './ConfigFile'
 import { Printer } from './Printer'
 
@@ -23,7 +23,7 @@ export namespace Task
 	/**
 	 * Transform the tree of tasks and subtasks to an array of tasks
 	 */ 
-	export const straightTasks = ( board : Board ) =>
+	export const straightBoard = ( board : IBoard ) =>
 	{
 		let toReturn : ITask[] = []
 
@@ -67,7 +67,7 @@ export namespace Task
 		return toReturn
 	}
 
-	export const stringifyTask = ( task : ITask, indentLevel : number = 1 ) =>
+	export const stringify = ( task : ITask, indentLevel : number = 1 ) =>
 	{
 		let toReturn : string[] = []
 		let indent = ''
@@ -92,7 +92,7 @@ export namespace Task
 		{
 			task.subtasks.forEach( sub =>
 			{
-				const result = Task.stringifyTask( sub, indentLevel + 1 )
+				const result = Task.stringify( sub, indentLevel + 1 )
 
 				toReturn = [ ...toReturn, ...result ]
 			});

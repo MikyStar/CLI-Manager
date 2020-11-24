@@ -1,7 +1,7 @@
 import { config } from './core/ConfigFile'
 import { Printer } from './core/Printer'
-import { Task } from './core/Task'
+import { Board } from './core/Board'
 
 ////////////////////////////////////////
 
-Printer.printStringified( Printer.stringifyBoard( config.boards[0] ) )
+Printer.printStringified( Board.stringify( config.boards[0] ) )
