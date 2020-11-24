@@ -1,22 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
-////////////////////////////////////////
+import { ITask } from './Task';
 
-export interface Task
-{
-	name : string,
-	id: string // For subtasks : mainTask.subNumber
-	subtasks : Task[],
-	dependencies : string[], // Tasks IDS
-	timestamp: Date,
-	state: string,
-}
+////////////////////////////////////////
 
 export interface Board
 {
 	name: string,
-	tasks: Task[],
+	tasks: ITask[],
 }
 
 export class Config

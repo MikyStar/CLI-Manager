@@ -34,12 +34,12 @@
                 {
                     "name": "And some more",
                     "id": 1,
-                    "state": "todo"
+                    "state": "done"
                 },
                 {
                     "name": "A finished task",
                     "id": 4,
-                    "state": "done"
+                    "state": "todo"
                 }
             ]
         },

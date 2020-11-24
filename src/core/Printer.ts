@@ -1,7 +1,8 @@
 import chalk from 'chalk'
 
-import { config, Task } from './ConfigFile'
+import { config } from './ConfigFile'
 import { Board } from './ConfigFile'
+import { ITask } from './Task'
 
 ////////////////////////////////////////
 
@@ -23,7 +24,7 @@ export namespace Printer
 		return toReturn
 	}
 
-	export const stringifyTask = ( task : Task, indentLevel : number = 1 ) =>
+	export const stringifyTask = ( task : ITask, indentLevel : number = 1 ) =>
 	{
 		let toReturn : string[] = []
 		let indent = ''
