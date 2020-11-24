@@ -19,7 +19,9 @@ export namespace Board
 	{
 		let toReturn : string[] = []
 
-		toReturn.push( chalk.underline( '@' + board.name ) )
+		// const boardName = 
+
+		toReturn.push( ' ' + chalk.underline( '@' + board.name ) )
 
 		board.tasks.forEach( task =>
 		{

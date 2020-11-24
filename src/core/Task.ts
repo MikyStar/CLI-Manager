@@ -84,7 +84,7 @@ export namespace Task
 
 		currentTask += ' '
 		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
-		toReturn.push( indent + currentTask )
+		toReturn.push( ' ' + indent + currentTask )
 
 		if( !task.subtasks || task.subtasks.length === 0 )
 			return toReturn
