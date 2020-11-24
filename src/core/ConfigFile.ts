@@ -21,7 +21,6 @@ export interface Board
 
 export class Config
 {
-
 	scripts : string[]
 	editor : string
 	boards: Board[]

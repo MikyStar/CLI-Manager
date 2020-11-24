@@ -15,15 +15,31 @@
             [
                 {
                     "name": "Add way more actions",
-                    "board": "v0.1.0",
                     "id": 0,
-                    "state": "todo"
+                    "state": "wip",
+                    "subtasks":
+                    [
+                        {
+                            "name": "first sub action",
+                            "id": 2,
+                            "state" : "wip"
+                        },
+                        {
+                            "name": "second sub task",
+                            "id": 3,
+                            "state": "todo"
+                        }
+                    ]
                 },
                 {
                     "name": "And some more",
-                    "board": "v0.1.0",
                     "id": 1,
                     "state": "todo"
+                },
+                {
+                    "name": "A finished task",
+                    "id": 4,
+                    "state": "done"
                 }
             ]
         },

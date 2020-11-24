@@ -12,7 +12,6 @@ export namespace Printer
 		let toReturn : string[] = []
 
 		toReturn.push( chalk.underline( '@' + board.name ) )
-		toReturn.push('')
 
 		board.tasks.forEach( task =>
 		{
@@ -27,6 +26,7 @@ export namespace Printer
 	export const stringifyTask = ( task : Task, indentLevel : number = 1 ) =>
 	{
 		let toReturn : string[] = []
+		let indent = ''
 		let currentTask = ''
 
 		const isFinalState = task.state === config.states[ config.states.length - 1 ].name
@@ -34,12 +34,13 @@ export namespace Printer
 		const stateColor = config.states.filter( state => task.state === state.name )[0].hexColor
 
 		for( let i = 0; i < indentLevel; i++ )
-			currentTask += '\t'
+			indent += '  '
 
 		currentTask +=  chalk.hex( stateColor )( isFinalState ? '☒' : '☐' )
-		currentTask += ' ' + task.name
 
-		toReturn.push( isFinalState ? chalk.strikethrough( currentTask ) : currentTask )
+		currentTask += ' '
+		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
+		toReturn.push( indent + currentTask )
 
 		if( !task.subtasks || task.subtasks.length === 0 )
 			return toReturn
