@@ -47,10 +47,13 @@ task a @mBoard do something							# Create 1 task 'do something' on board @mBoar
 task a @mBoard 'do something' 'do other thing'		# Create 2 tasks 'do something' and 'do other thing' on board @mBoard
 task a @mBoard 'dependecy task' -d [11,13]			# Create a task that depends on tasks id n° 11 and 13
 task a 'a statefull task' -s wip					# Create a task with the state 'wip'
-task a \#12 'first sub task' 'an other'				# Add sub-task to the task n° 12
+task a 12 'first sub task' 'an other'				# Add sub-task to the task n° 12
 
 # Editing tasks
-task e \#9 renaming the task						# Rename task n°9
-task e \#9 -s done									# Change status to 'done'
-task e \#9 @otherBoard								# Change associated board
+task e 9 renaming the task							# Rename task n°9
+task e 9 -s done									# Change status to 'done'
+
+# Moving tasks
+task mv 9 @otherBoard								# Change associated board
+task mv [9,7,11] @otherBoard						# Move multiple tasks to board
 ```
