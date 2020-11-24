@@ -45,11 +45,14 @@ export namespace Board
 		config.states.forEach( ( state, index ) =>
 		{
 			const count = tasks.filter( task => task.state === state.name ).length
+			const percent = ( count / tasks.length ) * 100
 
 			if( ( index !== 0 ) && ( index !== config.states.length ) )
 				toReturn += ' • '
 
-			toReturn += chalk.hex( state.hexColor )( count + ' ' + state.name )
+			const text = `${ count } ${ state.name } (${ percent }%)`
+
+			toReturn += chalk.hex( state.hexColor )( text )
 		});
 
 		return toReturn
