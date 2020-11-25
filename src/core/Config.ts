@@ -102,7 +102,15 @@ export class Config
 	printBoard( boardName?: string )
 	{
 		if( !boardName )
-			this.boards.forEach( board => Printer.printStringified( Board.stringify( board ) ) )
+		{
+			this.boards.forEach( board =>
+			{
+				console.log( Printer.charAccrossScreen( '-' ) )
+				Printer.printStringified( Board.stringify( board ) )
+			})
+
+			console.log( Printer.charAccrossScreen( '-' ) )
+		}
 		else
 		{
 			const index = this.boards.findIndex( board => board.name === boardName )
@@ -110,7 +118,11 @@ export class Config
 			if( index === -1 )
 				console.error(`Can't find board ${ boardName }`)
 			else
+			{
+				console.log( Printer.charAccrossScreen( '-' ) )
 				Printer.printStringified( Board.stringify( this.boards[ index ] ) )
+				console.log( Printer.charAccrossScreen( '-' ) )
+			}
 		}
 	}
 }

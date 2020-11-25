@@ -21,7 +21,6 @@ export namespace Board
 	{
 		let toReturn : string[] = []
 
-		toReturn.push( Printer.charAccrossScreen( '-' ) )
 		toReturn.push( ' ' + chalk.bold.underline( '@' + board.name ) )
 		toReturn.push('')
 
