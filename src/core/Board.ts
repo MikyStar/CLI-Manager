@@ -2,6 +2,7 @@ import chalk from 'chalk'
 
 import { config } from './Config'
 import { Task, ITask } from './Task'
+import { Printer } from './Printer'
 
 ////////////////////////////////////////
 
@@ -20,7 +21,8 @@ export namespace Board
 	{
 		let toReturn : string[] = []
 
-		toReturn.push( ' ' + chalk.underline( '@' + board.name ) )
+		toReturn.push( Printer.charAccrossScreen( '-' ) )
+		toReturn.push( ' ' + chalk.bold.underline( '@' + board.name ) )
 		toReturn.push('')
 
 		board.tasks.forEach( task =>
