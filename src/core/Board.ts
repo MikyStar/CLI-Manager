@@ -32,8 +32,12 @@ export namespace Board
 			toReturn = [ ...toReturn, ...result ]
 		})
 
-		toReturn.push('')
-		toReturn.push( Task.getStats( Task.straightBoard( board ) ) )
+		if( board.tasks && board.tasks.length !== 0 )
+		{
+			toReturn.push('')
+			toReturn.push( Task.getStats( Task.straightBoard( board ) ) )
+		}
+
 		toReturn.push('')
 
 		return toReturn
