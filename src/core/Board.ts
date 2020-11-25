@@ -37,6 +37,9 @@ export namespace Board
 			toReturn.push('')
 			toReturn.push( Task.getStats( Task.straightBoard( board ) ) )
 		}
+		else
+			toReturn.push( chalk.dim( ' \t' + 'No tasks yet' ) )
+
 
 		toReturn.push('')
 
