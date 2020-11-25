@@ -56,10 +56,7 @@ export namespace Prompt
 		}
 		catch( error )
 		{
-			console.error('No task added')
-
-			process.exit( -1 )
+			console.warn('No task added')
 		}
-
 	}
 }

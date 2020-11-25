@@ -8,3 +8,5 @@ import { Prompt } from './core/Prompt'
 Printer.printStringified( Board.stringify( config.boards[0] ) )
 
 Prompt.addTask()
+
+// console.log( config.boards[0].tasks[0] )

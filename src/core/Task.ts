@@ -123,8 +123,6 @@ export namespace Task
 			return toReturn
 		else
 		{
-			console.log( 'theres subtask' )
-
 			task.subtasks.forEach( sub =>
 			{
 				const result = Task.stringify( sub, indentLevel + 1 )
@@ -134,6 +132,26 @@ export namespace Task
 
 			return toReturn
 		}
+	}
+
+	export const getStats = ( tasks : ITask[] ) : string =>
+	{
+		let toReturn = ' '
+	
+		config.states.forEach( ( state, index ) =>
+		{
+			const count = tasks.filter( task => task.state === state.name ).length
+			const percent = ( count / tasks.length ) * 100
+
+			if( ( index !== 0 ) && ( index !== config.states.length ) )
+				toReturn += ' ► '
+
+			const text = `${ count } ${ state.name } (${ percent }%)`
+
+			toReturn += chalk.hex( state.hexColor )( text )
+		});
+
+		return toReturn
 	}
 
 	export const validate = ( task : ITask ) =>
