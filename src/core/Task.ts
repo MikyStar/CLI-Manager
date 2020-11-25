@@ -146,7 +146,7 @@ export namespace Task
 			if( ( index !== 0 ) && ( index !== config.states.length ) )
 				toReturn += ' ► '
 
-			const text = `${ count } ${ state.name } (${ percent }%)`
+			const text = `${ count } ${ state.name } (${ percent.toFixed(0) }%)`
 
 			toReturn += chalk.hex( state.hexColor )( text )
 		});
