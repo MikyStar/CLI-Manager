@@ -78,15 +78,17 @@ export namespace Task
 
 		const stateColor = config.states.filter( state => task.state === state.name )[0].hexColor
 
+		const textID = chalk.hex( stateColor )( `${ task.id }.` )
+
 		for( let i = 0; i < indentLevel; i++ )
 			indent += '  '
 
 		const icon = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
-		currentTask +=  chalk.hex( stateColor )( icon + ' ' + task.id + '.' )
+		currentTask +=  chalk.hex( stateColor )( icon )
 
 		currentTask += ' '
 		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
-		toReturn.push( ' ' + indent + currentTask )
+		toReturn.push( ' ' + textID + indent + currentTask )
 
 		if( !task.subtasks || task.subtasks.length === 0 )
 			return toReturn

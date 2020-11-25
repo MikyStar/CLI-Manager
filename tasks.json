@@ -4,7 +4,7 @@
     [
         { "name": "todo", "hexColor": "#ff8f00" },
         { "name": "wip", "hexColor": "#ab47bc" },
-        { "name": "totest", "hexColor": "#2196f3" },
+        { "name": "to test", "hexColor": "#2196f3" },
         { "name": "done", "hexColor": "#66bb6a" }
     ],
     "boards":
@@ -27,7 +27,7 @@
                         {
                             "name": "second sub task",
                             "id": 3,
-                            "state": "totest"
+                            "state": "to test"
                         }
                     ]
                 },
