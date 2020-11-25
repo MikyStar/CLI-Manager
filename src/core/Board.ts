@@ -48,7 +48,7 @@ export namespace Board
 			const percent = ( count / tasks.length ) * 100
 
 			if( ( index !== 0 ) && ( index !== config.states.length ) )
-				toReturn += ' • '
+				toReturn += ' ► '
 
 			const text = `${ count } ${ state.name } (${ percent }%)`
 
