@@ -2,7 +2,10 @@ import chalk from 'chalk'
 
 import { IBoard } from './Board'
 import { config } from './Config'
-import { Printer } from './Printer'
+
+////////////////////////////////////////
+
+export const TIMESTAMP_FORMAT = 'DD/MM/YYYY'
 
 ////////////////////////////////////////
 
@@ -10,10 +13,10 @@ export interface ITask
 {
 	name : string,
 	description ?: string,
-	id: string // For subtasks : mainTask.subNumber
+	id ?: number,
 	subtasks ?: ITask[],
 	dependencies ?: string[], // Tasks IDS
-	timestamp: Date,
+	timestamp ?: string,
 	state: string,
 }
 
@@ -130,4 +133,7 @@ export namespace Task
 		}
 	}
 
+	export const validate = ( task : ITask ) =>
+	{
+	}
 }
