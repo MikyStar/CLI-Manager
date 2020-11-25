@@ -52,8 +52,9 @@ export namespace Task
 					toReturn = [ ...toReturn, ...result ]
 				})
 
-				delete task.subtasks
-				toReturn.push( task )
+				const taskCopy = { ...task }
+				delete taskCopy.subtasks
+				toReturn.push( taskCopy )
 
 				return toReturn
 			}
@@ -122,6 +123,8 @@ export namespace Task
 			return toReturn
 		else
 		{
+			console.log( 'theres subtask' )
+
 			task.subtasks.forEach( sub =>
 			{
 				const result = Task.stringify( sub, indentLevel + 1 )
