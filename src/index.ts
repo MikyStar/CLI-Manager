@@ -5,9 +5,7 @@ import { Prompt } from './core/Prompt'
 
 ////////////////////////////////////////
 
-config.boards.forEach( board => Printer.printStringified( Board.stringify( board ) ) )
+config.printBoard()
 // Printer.printStringified( Board.stringify( config.boards[0] ) )
 
-Prompt.addTask()
-
-// console.log( config.boards[0].tasks[0] )
+// Prompt.addTask()

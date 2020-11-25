@@ -2,8 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import moment from 'moment';
 
-import { IBoard } from './Board';
+import { IBoard, Board } from './Board';
 import { ITask, Task, TIMESTAMP_FORMAT } from './Task';
+import { Printer } from './Printer';
 
 ////////////////////////////////////////
 
@@ -92,6 +93,24 @@ export class Config
 			console.error( 'Error during saving')
 
 			process.exit( -1 )
+		}
+	}
+
+	/*
+	 * If no name provided, print all boards
+	 */
+	printBoard( boardName?: string )
+	{
+		if( !boardName )
+			this.boards.forEach( board => Printer.printStringified( Board.stringify( board ) ) )
+		else
+		{
+			const index = this.boards.findIndex( board => board.name === boardName )
+
+			if( index === -1 )
+				console.error(`Can't find board ${ boardName }`)
+			else
+				Printer.printStringified( Board.stringify( this.boards[ index ] ) )
 		}
 	}
 }
