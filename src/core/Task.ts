@@ -82,7 +82,7 @@ export namespace Task
 		const textID = chalk.hex( stateColor )( `${ task.id }.` )
 
 		for( let i = 0; i < indentLevel; i++ )
-			indent += '  '
+			indent += '\t'
 
 		const icon = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
 		currentTask +=  chalk.hex( stateColor )( icon )
@@ -106,7 +106,7 @@ export namespace Task
 			{
 				line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
 
-				const text = ' ' + indent + '\t ' + line
+				const text = ' ' + indent + '    ' + line
 
 				toReturn.push( text )
 			});
