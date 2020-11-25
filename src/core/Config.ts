@@ -18,6 +18,7 @@ export class Config
 		name: string,
 		hexColor: string
 	}[]
+	straightTasks : ITask[]
 
 	////////////////////////////////////////
 
@@ -33,6 +34,10 @@ export class Config
 			this.scripts = json.scripts
 			this.boards = json.boards
 			this.states = json.states
+
+			let straightTasks = []
+			this.boards.forEach( board => straightTasks = [ ...straightTasks, ...Task.straightBoard( board ) ] )
+			this.straightTasks = straightTasks
 		}
 		catch( err )
 		{
@@ -54,7 +59,7 @@ export class Config
 		const finalTask : ITask =
 		{
 			...task,
-			id: Task.straightBoard( this.boards[ boardIndex ] ).length + 1,
+			id: this.straightTasks.length,
 			timestamp: moment().format( TIMESTAMP_FORMAT )
 		}
 
@@ -67,7 +72,14 @@ export class Config
 	{
 		try
 		{
-			fs.writeFileSync( this.filePath, JSON.stringify( this, null, 4 ) )
+			const finalFormat =
+			{
+				scripts : this.scripts,
+				states: this.states,
+				boards : this.boards,
+			}
+
+			fs.writeFileSync( this.filePath, JSON.stringify( finalFormat, null, 4 ) )
 		}
 		catch( error )
 		{

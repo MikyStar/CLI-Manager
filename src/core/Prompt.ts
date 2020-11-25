@@ -43,7 +43,12 @@ export namespace Prompt
 			}
 		]);
  
-		console.log( inputs );
+		if( !inputs )
+		{
+			console.error('No task added')
+
+			process.exit( -1 )
+		}
 
 		const task : ITask =
 		{
