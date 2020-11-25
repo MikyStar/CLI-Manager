@@ -1,5 +1,4 @@
 {
-    "editor": "nvim",
     "scripts": [],
     "states":
     [
@@ -45,6 +44,7 @@
         },
         {
             "name": "v0.1.0",
+            "default": true,
             "tasks": []
         }
     ]
