@@ -82,7 +82,7 @@ export namespace Task
 			indent += '  '
 
 		const icon = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
-		currentTask +=  chalk.hex( stateColor )( icon )
+		currentTask +=  chalk.hex( stateColor )( icon + ' ' + task.id + '.' )
 
 		currentTask += ' '
 		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
