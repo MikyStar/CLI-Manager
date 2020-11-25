@@ -17,12 +17,14 @@
                     "name": "Add way more actions",
                     "id": 0,
                     "state": "wip",
+                    "description": "Just read the taskbook\nand this should be a new line",
                     "subtasks":
                     [
                         {
                             "name": "first sub action",
                             "id": 2,
-                            "state" : "wip"
+                            "description": "a line\nan other line",
+                            "state" : "done"
                         },
                         {
                             "name": "second sub task",

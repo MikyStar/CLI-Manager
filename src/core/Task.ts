@@ -9,9 +9,10 @@ import { Printer } from './Printer'
 export interface ITask
 {
 	name : string,
+	description ?: string,
 	id: string // For subtasks : mainTask.subNumber
-	subtasks : ITask[],
-	dependencies : string[], // Tasks IDS
+	subtasks ?: ITask[],
+	dependencies ?: string[], // Tasks IDS
 	timestamp: Date,
 	state: string,
 }
@@ -89,6 +90,30 @@ export namespace Task
 		currentTask += ' '
 		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
 		toReturn.push( ' ' + textID + indent + currentTask )
+
+		const parseDescriptionLines = () =>
+		{
+			if( !task.description )
+				return []
+
+			const LINE_BREAK = '\n'
+
+			let toReturn : string[] = []
+
+			const descExploded = task.description.split( LINE_BREAK )
+
+			descExploded.forEach( line =>
+			{
+				line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
+
+				const text = ' ' + indent + '\t ' + line
+
+				toReturn.push( text )
+			});
+
+			return toReturn
+		}
+		toReturn = [ ...toReturn, ...parseDescriptionLines() ]
 
 		if( !task.subtasks || task.subtasks.length === 0 )
 			return toReturn
