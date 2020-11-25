@@ -74,13 +74,15 @@ export namespace Task
 		let currentTask = ''
 
 		const isFinalState = task.state === config.states[ config.states.length - 1 ].name
+		const isFirstState = task.state === config.states[ 0 ].name
 
 		const stateColor = config.states.filter( state => task.state === state.name )[0].hexColor
 
 		for( let i = 0; i < indentLevel; i++ )
 			indent += '  '
 
-		currentTask +=  chalk.hex( stateColor )( isFinalState ? '☒' : '☐' )
+		const icon = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
+		currentTask +=  chalk.hex( stateColor )( icon )
 
 		currentTask += ' '
 		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
