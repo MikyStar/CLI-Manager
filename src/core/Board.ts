@@ -21,6 +21,7 @@ export namespace Board
 		let toReturn : string[] = []
 
 		toReturn.push( ' ' + chalk.underline( '@' + board.name ) )
+		toReturn.push('')
 
 		board.tasks.forEach( task =>
 		{
@@ -31,6 +32,7 @@ export namespace Board
 
 		toReturn.push('')
 		toReturn.push( getStats( board ) )
+		toReturn.push('')
 
 		return toReturn
 	}
