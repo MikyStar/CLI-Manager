@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import { config } from './ConfigFile'
+import { config } from './Config'
 import { Task, ITask } from './Task'
 
 ////////////////////////////////////////

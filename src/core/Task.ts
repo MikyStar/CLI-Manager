@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 
 import { IBoard } from './Board'
-import { config } from './ConfigFile'
+import { config } from './Config'
 import { Printer } from './Printer'
 
 ////////////////////////////////////////
