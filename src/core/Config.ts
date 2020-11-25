@@ -103,10 +103,12 @@ export class Config
 	{
 		if( !boardName )
 		{
-			this.boards.forEach( board =>
+			this.boards.forEach( ( board, index ) =>
 			{
-				console.log( Printer.charAccrossScreen( '-' ) )
+				console.log( ( index === 0 ) ? Printer.charAccrossScreen('-') : Printer.separator('-') )
+				console.log('')
 				Printer.printStringified( Board.stringify( board ) )
+				console.log('')
 			})
 
 			console.log( Printer.charAccrossScreen( '-' ) )
@@ -120,7 +122,9 @@ export class Config
 			else
 			{
 				console.log( Printer.charAccrossScreen( '-' ) )
+				console.log('')
 				Printer.printStringified( Board.stringify( this.boards[ index ] ) )
+				console.log('')
 				console.log( Printer.charAccrossScreen( '-' ) )
 			}
 		}

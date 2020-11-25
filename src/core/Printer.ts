@@ -11,4 +11,14 @@ export namespace Printer
 
 		return toReturn + ' '
 	}
+
+	export const separator = ( char: string ) =>
+	{
+		let toReturn = ' '
+
+		for( let i = 0; i < ( process.stdout.columns / 10 ); i++ )
+			toReturn += char
+
+		return toReturn
+	}
 }

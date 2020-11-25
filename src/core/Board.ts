@@ -39,9 +39,6 @@ export namespace Board
 		else
 			toReturn.push( chalk.dim( ' \t' + 'No tasks yet' ) )
 
-
-		toReturn.push('')
-
 		return toReturn
 	}
 }
