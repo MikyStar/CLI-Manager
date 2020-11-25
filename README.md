@@ -19,6 +19,7 @@ task init											# Create the config file on working directory
 # Seeing tasks
 task												# Print every tasks accross all local boards
 task --depth 2										# Print every tasks and also 2 levels of subtasks
+task --no-desc		# Print every board but never task descriptions
 ```
 
 ### Board
