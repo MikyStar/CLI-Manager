@@ -17,46 +17,49 @@ export namespace Prompt
 		let stateChoices = []
 		config.states.forEach( state => stateChoices.push( parseToChoice( state.name ) ) )
 
-		const inputs = await prompts(
-		[
+		try
+		{
+			const inputs = await prompts(
+			[
+				{
+					type: 'text',
+					name: 'name',
+					message: 'Task name'
+				},
+				{
+					type: 'select',
+					name: 'board',
+					message: 'Board',
+					choices: boardChoices
+				},
+				{
+					type: 'select',
+					name: 'state',
+					message: 'State',
+					choices: stateChoices
+				},
+				{
+					type: 'text',
+					name: 'description',
+					message: 'Description',
+				}
+			]);
+
+			const task : ITask =
 			{
-				type: 'text',
-				name: 'name',
-				message: 'Task name'
-			},
-			{
-				type: 'select',
-				name: 'board',
-				message: 'Board',
-				choices: boardChoices
-			},
-			{
-				type: 'select',
-				name: 'state',
-				message: 'State',
-				choices: stateChoices
-			},
-			{
-				type: 'text',
-				name: 'description',
-				message: 'Description',
+				name: inputs.name,
+				state: inputs.state,
+				description: inputs.description
 			}
-		]);
- 
-		if( !inputs )
+
+			config.addTask(task, inputs.board )
+		}
+		catch( error )
 		{
 			console.error('No task added')
 
 			process.exit( -1 )
 		}
 
-		const task : ITask =
-		{
-			name: inputs.name,
-			state: inputs.state,
-			description: inputs.description
-		}
-
-		config.addTask(task, inputs.board )
 	}
 }
