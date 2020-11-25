@@ -1,10 +1,10 @@
 {
-    "editor": "nvim",
     "scripts": [],
     "states":
     [
         { "name": "todo", "hexColor": "#ff8f00" },
         { "name": "wip", "hexColor": "#ab47bc" },
+        { "name": "to test", "hexColor": "#2196f3" },
         { "name": "done", "hexColor": "#66bb6a" }
     ],
     "boards":
@@ -27,17 +27,17 @@
                         {
                             "name": "second sub task",
                             "id": 3,
-                            "state": "todo"
+                            "state": "to test"
                         }
                     ]
                 },
                 {
-                    "name": "And some more",
+                    "name": "A finished task",
                     "id": 1,
                     "state": "done"
                 },
                 {
-                    "name": "A finished task",
+                    "name": "A aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
                     "id": 4,
                     "state": "todo"
                 }
@@ -45,6 +45,7 @@
         },
         {
             "name": "v0.1.0",
+            "default": true,
             "tasks": []
         }
     ]

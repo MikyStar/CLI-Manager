@@ -8,7 +8,6 @@ import { IBoard } from './Board';
 export class Config
 {
 	scripts : string[]
-	editor : string
 	boards: IBoard[]
 	states :
 	{
@@ -28,7 +27,6 @@ export class Config
 			const json = JSON.parse( data )
 
 			this.scripts = json.scripts
-			this.editor = json.editor
 			this.boards = json.boards
 			this.states = json.states
 		}

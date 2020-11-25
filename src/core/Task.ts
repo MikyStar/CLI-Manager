@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 
 import { IBoard } from './Board'
-import { config } from './ConfigFile'
+import { config } from './Config'
 import { Printer } from './Printer'
 
 ////////////////////////////////////////
@@ -74,17 +74,21 @@ export namespace Task
 		let currentTask = ''
 
 		const isFinalState = task.state === config.states[ config.states.length - 1 ].name
+		const isFirstState = task.state === config.states[ 0 ].name
 
 		const stateColor = config.states.filter( state => task.state === state.name )[0].hexColor
+
+		const textID = chalk.hex( stateColor )( `${ task.id }.` )
 
 		for( let i = 0; i < indentLevel; i++ )
 			indent += '  '
 
-		currentTask +=  chalk.hex( stateColor )( isFinalState ? '☒' : '☐' )
+		const icon = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
+		currentTask +=  chalk.hex( stateColor )( icon )
 
 		currentTask += ' '
 		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
-		toReturn.push( ' ' + indent + currentTask )
+		toReturn.push( ' ' + textID + indent + currentTask )
 
 		if( !task.subtasks || task.subtasks.length === 0 )
 			return toReturn
