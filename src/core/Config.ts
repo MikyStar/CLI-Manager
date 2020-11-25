@@ -56,16 +56,22 @@ export class Config
 
 		const boardIndex = this.boards.findIndex( board => board.name === boardName )
 
+		const taskID = this.straightTasks.length
+
 		const finalTask : ITask =
 		{
 			...task,
-			id: this.straightTasks.length,
+			id: taskID,
 			timestamp: moment().format( TIMESTAMP_FORMAT )
 		}
 
 		this.boards[ boardIndex ].tasks.push( finalTask )
 
 		this.save()
+
+		console.log('')
+		console.log(` Task n°${ taskID } added`)
+		console.log('')
 	}
 
 	save()
