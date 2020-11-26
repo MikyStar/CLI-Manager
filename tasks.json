@@ -1,5 +1,5 @@
 {
-    "scripts": [],
+    "args": "--hide-description @backlog -s 'to test'",
     "states":
     [
         { "name": "todo", "hexColor": "#ff8f00" },
@@ -52,7 +52,6 @@
         },
         {
             "name": "v0.1.0",
-            "default": true,
             "tasks": []
         }
     ]

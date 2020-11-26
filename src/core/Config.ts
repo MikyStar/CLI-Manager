@@ -12,7 +12,7 @@ export class Config
 {
 	private filePath : string
 
-	scripts : string[]
+	defaultArgs : string
 	boards: IBoard[]
 	states :
 	{
@@ -32,7 +32,7 @@ export class Config
 			const data = fs.readFileSync( this.filePath, { encoding: 'utf8', flag: 'r' } )
 			const json = JSON.parse( data )
 
-			this.scripts = json.scripts
+			this.defaultArgs = json.args
 			this.boards = json.boards
 			this.states = json.states
 
@@ -81,7 +81,7 @@ export class Config
 		{
 			const finalFormat =
 			{
-				scripts : this.scripts,
+				args : this.defaultArgs,
 				states: this.states,
 				boards : this.boards,
 			}
