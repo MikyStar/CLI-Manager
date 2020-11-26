@@ -6,8 +6,6 @@
 npm i && npm start
 ```
 
------
-
 ## Use
 
 ### Init
@@ -27,17 +25,14 @@ task --file  # Use a specific file
 
 ```sh
 # Creating a board 
-task b @mBoard	# Create a board '@mBoard'
-task b @backlog -f	# Create a board '@backlog' and make it the default one, "Force"
+task b mBoard	# Create a board '@mBoard'
+task b mBoard otherBoard	# Create two boards
 
 # Viewing a board
 task @mBoard	# Print all tasks of a board
 
 # Editing a board
 task rn @previousName @newName
-task @board -f
-
-# Delete a board
 task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 ```
 
@@ -62,6 +57,7 @@ task 9,13	# Print details on what's in task n°9 and 13
 task e 9	# Edit taks attributes with interactive prompt
 task 9 renaming the task	# Rename task n°9
 task 9,7,2 -s done  	# Change state to 'done'
+task c 7	# Put task to final state, 'Check'
 task 11,14 i	# Pass tasks 11 and 14 to next state, "Increment"
 
 # Moving tasks
