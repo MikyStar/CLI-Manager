@@ -18,12 +18,12 @@ export enum Flag
 {
 	FILE = '--f',
 	DEPTH = '--depth',
-	HIDE_DESCRIPTION = '--hide-desc'
+	HIDE_DESCRIPTION = '--hide-description'
 }
 
 export interface Arg
 {
-	value: string | number[] | { flag: string, value : any },
+	value: string | number | number[] | { flag: string, value : any },
 	isAction ?: boolean
 	isTask ?: boolean,
 	isBoard ?: boolean,
@@ -51,6 +51,8 @@ export namespace ArgParser
 			{
 				parsedArgs.push( { value: theArg.slice(1), isBoard: true } )
 			}
+			else if( Object.values( Action ).includes( theArg as Action ) )
+				parsedArgs.push( { value: theArg, isAction: true } )
 			else if( theArg === Flag.HIDE_DESCRIPTION )
 			{
 				parsedArgs.push( { value: Flag.HIDE_DESCRIPTION, isFlag: true } )
@@ -73,6 +75,8 @@ export namespace ArgParser
 
 					parsedArgs.push( { value: tasksNb, isTask: true } )
 				}
+				else if( theArg.match( /^\d+$/ ) )
+					parsedArgs.push( { value: Number.parseInt( theArg ), isTask: true } )
 			}
 
 		}
