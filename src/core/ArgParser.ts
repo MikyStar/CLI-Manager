@@ -18,13 +18,16 @@ export enum Flag
 {
 	FILE = '--f',
 	DEPTH = '--depth',
-	HIDE_DESCRIPTION = '--hide-description'
+	HIDE_DESCRIPTION = '--hide-description',
+	STATE = '-s',
+	DESCRIPTION = '-d',
+	LINK = '-l'
 }
 
 export interface Arg
 {
-	value: string | number | number[] | { flag: string, value : any },
-	isAction ?: boolean
+	value: string | number | number[],
+	isAction ?: boolean,
 	isTask ?: boolean,
 	isBoard ?: boolean,
 	isText ?: boolean,
@@ -35,7 +38,7 @@ export interface Arg
 
 export namespace ArgParser
 {
-	export const getAllArgs = () => [ ...process.argv.slice(2), ...config.defaultArgs ]
+	export const getAllArgs = () => [ ...config.defaultArgs, ...process.argv.slice(2) ]
 
 	export const parse = ( args : string[] ) =>
 	{
@@ -43,30 +46,35 @@ export namespace ArgParser
 
 		let parsedArgs : Arg[] = []
 
+		let currentString = ''
+
+		let isConcatString = false
+
 		for( let i = 0; i < args.length; i++ )
 		{
 			const theArg = args[ i ]
 
-			if( theArg[0] === '@' )
+			if( isConcatString )
+			{
+				if( theArg.match( /('|")$/ ) )
+				{
+					currentString += theArg.slice( theArg.length )
+					parsedArgs.push( { value: currentString, isText: true })
+
+					currentString = ''
+					isConcatString = false
+				}
+				else
+					currentString += theArg
+			}
+			else if( theArg[0] === '@' )
 			{
 				parsedArgs.push( { value: theArg.slice(1), isBoard: true } )
 			}
 			else if( Object.values( Action ).includes( theArg as Action ) )
 				parsedArgs.push( { value: theArg, isAction: true } )
-			else if( theArg === Flag.HIDE_DESCRIPTION )
-			{
-				parsedArgs.push( { value: Flag.HIDE_DESCRIPTION, isFlag: true } )
-			}
-			else if( theArg === Flag.FILE )
-			{
-				parsedArgs.push( { value: { flag: Flag.FILE, value: args[ i + 1 ] }, isFlag: true } )
-				i++
-			}
-			else if( theArg === Flag.DEPTH )
-			{
-				parsedArgs.push( { value: { flag: Flag.HIDE_DESCRIPTION, value: args[ i + 1 ] }, isFlag: true } )
-				i++
-			}
+			else if( Object.values( Flag ).includes( theArg as Flag ) )
+				parsedArgs.push({ value: theArg, isFlag: true })
 			else if( !isNaN( +theArg[0] ) )
 			{
 				if( theArg.includes( ',' ) )
@@ -77,6 +85,16 @@ export namespace ArgParser
 				}
 				else if( theArg.match( /^\d+$/ ) )
 					parsedArgs.push( { value: Number.parseInt( theArg ), isTask: true } )
+			}
+			else if( theArg.match( /^('|")/ ))
+			{
+				currentString = theArg.slice( 0 )
+				isConcatString = true
+			}
+			else
+			{
+				isConcatString = true
+				currentString += theArg
 			}
 
 		}
