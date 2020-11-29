@@ -12,12 +12,12 @@ npm i && npm start
 
 ```sh
 # Init a Task Manager
-task init											# Create the config file on working directory
+task init	# Create the config file on working directory
 
 # Seeing tasks
 task  # Print every tasks accross all local boards
 task --depth 2  # Print every tasks and also 2 levels of subtasks
-task --no-desc  # Print every board but never task descriptions
+task --hide-desc  # Print every board but never task descriptions
 task --file  # Use a specific file
 ```
 
@@ -46,7 +46,7 @@ task a @mBoard do something		# Create 1 task 'do something' on board @mBoard
 task a @mBoard 'do something' 'do other thing'	# Create 2 tasks 'do something' and 'do other thing' on board @mBoard
 task a mBoard 'dependecy task' -l 11,13		# Create a task on default board that's Linked to tasks id n° 11 and 13
 task a @mBoard 'long task' -d 'Some description'	# Create a task with a Description
-task a 'a statefull task' -s 'to test'	# Create a task with the State 'wip'
+task a 'a statefull task' -s 'to test'	# Create a task with the State 'to test'
 task a 12 'first sub task' 'an other'	# Add sub-task to the task n° 12
 
 # View specific
@@ -58,7 +58,7 @@ task e 9	# Edit taks attributes with interactive prompt
 task 9 renaming the task	# Rename task n°9
 task 9,7,2 -s done  	# Change state to 'done'
 task c 7	# Put task to final state, 'Check'
-task 11,14 i	# Pass tasks 11 and 14 to next state, "Increment"
+task i 11,14	# Pass tasks 11 and 14 to next state, "Increment"
 
 # Moving tasks
 task mv 9		# Change associated board with interactive prompt

@@ -21,4 +21,19 @@ export namespace Printer
 
 		return toReturn
 	}
+
+	export const wrapText = ( text : string, indentLevel : number = 0, marginLeft : number = 0 ) =>
+	{
+		let toReturn : string[] = []
+
+		let space = ''
+		for( let i = 0; i < indentLevel; i++ )
+			space += '    ' // A level = 4 spaces
+		for( let i = 0; i < marginLeft; i++ )
+			space += ' '
+
+		const availableSpace = ( process.stdout.columns - 2 ) - space.length
+
+		// TODO
+	}
 }
