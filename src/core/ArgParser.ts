@@ -54,11 +54,13 @@ export namespace ArgParser
 		{
 			const theArg = args[ i ]
 
+			console.log('thr arg', theArg)
+
 			if( isConcatString )
 			{
 				if( theArg.match( /('|")$/ ) )
 				{
-					currentString += theArg.slice( theArg.length )
+					currentString += ' ' + theArg.slice( 0, -1 )
 					parsedArgs.push( { value: currentString, isText: true })
 
 					currentString = ''
@@ -88,7 +90,7 @@ export namespace ArgParser
 			}
 			else if( theArg.match( /^('|")/ ))
 			{
-				currentString = theArg.slice( 0 )
+				currentString = theArg.slice( 1 )
 				isConcatString = true
 			}
 			else
