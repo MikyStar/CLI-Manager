@@ -11,7 +11,7 @@ import { ArgParser } from './core/ArgParser'
 console.log('process args', process.argv)
 
 // const finalArgs = ArgParser.getAllArgs()
-const finalArgs = [ ...config.defaultArgs, ...[ 'le', "inside some quotes", 'nom', 'de', 'ma', 'task', '-s', 'todo' ] ]
+const finalArgs = [ ...config.defaultArgs, ...[ 'le', "inside some quotes", 'nom', 'de', 'ma', 'task', '-s', 'todo', 'a' ] ]
 console.log( 'args', finalArgs)
 console.log('parsed', ArgParser.parse( finalArgs ) )
 

@@ -55,7 +55,13 @@ export namespace ArgParser
 		{
 			const theArg = args[ i ]
 
-			if( isConcatString )
+			if( theArg.match( / / ) && Object.values( Flag ).includes( theArg.split( ' ' )[0] as Flag ) )
+			{
+				const splited = theArg.split( ' ' )
+
+				parsedArgs = [ ...parsedArgs, ...parse( splited ) ]
+			}
+			else if( isConcatString )
 			{
 				if( Object.values( Flag ).includes( theArg as Flag ) ) // That's a really dirty way to manage coming from concat string and finding a flag
 				{
@@ -79,7 +85,7 @@ export namespace ArgParser
 				else
 					currentString += ' ' + theArg
 			}
-			else if( theArg.match( /^('|")/ ))
+			else if( theArg.match( /^('|")/ )) // TODO I shouldn't need those regex as node should handle them himself -------> ACTUALLY I should REALLY use an array of values for tasks.json defaultArgs
 			{
 				if( currentString !== '' )
 					parsedArgs.push({ value: currentString, isText: true })
