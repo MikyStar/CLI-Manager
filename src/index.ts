@@ -6,9 +6,12 @@ import { ArgParser } from './core/ArgParser'
 
 ////////////////////////////////////////
 
-config.printBoard()
+// config.printBoard()
 
-const finalArgs = ArgParser.getAllArgs()
+console.log('process args', process.argv)
+
+// const finalArgs = ArgParser.getAllArgs()
+const finalArgs = [ ...config.defaultArgs, ...[ 'le', "inside some quotes", 'nom', 'de', 'ma', 'task', '-s', 'todo' ] ]
 console.log( 'args', finalArgs)
 console.log('parsed', ArgParser.parse( finalArgs ) )
 
