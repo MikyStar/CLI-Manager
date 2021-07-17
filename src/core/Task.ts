@@ -72,7 +72,7 @@ export namespace Task
 		return toReturn
 	}
 
-	export const stringify = ( task : ITask, indentLevel : number = 1, hideDescription ?: boolean ) =>
+	export const stringify = ( { task, indentLevel = 1, hideDescription, depth } : { task : ITask, indentLevel : number, hideDescription ?: boolean, depth ?: number } ) =>
 	{
 		let toReturn : string[] = []
 		let indent = ''
@@ -128,9 +128,20 @@ export namespace Task
 		{
 			task.subtasks.forEach( sub =>
 			{
-				const result = Task.stringify( sub, indentLevel + 1, hideDescription )
-
-				toReturn = [ ...toReturn, ...result ]
+				const shallNotPrint = ( depth !== undefined ) && ( indentLevel >= depth + 1 )
+				if( !shallNotPrint )
+				{
+					const options =
+					{
+						task: sub,
+						indentLevel: indentLevel + 1,
+						hideDescription,
+						depth
+					}
+					const result = Task.stringify( options )
+	
+					toReturn = [ ...toReturn, ...result ]
+				}
 			});
 
 			return toReturn

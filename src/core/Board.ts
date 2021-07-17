@@ -17,7 +17,7 @@ export interface IBoard
 
 export namespace Board
 {
-	export const stringify = ( board : IBoard, hideDescription ?: boolean ) : string[] =>
+	export const stringify = ( { board, hideDescription, depth } : { board : IBoard, hideDescription ?: boolean, depth ?: number } ) : string[] =>
 	{
 		let toReturn : string[] = []
 
@@ -26,7 +26,14 @@ export namespace Board
 
 		board.tasks.forEach( task =>
 		{
-			const result = Task.stringify( task, 1, hideDescription )
+			const options =
+			{
+				task: task,
+				indentLevel: 1,
+				hideDescription,
+				depth
+			}
+			const result = Task.stringify( options )
 
 			toReturn = [ ...toReturn, ...result ]
 		})

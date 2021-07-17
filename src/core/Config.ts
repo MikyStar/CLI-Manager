@@ -52,7 +52,26 @@ export class Config
 
 	addTask( task: ITask, { boardName, subTaskOf } : { boardName ?: string, subTaskOf ?: number } )
 	{
-		const taskID = this.straightTasks.length
+		const createUniqueId = () =>
+		{
+			const allTasksId = []
+			this.straightTasks.forEach( task => allTasksId.push( task.id ) )
+
+			const maxInArray = Math.max( ...allTasksId )
+
+			if( maxInArray === ( allTasksId.length -1 ) )
+				return allTasksId.length
+			else
+			{
+				let id = 0
+
+				while( allTasksId.includes( id ) )
+					id++
+				
+				return id
+			}
+		}
+		const taskID = createUniqueId()
 
 		const finalTask : ITask =
 		{
@@ -99,7 +118,7 @@ export class Config
 		else
 			throw new Error('Should be either add to board or task')
 
-		this.save()
+		// this.save() // ! put back
 
 		console.log('')
 		console.log(` Task n°${ taskID } added`)
@@ -130,15 +149,23 @@ export class Config
 	/*
 	 * If no name provided, print all boards
 	 */
-	printBoard( boardName?: string, hideDesc ?: boolean )
+	print( options : { boardName?: string, taskId ?: number, hideDesc ?: boolean, depth ?: number } )
 	{
-		if( !boardName )
+		const { boardName, taskId, hideDesc, depth } = options
+
+		if( !boardName && !taskId )
 		{
 			this.boards.forEach( ( board, index ) =>
 			{
 				console.log( ( index === 0 ) ? Printer.charAccrossScreen('-') : Printer.separator('-') )
 				console.log('')
-				Printer.printStringified( Board.stringify( board, hideDesc ) )
+				const options =
+				{
+					board,
+					hideDescription: hideDesc,
+					depth
+				}
+				Printer.printStringified( Board.stringify( options ) )
 				console.log('')
 			})
 
@@ -154,7 +181,13 @@ export class Config
 			{
 				console.log( Printer.charAccrossScreen( '-' ) )
 				console.log('')
-				Printer.printStringified( Board.stringify( this.boards[ index ], hideDesc ) )
+				const options =
+				{
+					board: this.boards[ index ],
+					hideDescription: hideDesc,
+					depth
+				}
+				Printer.printStringified( Board.stringify( options ) )
 				console.log('')
 				console.log( Printer.charAccrossScreen( '-' ) )
 			}
