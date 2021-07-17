@@ -8,6 +8,7 @@ export class CommandLauncher
 {
 	userArgs: RawArg[]
 	defaultArgs: RawArg[]
+	untreatedArgs: RawArg[]
 	printDepth: number
 	hideDescription: boolean
 	state: string
@@ -20,41 +21,49 @@ export class CommandLauncher
 	{
 		this.userArgs = userArgs
 		this.defaultArgs = defaultArgs
+		this.untreatedArgs = [ ...userArgs, ...defaultArgs ]
 
 		//////////
 
-		const noUserArg = userArgs.length === 0
-		const onlyOneUserArg = userArgs.length === 1
+		const noInputArg = userArgs.length === 0
+		const onlyOneInputArg = userArgs.length === 1
 
-		if( noUserArg )
+		if( noInputArg )
 			config.printBoard()
+
+		//////////
+
+		const hideDescription = this.getLastFlag( Flag.HIDE_DESCRIPTION )
+		const printDepth = this.getLastFlagFollowingValue( Flag.DEPTH )
+
+		const state = this.getLastFlagFollowingValue( Flag.STATE ) || config.states[ 0 ]
+		const description = this.getLastFlagFollowingValue( Flag.DESCRIPTION )
+		const linked = this.getLastFlagFollowingValue( Flag.LINK )
+		const boards = this.getAllBoard()
+
+		//////////
 
 		const firstCommandArg = userArgs[ 0 ]
 
 		if( firstCommandArg.isAction )
 		{
+			this.untreatedArgs.splice( 0, 1 ) // As untreatedArgs starts with userArgs
+
 			switch( firstCommandArg.value )
 			{
+
 				case Action.ADD_TASK:
 				{
-					if( onlyOneUserArg )
+					if( onlyOneInputArg )
 						Prompt.addTask()
 
-					const userInputedState = this.getFlagFollowingValue( Flag.STATE, userArgs )
-					const defaultState = this.getFlagFollowingValue( Flag.STATE, defaultArgs )
-
-					if( !userInputedState && !defaultState )
-						throw new Error( 'You need to add a state or add a default one in your file' )
-
-					const state = userInputedState || defaultState
-					
-					const description = this.getFlagFollowingValue( Flag.DESCRIPTION, userArgs ) 
-						|| this.getFlagFollowingValue( Flag.DESCRIPTION, userArgs )
-
-					const linked = this.getFlagFollowingValue( Flag.LINK, userArgs ) 
-						|| this.getFlagFollowingValue( Flag.LINK, userArgs )
-
+					console.log( 'hidedesc', hideDescription )
+					console.log( 'depth', printDepth )
 					console.log( 'state', state )
+					console.log( 'desc', description )
+					console.log( 'linked', linked )
+					console.log( 'boards', boards )
+					console.log( 'untreated', this.untreatedArgs )
 
 					// config.addTask()
 
@@ -67,15 +76,16 @@ export class CommandLauncher
 	////////////////////
 
 	/**
-	 * Return value for flag or undefined
+	 * Uses untreatedArgs and remove them from list
+	 * @returns last value for flag or undefined
 	 */
-	private getFlagFollowingValue = ( flag: Flag, args: RawArg[] ) =>
+	private getLastFlagFollowingValue = ( flag: Flag ) =>
 	{
 		let lastFlagIndex = -1
 
-		for( let i = 0; i < args.length; i++ )
+		for( let i = 0; i < this.untreatedArgs.length; i++ )
 		{
-			const theArg = args[ i ]
+			const theArg = this.untreatedArgs[ i ]
 
 			if( theArg.isFlag && ( theArg.value === flag ) )
 				lastFlagIndex = i
@@ -85,12 +95,52 @@ export class CommandLauncher
 			return undefined
 		else
 		{
-			const followingArg = args[ lastFlagIndex + 1 ]
+			const value = this.untreatedArgs[ lastFlagIndex + 1 ].value
+			this.untreatedArgs.splice( lastFlagIndex, 2 )
 
-			if( followingArg.isText )
-				return followingArg.value
-			else
-				throw new Error( 'The following arg is not text' )
+			return value
 		}
+	}
+
+	/**
+	 * Uses untreatedArgs and remove them from list
+	 * @returns true or undefined
+	 */
+	private getLastFlag = ( flag: Flag ) =>
+	{
+		let lastFlagIndex = -1
+
+		for( let i = 0; i < this.untreatedArgs.length; i++ )
+		{
+			const theArg = this.untreatedArgs[ i ]
+
+			if( theArg.isFlag && ( theArg.value === flag ) )
+				lastFlagIndex = i
+		}
+
+		if( lastFlagIndex === -1 )
+			return undefined
+		else
+		{
+			this.untreatedArgs.splice( lastFlagIndex, 1 )
+
+			return true
+		}
+	}
+
+	private getAllBoard = () =>
+	{
+		const toReturn = []
+
+		this.untreatedArgs.forEach( ( arg, index ) =>
+		{
+			if( arg.isBoard )
+			{
+				toReturn.push( arg.value )
+				this.untreatedArgs.splice( index, 1 )
+			}
+		})
+
+		return toReturn
 	}
 }
