@@ -1,6 +1,7 @@
 import { RawArg, Action, Flag } from "./ArgParser";
 import { config } from "./Config";
 import { Prompt } from "./Prompt";
+import { ITask } from "./Task";
 
 ////////////////////////////////////////
 
@@ -31,15 +32,18 @@ export class CommandLauncher
 		if( noInputArg )
 			config.printBoard()
 
+		const firstArg = userArgs[ 0 ]
+		this.untreatedArgs.splice( 0, 1 ) // As untreatedArgs starts with userArgs
+
 		//////////
 
 		const hideDescription = this.getLastFlag( Flag.HIDE_DESCRIPTION )
 		const printDepth = this.getLastFlagFollowingValue( Flag.DEPTH )
 		const helpNeeded = this.getLastFlag( Flag.HELP )
 
-		const state = this.getLastFlagFollowingValue( Flag.STATE ) || config.states[ 0 ]
-		const description = this.getLastFlagFollowingValue( Flag.DESCRIPTION )
-		const linked = this.getLastFlagFollowingValue( Flag.LINK )
+		const state = this.getLastFlagFollowingValue( Flag.STATE ) as string
+		const description = this.getLastFlagFollowingValue( Flag.DESCRIPTION ) as string
+		const linked = this.getLastFlagFollowingValue( Flag.LINK ) as number[]
 		const board = this.getBoard()
 
 		console.log( 'hidedesc', hideDescription )
@@ -53,22 +57,26 @@ export class CommandLauncher
 
 		//////////
 
-		const firstArg = userArgs[ 0 ]
-
 		if( firstArg.isAction )
 		{
-			this.untreatedArgs.splice( 0, 1 ) // As untreatedArgs starts with userArgs
-
 			switch( firstArg.value )
 			{
-
 				case Action.ADD_TASK:
 				{
 					if( onlyOneInputArg )
 						Prompt.addTask()
 
+					const name = this.getFirstText()
 
-					// config.addTask()
+					const task : ITask =
+					{
+						name,
+						state: state || config.states[ 0 ].name,
+						dependencies: [ ...linked ],
+						description,
+					}
+
+					config.addTask( task, board )
 
 					break;
 				}
@@ -138,6 +146,26 @@ export class CommandLauncher
 		this.untreatedArgs.forEach( ( arg, index ) =>
 		{
 			if( arg.isBoard )
+			{
+				toReturn = arg.value
+				this.untreatedArgs.splice( index, 1 )
+			}
+		})
+
+		return toReturn
+	}
+
+	/**
+	 * Uses untreatedArgs and remove them from list
+	 * @returns first value of text
+	 */
+	private getFirstText = () =>
+	{
+		let toReturn = undefined
+
+		this.untreatedArgs.forEach( ( arg, index ) =>
+		{
+			if( arg.isText && ( toReturn === undefined ) )
 			{
 				toReturn = arg.value
 				this.untreatedArgs.splice( index, 1 )

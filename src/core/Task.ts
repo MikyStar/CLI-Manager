@@ -15,7 +15,7 @@ export interface ITask
 	description ?: string,
 	id ?: number,
 	subtasks ?: ITask[],
-	dependencies ?: string[], // Tasks IDS
+	dependencies ?: number[], // Tasks IDS
 	timestamp ?: string,
 	state: string,
 }
