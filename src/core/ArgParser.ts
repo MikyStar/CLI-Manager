@@ -1,4 +1,4 @@
-import { config } from './Config'
+import { Config } from './Config'
 
 ////////////////////////////////////////
 
@@ -26,7 +26,7 @@ export enum Flag
 	LINK = '-l'
 }
 
-export interface Arg
+export interface RawArg
 {
 	value: string | number | number[],
 	isAction ?: boolean,
@@ -40,14 +40,9 @@ export interface Arg
 
 export namespace ArgParser
 {
-	/**
-	 * Get array of args from both CLI args and config file args
-	 */
-	export const getAllArgs = () => [ ...config.defaultArgs, ...process.argv.slice(2) ]
-
-	export const parse = ( args : string[] ) : Arg[] =>
+	export const rawParse = ( args : string[] ) : RawArg[] =>
 	{
-		let parsedArgs : Arg[] = []
+		let parsedArgs : RawArg[] = []
 
 		let currentString = ``
 
@@ -62,7 +57,7 @@ export namespace ArgParser
 			{
 				const splited = theArg.split( ' ' )
 
-				parsedArgs = [ ...parsedArgs, ...parse( splited ) ]
+				parsedArgs = [ ...parsedArgs, ...rawParse( splited ) ]
 			}
 			else if( isConcatString )
 			{
@@ -133,10 +128,5 @@ export namespace ArgParser
 			parsedArgs.push({ value: currentString, isText: true })
 
 		return parsedArgs
-	}
-
-	export const launchAction = ( parsedArgs : Arg[] ) =>
-	{
-		
 	}
 }

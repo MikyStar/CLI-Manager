@@ -3,14 +3,23 @@ import { Printer } from './core/Printer'
 import { Board } from './core/Board'
 import { Prompt } from './core/Prompt'
 import { ArgParser } from './core/ArgParser'
+import { CommandLauncher } from './core/CommandLauncher'
+
 
 ////////////////////////////////////////
 
-config.printBoard( undefined, true )
+console.log('system args', process.argv )
+
+// config.printBoard( undefined, true )
 
 // const allArgs = ArgParser.getAllArgs()
-const finalArgs = [ ...config.defaultArgs, ...[ 'le', "inside some quotes", 'nom', 'de', 'ma', 'task', '-s', 'todo', 'a' ] ]
-console.log( 'args', finalArgs)
-console.log('parsed', ArgParser.parse( finalArgs ) )
+const userArgs = ArgParser.rawParse( process.argv.slice(2) )
+const defaultArgs = ArgParser.rawParse( config.defaultArgs )
+console.log( 'parsed default', defaultArgs)
+console.log('parsed user', userArgs )
+
+const launcher = new CommandLauncher( userArgs, defaultArgs )
 
 // Prompt.addTask()
+
+////////////////////////////////////////
