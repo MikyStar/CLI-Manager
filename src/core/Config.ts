@@ -52,7 +52,26 @@ export class Config
 
 	addTask( task: ITask, { boardName, subTaskOf } : { boardName ?: string, subTaskOf ?: number } )
 	{
-		const taskID = this.straightTasks.length
+		const createUniqueId = () =>
+		{
+			const allTasksId = []
+			this.straightTasks.forEach( task => allTasksId.push( task.id ) )
+
+			const maxInArray = Math.max( ...allTasksId )
+
+			if( maxInArray === ( allTasksId.length -1 ) )
+				return allTasksId.length
+			else
+			{
+				let id = 0
+
+				while( allTasksId.includes( id ) )
+					id++
+				
+				return id
+			}
+		}
+		const taskID = createUniqueId()
 
 		const finalTask : ITask =
 		{
@@ -99,7 +118,7 @@ export class Config
 		else
 			throw new Error('Should be either add to board or task')
 
-		this.save()
+		// this.save() // ! put back
 
 		console.log('')
 		console.log(` Task n°${ taskID } added`)
