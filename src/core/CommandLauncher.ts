@@ -29,16 +29,13 @@ export class CommandLauncher
 		const noInputArg = userArgs.length === 0
 		const onlyOneInputArg = userArgs.length === 1
 
-		if( noInputArg )
-			config.printBoard()
-
 		const firstArg = userArgs[ 0 ]
 		this.untreatedArgs.splice( 0, 1 ) // As untreatedArgs starts with userArgs
 
 		//////////
 
 		const hideDescription = this.getLastFlag( Flag.HIDE_DESCRIPTION )
-		const printDepth = this.getLastFlagFollowingValue( Flag.DEPTH )
+		const printDepth = this.getLastFlagFollowingValue( Flag.DEPTH ) as number
 		const helpNeeded = this.getLastFlag( Flag.HELP )
 
 		const state = this.getLastFlagFollowingValue( Flag.STATE ) as string
@@ -55,6 +52,9 @@ export class CommandLauncher
 		console.log( 'board', board )
 
 		//////////
+
+		if( noInputArg )
+			config.print({ depth: printDepth, hideDesc: hideDescription })
 
 		if( firstArg.isAction )
 		{

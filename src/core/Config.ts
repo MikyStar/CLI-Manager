@@ -130,15 +130,23 @@ export class Config
 	/*
 	 * If no name provided, print all boards
 	 */
-	printBoard( boardName?: string, hideDesc ?: boolean )
+	print( options : { boardName?: string, taskId ?: number, hideDesc ?: boolean, depth ?: number } )
 	{
-		if( !boardName )
+		const { boardName, taskId, hideDesc, depth } = options
+
+		if( !boardName && !taskId )
 		{
 			this.boards.forEach( ( board, index ) =>
 			{
 				console.log( ( index === 0 ) ? Printer.charAccrossScreen('-') : Printer.separator('-') )
 				console.log('')
-				Printer.printStringified( Board.stringify( board, hideDesc ) )
+				const options =
+				{
+					board,
+					hideDescription: hideDesc,
+					depth
+				}
+				Printer.printStringified( Board.stringify( options ) )
 				console.log('')
 			})
 
@@ -154,7 +162,13 @@ export class Config
 			{
 				console.log( Printer.charAccrossScreen( '-' ) )
 				console.log('')
-				Printer.printStringified( Board.stringify( this.boards[ index ], hideDesc ) )
+				const options =
+				{
+					board: this.boards[ index ],
+					hideDescription: hideDesc,
+					depth
+				}
+				Printer.printStringified( Board.stringify( options ) )
 				console.log('')
 				console.log( Printer.charAccrossScreen( '-' ) )
 			}
