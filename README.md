@@ -59,6 +59,8 @@ task 9 renaming the task	# Rename task n°9
 task 9,7,2 -s done  	# Change state to 'done'
 task c 7	# Put task to final state, 'Check'
 task i 11,14	# Pass tasks 11 and 14 to next state, "Increment"
+task x 11	# Make a new board out of a task subtasks, "Extract"
+task x 11 newBoard	# Make a new board out of a task subtasks and rename the parent task, "Extract"
 
 # Moving tasks
 task mv 9		# Change associated board with interactive prompt

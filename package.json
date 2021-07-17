@@ -2,9 +2,9 @@
 	"name": "cli-manager",
 	"version": "0.1.0",
 	"description": "",
-	"main": "index.js",
+	"main": "Main.js",
 	"scripts": {
-		"start": "NODE_ENV=dev tsc && node dist/index.js",
+		"start": "NODE_ENV=dev tsc && node dist/Main.js",
 		"deploy": "NODE_ENV=prod npm start",
 		"test": "jest",
 		"update": "ncu -u && npm update",

@@ -12,6 +12,7 @@ export enum Action
 	INCREMENT = 'i',
 	MOVE = 'mv',
 	RENAME = 'rn',
+	EXTRACT = 'x'
 }
 
 export enum Flag
@@ -38,12 +39,13 @@ export interface Arg
 
 export namespace ArgParser
 {
+	/**
+	 * Get array of args from both CLI args and config file args
+	 */
 	export const getAllArgs = () => [ ...config.defaultArgs, ...process.argv.slice(2) ]
 
-	export const parse = ( args : string[] ) =>
+	export const parse = ( args : string[] ) : Arg[] =>
 	{
-		// TODO folags should be set and accessible from config
-
 		let parsedArgs : Arg[] = []
 
 		let currentString = ``
