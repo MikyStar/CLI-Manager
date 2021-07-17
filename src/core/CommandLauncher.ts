@@ -54,7 +54,10 @@ export class CommandLauncher
 		//////////
 
 		if( noInputArg )
+		{
 			config.print({ depth: printDepth, hideDesc: hideDescription })
+			return
+		}
 
 		if( firstArg.isAction )
 		{
@@ -75,7 +78,10 @@ export class CommandLauncher
 
 					let parentItem = {}
 					if( ( this.untreatedArgs.length === 1 ) && ( this.untreatedArgs[ 0 ].isTask ) )
+					{
 						parentItem = { subTaskOf: this.untreatedArgs[ 0 ].value }
+						this.untreatedArgs.splice( 0, 1 )
+					}
 					else
 						parentItem = { boardName: board }
 
