@@ -99,7 +99,7 @@ export class Config
 	/*
 	 * If no name provided, print all boards
 	 */
-	printBoard( boardName?: string )
+	printBoard( boardName?: string, hideDesc ?: boolean )
 	{
 		if( !boardName )
 		{
@@ -107,7 +107,7 @@ export class Config
 			{
 				console.log( ( index === 0 ) ? Printer.charAccrossScreen('-') : Printer.separator('-') )
 				console.log('')
-				Printer.printStringified( Board.stringify( board ) )
+				Printer.printStringified( Board.stringify( board, hideDesc ) )
 				console.log('')
 			})
 
@@ -123,7 +123,7 @@ export class Config
 			{
 				console.log( Printer.charAccrossScreen( '-' ) )
 				console.log('')
-				Printer.printStringified( Board.stringify( this.boards[ index ] ) )
+				Printer.printStringified( Board.stringify( this.boards[ index ], hideDesc ) )
 				console.log('')
 				console.log( Printer.charAccrossScreen( '-' ) )
 			}
