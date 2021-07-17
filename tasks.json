@@ -1,5 +1,5 @@
 {
-    "args": [ "--hide-description", "@backlog", "-s 'to test'" ],
+    "args": [ "--hide-description", "@backlog", "-s", "to test", "-l", "2,4" ],
     "states":
     [
         { "name": "todo", "hexColor": "#ff8f00" },
