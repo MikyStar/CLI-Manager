@@ -50,13 +50,8 @@ export class Config
 
 	////////////////////////////////////////
 
-	addTask( task: ITask, boardName : string, subTaskOf : number = undefined )
+	addTask( task: ITask, { boardName, subTaskOf } : { boardName ?: string, subTaskOf ?: number } )
 	{
-		if( subTaskOf !== undefined )
-			console.log('todo') // TODO
-
-		const boardIndex = this.boards.findIndex( board => board.name === boardName )
-
 		const taskID = this.straightTasks.length
 
 		const finalTask : ITask =
@@ -66,7 +61,34 @@ export class Config
 			timestamp: moment().format( TIMESTAMP_FORMAT )
 		}
 
-		this.boards[ boardIndex ].tasks.push( finalTask )
+		if( boardName )
+		{
+			const boardIndex = this.boards.findIndex( board => board.name === boardName )
+			this.boards[ boardIndex ].tasks.push( finalTask )
+		}
+		else if( subTaskOf )
+		{
+			// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+
+			this.boards.forEach( ( board, boardIndex ) =>
+			{
+				board.tasks.forEach( function iter( task )
+				{
+					if( task.id === subTaskOf )
+					{
+						if( task.subtasks === undefined )
+							task.subtasks = [ finalTask ]
+						else
+							task.subtasks = [ ...task.subtasks, finalTask ];
+					}
+
+					Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+				});
+				
+			})
+		}
+		else
+			throw new Error('Should be either add to board or task')
 
 		this.save()
 

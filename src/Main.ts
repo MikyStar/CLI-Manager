@@ -20,6 +20,7 @@ console.log('parsed user', userArgs )
 
 const launcher = new CommandLauncher( userArgs, defaultArgs )
 
+config.printBoard( undefined, true )
 // Prompt.addTask()
 
 ////////////////////////////////////////

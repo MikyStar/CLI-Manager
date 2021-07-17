@@ -53,7 +53,6 @@ export class CommandLauncher
 		console.log( 'desc', description )
 		console.log( 'linked', linked )
 		console.log( 'board', board )
-		console.log( 'untreated', this.untreatedArgs )
 
 		//////////
 
@@ -66,17 +65,17 @@ export class CommandLauncher
 					if( onlyOneInputArg )
 						Prompt.addTask()
 
-					const name = this.getFirstText()
-
 					const task : ITask =
 					{
-						name,
+						name: this.getFirstText(),
 						state: state || config.states[ 0 ].name,
 						dependencies: [ ...linked ],
 						description,
 					}
 
-					config.addTask( task, board )
+		console.log( 'untreated', this.untreatedArgs )
+
+					config.addTask( task, { subTaskOf: 1 } )
 
 					break;
 				}

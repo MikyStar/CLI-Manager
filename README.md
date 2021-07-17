@@ -43,7 +43,7 @@ task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 task a	# Create a new task with interactive prompt
 task a 'refactor logs'	# Create 1 task 'refactor logs' to default board ( first one )
 task a @mBoard 'do something'		# Create 1 task 'do something' on board @mBoard
-task a mBoard 'dependecy task' -l 11,13		# Create a task on default board that's Linked to tasks id n° 11 and 13
+task a 'dependecy task' -l 11,13		# Create a task on board in the args of file that's Linked to tasks id n° 11 and 13
 task a @mBoard 'long task' -d 'Some description'	# Create a task with a Description
 task a 'a statefull task' -s 'to test'	# Create a task with the State 'to test'
 task a 12 'first sub task'	# Add sub-task to the task n° 12
