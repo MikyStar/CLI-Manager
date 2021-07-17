@@ -40,7 +40,7 @@ export class CommandLauncher
 		const state = this.getLastFlagFollowingValue( Flag.STATE ) || config.states[ 0 ]
 		const description = this.getLastFlagFollowingValue( Flag.DESCRIPTION )
 		const linked = this.getLastFlagFollowingValue( Flag.LINK )
-		const boards = this.getAllBoard()
+		const board = this.getBoard()
 
 		console.log( 'hidedesc', hideDescription )
 		console.log( 'help', helpNeeded )
@@ -48,7 +48,7 @@ export class CommandLauncher
 		console.log( 'state', state )
 		console.log( 'desc', description )
 		console.log( 'linked', linked )
-		console.log( 'boards', boards )
+		console.log( 'board', board )
 		console.log( 'untreated', this.untreatedArgs )
 
 		//////////
@@ -131,15 +131,15 @@ export class CommandLauncher
 		}
 	}
 
-	private getAllBoard = () =>
+	private getBoard = () =>
 	{
-		const toReturn = []
+		let toReturn = undefined
 
 		this.untreatedArgs.forEach( ( arg, index ) =>
 		{
 			if( arg.isBoard )
 			{
-				toReturn.push( arg.value )
+				toReturn = arg.value
 				this.untreatedArgs.splice( index, 1 )
 			}
 		})

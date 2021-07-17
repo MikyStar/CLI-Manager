@@ -32,7 +32,7 @@ task b mBoard otherBoard	# Create two boards
 task @mBoard	# Print all tasks of a board
 
 # Editing a board
-task rn @previousName @newName
+task rn @previousName newName
 task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 ```
 
