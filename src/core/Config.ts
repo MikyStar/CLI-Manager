@@ -37,7 +37,7 @@ export class Config
 			this.states = json.states
 
 			let straightTasks = []
-			this.boards.forEach( board => straightTasks = [ ...straightTasks, ...Task.straightBoard( board ) ] )
+			this.boards.forEach( board => straightTasks = [ ...straightTasks, ...Board.straightBoard( board ) ] )
 			this.straightTasks = straightTasks
 		}
 		catch( err )

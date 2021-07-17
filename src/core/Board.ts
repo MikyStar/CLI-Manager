@@ -41,10 +41,29 @@ export namespace Board
 		if( board.tasks && board.tasks.length !== 0 )
 		{
 			toReturn.push('')
-			toReturn.push( Task.getStats( Task.straightBoard( board ) ) )
+			toReturn.push( Task.getStats( straightBoard( board ) ) )
 		}
 		else
 			toReturn.push( chalk.dim( ' \t' + 'No tasks yet' ) )
+
+		return toReturn
+	}
+
+	/**
+	 * Transform the tree of tasks and subtasks to an array of tasks
+	 */ 
+	export const straightBoard = ( board : IBoard ) =>
+	{
+		let toReturn : ITask[] = []
+
+		/////////////////
+
+		board.tasks.forEach( task =>
+		{
+			const result = Task.straightTask( task )
+
+			toReturn = [ ...toReturn, ...result ]
+		})
 
 		return toReturn
 	}

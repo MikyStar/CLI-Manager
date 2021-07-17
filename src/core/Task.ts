@@ -27,49 +27,31 @@ export namespace Task
 	/**
 	 * Transform the tree of tasks and subtasks to an array of tasks
 	 */ 
-	export const straightBoard = ( board : IBoard ) =>
+	export const straightTask = ( task: ITask ) =>
 	{
 		let toReturn : ITask[] = []
 
-		/////////////////
-
-		const straight = ( task : ITask ) =>
+		if( !task.subtasks || task.subtasks.length === 0 )
 		{
-			let toReturn : ITask[] = []
+			toReturn.push( task )
 
-			if( !task.subtasks || task.subtasks.length === 0 )
-			{
-				toReturn.push( task )
-
-				return toReturn
-			}
-			else
-			{
-				task.subtasks.forEach( sub =>
-				{
-					const result = straight( sub )
-
-					toReturn = [ ...toReturn, ...result ]
-				})
-
-				const taskCopy = { ...task }
-				delete taskCopy.subtasks
-				toReturn.push( taskCopy )
-
-				return toReturn
-			}
+			return toReturn
 		}
-
-		/////////////////
-
-		board.tasks.forEach( task =>
+		else
 		{
-			const result = straight( task )
+			task.subtasks.forEach( sub =>
+			{
+				const result = straightTask( sub )
 
-			toReturn = [ ...toReturn, ...result ]
-		})
+				toReturn = [ ...toReturn, ...result ]
+			})
 
-		return toReturn
+			const taskCopy = { ...task }
+			delete taskCopy.subtasks
+			toReturn.push( taskCopy )
+
+			return toReturn
+		}
 	}
 
 	export const stringify = ( { task, indentLevel = 1, hideDescription, depth } : { task : ITask, indentLevel : number, hideDescription ?: boolean, depth ?: number } ) =>
