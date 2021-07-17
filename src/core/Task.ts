@@ -72,7 +72,7 @@ export namespace Task
 		return toReturn
 	}
 
-	export const stringify = ( task : ITask, indentLevel : number = 1 ) =>
+	export const stringify = ( task : ITask, indentLevel : number = 1, hideDescription ?: boolean ) =>
 	{
 		let toReturn : string[] = []
 		let indent = ''
@@ -95,29 +95,32 @@ export namespace Task
 		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
 		toReturn.push( ' ' + textID + indent + currentTask )
 
-		const parseDescriptionLines = () =>
+		if( !hideDescription )
 		{
-			if( !task.description )
-				return []
-
-			const LINE_BREAK = '\n'
-
-			let toReturn : string[] = []
-
-			const descExploded = task.description.split( LINE_BREAK )
-
-			descExploded.forEach( line =>
+			const parseDescriptionLines = () =>
 			{
-				line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
-
-				const text = ' ' + indent + '    ' + line
-
-				toReturn.push( text )
-			});
-
-			return toReturn
+				if( !task.description )
+					return []
+	
+				const LINE_BREAK = '\n'
+	
+				let toReturn : string[] = []
+	
+				const descExploded = task.description.split( LINE_BREAK )
+	
+				descExploded.forEach( line =>
+				{
+					line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
+	
+					const text = ' ' + indent + '    ' + line
+	
+					toReturn.push( text )
+				});
+	
+				return toReturn
+			}
+			toReturn = [ ...toReturn, ...parseDescriptionLines() ]
 		}
-		toReturn = [ ...toReturn, ...parseDescriptionLines() ]
 
 		if( !task.subtasks || task.subtasks.length === 0 )
 			return toReturn
@@ -125,7 +128,7 @@ export namespace Task
 		{
 			task.subtasks.forEach( sub =>
 			{
-				const result = Task.stringify( sub, indentLevel + 1 )
+				const result = Task.stringify( sub, indentLevel + 1, hideDescription )
 
 				toReturn = [ ...toReturn, ...result ]
 			});

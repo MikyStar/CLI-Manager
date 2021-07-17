@@ -5,6 +5,7 @@ import { config } from './Config'
 export enum Action
 {
 	ADD_TASK = 'a',
+	INIT = 'init',
 	ADD_BOARD = 'b',
 	CHECK = 'c',
 	DELETE = 'd',
