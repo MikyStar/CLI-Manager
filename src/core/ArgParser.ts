@@ -44,88 +44,33 @@ export namespace ArgParser
 	{
 		let parsedArgs : RawArg[] = []
 
-		let currentString = ``
-
-		let isConcatString = false
-		let stringDelimiter = ''
-
 		for( let i = 0; i < args.length; i++ )
 		{
 			const theArg = args[ i ]
 
-			if( theArg.match( / / ) && Object.values( Flag ).includes( theArg.split( ' ' )[0] as Flag ) )
-			{
-				const splited = theArg.split( ' ' )
+			const isBoard = theArg[0] === '@'
+			const isTask = !isNaN( +theArg[0] )
 
-				parsedArgs = [ ...parsedArgs, ...rawParse( splited ) ]
-			}
-			else if( isConcatString )
+			if( isBoard )
+				parsedArgs.push( { value: theArg.slice(1), isBoard: true } )
+			else if( Object.values( Action ).includes( theArg as Action ) )
+				parsedArgs.push( { value: theArg, isAction: true } )
+			else if( Object.values( Flag ).includes( theArg as Flag ) )
+				parsedArgs.push({ value: theArg, isFlag: true })
+			else if( isTask )
 			{
-				if( Object.values( Flag ).includes( theArg as Flag ) ) // That's a really dirty way to manage coming from concat string and finding a flag
+				if( theArg.includes( ',' ) )
 				{
-					parsedArgs.push({ value: currentString, isText: true })
+					const tasksNb = theArg.split(',').map( task => Number.parseInt( task ) )
 
-					isConcatString = false
-					currentString = ''
-					stringDelimiter = ''
-
-					parsedArgs.push( { value: theArg, isFlag: true } )
+					parsedArgs.push( { value: tasksNb, isTask: true } )
 				}
-				else if( theArg[ theArg.length - 1 ] === stringDelimiter )
-				{
-					currentString += ' ' + theArg.slice( 0, -1 )
-					parsedArgs.push( { value: currentString, isText: true })
-
-					currentString = ''
-					stringDelimiter = ''
-					isConcatString = false
-				}
-				else
-					currentString += ' ' + theArg
-			}
-			else if( theArg.match( /^('|")/ )) // TODO I shouldn't need those regex as node should handle them himself -------> ACTUALLY I should REALLY use an array of values for tasks.json defaultArgs
-			{
-				if( currentString !== '' )
-					parsedArgs.push({ value: currentString, isText: true })
-
-				stringDelimiter = theArg[0]
-
-				currentString = theArg.slice( 1 )
-				isConcatString = true
+				else if( theArg.match( /^\d+$/ ) )
+					parsedArgs.push( { value: Number.parseInt( theArg ), isTask: true } )
 			}
 			else
-			{
-				isConcatString = false
-
-				if( theArg[0] === '@' )
-				{
-					parsedArgs.push( { value: theArg.slice(1), isBoard: true } )
-				}
-				else if( Object.values( Action ).includes( theArg as Action ) )
-					parsedArgs.push( { value: theArg, isAction: true } )
-				else if( Object.values( Flag ).includes( theArg as Flag ) )
-					parsedArgs.push({ value: theArg, isFlag: true })
-				else if( !isNaN( +theArg[0] ) )
-				{
-					if( theArg.includes( ',' ) )
-					{
-						const tasksNb = theArg.split(',').map( task => Number.parseInt( task ) )
-
-						parsedArgs.push( { value: tasksNb, isTask: true } )
-					}
-					else if( theArg.match( /^\d+$/ ) )
-						parsedArgs.push( { value: Number.parseInt( theArg ), isTask: true } )
-				}
-				else
-				{
-					isConcatString = true
-					currentString += theArg
-				}
-			}
+				parsedArgs.push( { value: theArg, isText: true } )
 		}
-
-		if( currentString !== '' )
-			parsedArgs.push({ value: currentString, isText: true })
 
 		return parsedArgs
 	}
