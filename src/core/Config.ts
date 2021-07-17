@@ -64,18 +64,25 @@ export class Config
 		if( boardName )
 		{
 			const boardIndex = this.boards.findIndex( board => board.name === boardName )
-			this.boards[ boardIndex ].tasks.push( finalTask )
+
+			if( boardIndex !== -1 )
+				this.boards[ boardIndex ].tasks.push( finalTask )
+			else
+				throw new Error(`Board '${ boardName }' not found`)
 		}
 		else if( subTaskOf )
 		{
-			// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+			let wasParentFound = false
 
+			// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
 			this.boards.forEach( ( board, boardIndex ) =>
 			{
 				board.tasks.forEach( function iter( task )
 				{
 					if( task.id === subTaskOf )
 					{
+						wasParentFound = true
+
 						if( task.subtasks === undefined )
 							task.subtasks = [ finalTask ]
 						else
@@ -84,8 +91,10 @@ export class Config
 
 					Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
 				});
-				
-			})
+			});
+
+			if( !wasParentFound )
+				throw new Error(`Task '${ subTaskOf }' not found`)
 		}
 		else
 			throw new Error('Should be either add to board or task')

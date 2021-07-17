@@ -73,9 +73,13 @@ export class CommandLauncher
 						description,
 					}
 
-		console.log( 'untreated', this.untreatedArgs )
+					let parentItem = {}
+					if( ( this.untreatedArgs.length === 1 ) && ( this.untreatedArgs[ 0 ].isTask ) )
+						parentItem = { subTaskOf: this.untreatedArgs[ 0 ].value }
+					else
+						parentItem = { boardName: board }
 
-					config.addTask( task, { subTaskOf: 1 } )
+					config.addTask( task, parentItem )
 
 					break;
 				}
