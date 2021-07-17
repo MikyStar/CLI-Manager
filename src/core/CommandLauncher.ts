@@ -35,21 +35,31 @@ export class CommandLauncher
 
 		const hideDescription = this.getLastFlag( Flag.HIDE_DESCRIPTION )
 		const printDepth = this.getLastFlagFollowingValue( Flag.DEPTH )
+		const helpNeeded = this.getLastFlag( Flag.HELP )
 
 		const state = this.getLastFlagFollowingValue( Flag.STATE ) || config.states[ 0 ]
 		const description = this.getLastFlagFollowingValue( Flag.DESCRIPTION )
 		const linked = this.getLastFlagFollowingValue( Flag.LINK )
 		const boards = this.getAllBoard()
 
+		console.log( 'hidedesc', hideDescription )
+		console.log( 'help', helpNeeded )
+		console.log( 'depth', printDepth )
+		console.log( 'state', state )
+		console.log( 'desc', description )
+		console.log( 'linked', linked )
+		console.log( 'boards', boards )
+		console.log( 'untreated', this.untreatedArgs )
+
 		//////////
 
-		const firstCommandArg = userArgs[ 0 ]
+		const firstArg = userArgs[ 0 ]
 
-		if( firstCommandArg.isAction )
+		if( firstArg.isAction )
 		{
 			this.untreatedArgs.splice( 0, 1 ) // As untreatedArgs starts with userArgs
 
-			switch( firstCommandArg.value )
+			switch( firstArg.value )
 			{
 
 				case Action.ADD_TASK:
@@ -57,13 +67,6 @@ export class CommandLauncher
 					if( onlyOneInputArg )
 						Prompt.addTask()
 
-					console.log( 'hidedesc', hideDescription )
-					console.log( 'depth', printDepth )
-					console.log( 'state', state )
-					console.log( 'desc', description )
-					console.log( 'linked', linked )
-					console.log( 'boards', boards )
-					console.log( 'untreated', this.untreatedArgs )
 
 					// config.addTask()
 
@@ -104,7 +107,7 @@ export class CommandLauncher
 
 	/**
 	 * Uses untreatedArgs and remove them from list
-	 * @returns true or undefined
+	 * @returns boolean
 	 */
 	private getLastFlag = ( flag: Flag ) =>
 	{
@@ -119,7 +122,7 @@ export class CommandLauncher
 		}
 
 		if( lastFlagIndex === -1 )
-			return undefined
+			return false
 		else
 		{
 			this.untreatedArgs.splice( lastFlagIndex, 1 )

@@ -21,6 +21,7 @@ export enum Flag
 	FILE = '--f',
 	DEPTH = '--depth',
 	HIDE_DESCRIPTION = '--hide-description',
+	HELP = '--help',
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l'
