@@ -112,7 +112,7 @@ export class Config
 	}
 
 	/**
-	 * Use recursion to modifiy a task within any boards and any subtask
+	 * Use recursion to return a single given id task within any boards and any subtask
 	 */
 	retrieveNestedTask = ( taskID: number, callback: ( task: ITask, board ?: IBoard, taskIndex ?: number, boardIndex ?: number ) => any ) =>
 	{
@@ -136,6 +136,30 @@ export class Config
 
 		if( !wasParentFound )
 			throw new Error(`Task '${ taskID }' not found`)
+	}
+
+	/**
+	 * Use recursion to return any task within any boards and any subtask matching value
+	 */
+	searchAllNestedTask = <K extends keyof ITask>( taskAttribute: K, value: any ) =>
+	{
+		const tasks : ITask[] = []
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.boards.forEach( ( board ) =>
+		{
+			board.tasks.forEach( function iter( task )
+			{
+				if( task[ taskAttribute ] === value )
+				{
+					tasks.push( task )
+				}
+
+				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+			});
+		});
+
+		return tasks
 	}
 
 	save()
@@ -205,10 +229,14 @@ export class Config
 			}
 			else if( tasksId?.length > 0 )
 			{
+				const tasks = []
+
 				tasksId.forEach( ( id, index ) =>
 				{
 					this.retrieveNestedTask( id, task =>
 					{
+						tasks.push( task )
+
 						const options =
 						{
 							task: task,
@@ -220,6 +248,8 @@ export class Config
 	
 						if( index !== ( tasksId.length - 1 ) )
 							console.log( Printer.separator('-'), '\n' )
+						else
+							console.log( Task.getStats( tasks ) )
 					})
 				});
 			}

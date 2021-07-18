@@ -130,14 +130,54 @@ export namespace Task
 		}
 	}
 
+	/**
+	 * Use recursion to return all tasks matching value
+	 */
+	export const search = <K extends keyof ITask>( taskList: ITask[], taskAttribute: K, value: any ) =>
+	{
+		const tasks : ITask[] = []
+
+		 // @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		taskList.forEach( function iter( task )
+		{
+			if( task[ taskAttribute ] === value )
+			{
+				tasks.push( task )
+			}
+
+			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+		})
+
+		return tasks
+	}
+
+	/**
+	 * Use recursion to return a count of every tasks and subtasks included in list
+	 */
+	export const countTaskAndSub = ( list: ITask[] ) =>
+	{
+		let count = 0
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		list.forEach( function iter( task )
+		{
+			count++
+
+			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+		})
+
+		return count
+	}
+
 	export const getStats = ( tasks : ITask[] ) : string =>
 	{
 		let toReturn = ' '
+		const totalCount = countTaskAndSub( tasks )
 	
 		config.states.forEach( ( state, index ) =>
 		{
-			const count = tasks.filter( task => task.state === state.name ).length
-			const percent = ( count / tasks.length ) * 100
+			const count = search( tasks, 'state', state.name ).length
+			const percent = ( count / totalCount ) * 100
 
 			if( ( index !== 0 ) && ( index !== config.states.length ) )
 				toReturn += ' ► '
@@ -148,9 +188,5 @@ export namespace Task
 		});
 
 		return toReturn
-	}
-
-	export const validate = ( task : ITask ) =>
-	{
 	}
 }
