@@ -104,7 +104,7 @@ export class Config
 		else
 			throw new Error('Should be either add to board or task')
 
-		// this.save() // ! put back
+		this.save()
 
 		console.log('')
 		console.log(` Task n°${ taskID } added`)
@@ -207,15 +207,11 @@ export class Config
 			{
 				tasksId.forEach( ( id, index ) =>
 				{
-					const matchingTask = this.straightTasks.find( task => task.id === id )
-		
-					if( !matchingTask )
-						console.error(`Can't find task ${ id }`)
-					else
+					this.retrieveNestedTask( id, task =>
 					{
 						const options =
 						{
-							task: matchingTask,
+							task: task,
 							hideDescription: hideDesc,
 							depth
 						}
@@ -224,7 +220,7 @@ export class Config
 	
 						if( index !== ( tasksId.length - 1 ) )
 							console.log( Printer.separator('-'), '\n' )
-					}
+					})
 				});
 			}
 	
