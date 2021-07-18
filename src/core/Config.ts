@@ -196,12 +196,15 @@ export class Config
 	 */
 	print( options ?: PrintArgs )
 	{
+		if( !options )
+		{
+			this.print({ boardNames: this.boards.map( board => board.name ) })
+			return
+		}
+
 		const { boardNames, tasksId } = options
 
 		const printArgs : StringifyArgs = { ...options }
-
-		if( boardNames && tasksId )
-			throw new Error('Should either be printing board(s) or task(s) not both for now')
 
 		////////////////////
 
