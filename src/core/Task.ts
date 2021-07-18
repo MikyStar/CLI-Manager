@@ -66,28 +66,35 @@ export namespace Task
 
 	export const stringify = ( task : ITask, options ?: StringifyArgs ) =>
 	{
-		const { indentLevel = 1, hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
+		const DEFAULT_INDENT_LEVEL = 1
+		const INDENT_MARKER = '\t'
+		const TREE_MARKER = chalk.grey( '├   ' )
+
+		const { indentLevel = DEFAULT_INDENT_LEVEL, hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
 
 		let toReturn : string[] = []
 		let indent = ''
-		let currentTask = ''
+
+		////////////////////
 
 		const isFinalState = task.state === config.states[ config.states.length - 1 ].name
 		const isFirstState = task.state === config.states[ 0 ].name
 
 		const stateColor = config.states.filter( state => task.state === state.name )[0].hexColor
 
-		const textID = chalk.hex( stateColor )( `${ task.id }.` )
+		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
 
 		for( let i = 0; i < indentLevel; i++ )
-			indent += '\t'
+			indent += INDENT_MARKER
 
-		const icon = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
-		currentTask +=  chalk.hex( stateColor )( icon )
+		const iconText = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
+		const coloredIcon = chalk.hex( stateColor )( iconText )
+		const coloredName = isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
 
-		currentTask += ' '
-		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
-		toReturn.push( ' ' + textID + indent + currentTask )
+		const fullLine = ` ${ coloredID }${ indent }${ coloredIcon } ${ coloredName }`
+		toReturn.push( fullLine )
+
+		////////////////////
 
 		if( !hideDescription )
 		{
@@ -95,26 +102,28 @@ export namespace Task
 			{
 				if( !task.description )
 					return []
-	
+
 				const LINE_BREAK = '\n'
-	
+
 				let toReturn : string[] = []
-	
+
 				const descExploded = task.description.split( LINE_BREAK )
-	
+
 				descExploded.forEach( line =>
 				{
 					line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
-	
+
 					const text = ' ' + indent + '    ' + line
-	
+
 					toReturn.push( text )
 				});
-	
+
 				return toReturn
 			}
 			toReturn = [ ...toReturn, ...parseDescriptionLines() ]
 		}
+
+		////////////////////
 
 		if( !task.subtasks || task.subtasks.length === 0 )
 			return toReturn
@@ -126,7 +135,7 @@ export namespace Task
 				if( !shallNotPrint )
 				{
 					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1 } )
-	
+
 					toReturn = [ ...toReturn, ...result ]
 				}
 			});
