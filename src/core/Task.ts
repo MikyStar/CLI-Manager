@@ -68,12 +68,20 @@ export namespace Task
 	{
 		const DEFAULT_INDENT_LEVEL = 1
 		const INDENT_MARKER = '\t'
-		const TREE_MARKER = chalk.grey( '├   ' )
+		const LINE_BREAK = '\n'
+		const INDENT_DESCRIPTION = '    '
+		const TREE_MARKER =
+		{
+			node: chalk.grey( '├' ),
+			lastNode: chalk.grey( '└' ),
+			tip: chalk.grey( '─' ),
+			branch: chalk.grey( '│' ),
+		}
 
 		const { indentLevel = DEFAULT_INDENT_LEVEL, hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
 
 		let toReturn : string[] = []
-		let indent = ''
+		let indentation = ''
 
 		////////////////////
 
@@ -84,14 +92,14 @@ export namespace Task
 
 		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
 
-		for( let i = 0; i < indentLevel; i++ )
-			indent += INDENT_MARKER
+		for( let i = 0; i < ( indentLevel - 1 ); i++ )
+			indentation += INDENT_MARKER
 
 		const iconText = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
 		const coloredIcon = chalk.hex( stateColor )( iconText )
 		const coloredName = isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
 
-		const fullLine = ` ${ coloredID }${ indent }${ coloredIcon } ${ coloredName }`
+		const fullLine = ` ${ coloredID }${ INDENT_MARKER }${ indentation }${ coloredIcon } ${ coloredName }`
 		toReturn.push( fullLine )
 
 		////////////////////
@@ -103,8 +111,6 @@ export namespace Task
 				if( !task.description )
 					return []
 
-				const LINE_BREAK = '\n'
-
 				let toReturn : string[] = []
 
 				const descExploded = task.description.split( LINE_BREAK )
@@ -113,7 +119,7 @@ export namespace Task
 				{
 					line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
 
-					const text = ' ' + indent + '    ' + line
+					const text = ` ${ INDENT_MARKER }${ indentation }${ INDENT_DESCRIPTION }${ line }`
 
 					toReturn.push( text )
 				});
