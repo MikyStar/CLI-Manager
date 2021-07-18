@@ -93,29 +93,13 @@ export class Config
 		}
 		else if( subTaskOf )
 		{
-			let wasParentFound = false
-
-			// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-			this.boards.forEach( ( board, boardIndex ) =>
+			this.retrieveNestedTask( subTaskOf, task =>
 			{
-				board.tasks.forEach( function iter( task )
-				{
-					if( task.id === subTaskOf )
-					{
-						wasParentFound = true
-
-						if( task.subtasks === undefined )
-							task.subtasks = [ finalTask ]
-						else
-							task.subtasks = [ ...task.subtasks, finalTask ];
-					}
-
-					Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
-				});
-			});
-
-			if( !wasParentFound )
-				throw new Error(`Task '${ subTaskOf }' not found`)
+				if( task.subtasks === undefined )
+					task.subtasks = [ finalTask ]
+				else
+					task.subtasks = [ ...task.subtasks, finalTask ];
+			})
 		}
 		else
 			throw new Error('Should be either add to board or task')
@@ -125,6 +109,33 @@ export class Config
 		console.log('')
 		console.log(` Task n°${ taskID } added`)
 		console.log('')
+	}
+
+	/**
+	 * Use recursion to modifiy a task within any boards and any subtask
+	 */
+	retrieveNestedTask = ( taskID: number, callback: ( task: ITask, board ?: IBoard, taskIndex ?: number, boardIndex ?: number ) => any ) =>
+	{
+		let wasParentFound = false
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.boards.forEach( ( board, boardIndex ) =>
+		{
+			board.tasks.forEach( function iter( task, taskIndex )
+			{
+				if( task.id === taskID )
+				{
+					wasParentFound = true
+
+					callback( task, board, taskIndex, boardIndex)
+				}
+
+				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+			});
+		});
+
+		if( !wasParentFound )
+			throw new Error(`Task '${ taskID }' not found`)
 	}
 
 	save()
@@ -156,7 +167,7 @@ export class Config
 		const { boardNames, tasksId, hideDesc, depth } = options
 
 		if( boardNames && tasksId )
-			throw new Error('Should eaither be printing board(s) or task(s) not both for now')
+			throw new Error('Should either be printing board(s) or task(s) not both for now')
 
 		////////////////////
 
