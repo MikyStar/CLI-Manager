@@ -74,12 +74,20 @@ export namespace Task
 		const INDENT_DESCRIPTION = '  '
 		const MARGIN = '\t'
 		const LINE_BREAK = '\n'
+		const TREE_CHARS =
+		{
+			node: '├── ',
+			lastNode: '└── ',
+			branch: '│   '
+		}
 		const TREE_MARKER =
 		{
-			node: chalk.grey( '├── ' ),
-			lastNode: chalk.grey( '└── ' ),
-			branch: chalk.grey( '│   ' ),
+			node: chalk.grey( TREE_CHARS.node ),
+			lastNode: chalk.grey( TREE_CHARS.lastNode ),
+			branch: chalk.grey( TREE_CHARS.branch ),
 		}
+
+		////////////////////
 
 		const { indentLevel = DEFAULT_INDENT_LEVEL, isFirstChild = true, isLastChild,
 			hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
@@ -135,7 +143,21 @@ export namespace Task
 
 					const separation = !hideTreeHelp ? TREE_MARKER.branch : INDENT_MARKER
 
-					const text = ` ${ MARGIN }${ indentation }${ separation }${ INDENT_DESCRIPTION }${ line }`
+					/**
+					 * As the tree indentation for a subtask is a node but we want a simple
+					 * branch for his description
+					 */
+					const handleChangeNodeIconToBranch = () =>
+					{
+						let toReturn = indentation
+
+						if( !isFirstChild && !hideTreeHelp )
+							toReturn = indentation.split( TREE_CHARS.node ).join( TREE_CHARS.branch );
+
+						return toReturn
+					}
+
+					const text = ` ${ MARGIN }${ handleChangeNodeIconToBranch() }${ separation }${ INDENT_DESCRIPTION }${ line }`
 
 					toReturn.push( text )
 				});
