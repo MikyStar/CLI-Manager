@@ -39,6 +39,8 @@ export class Config
 			let straightTasks = []
 			this.boards.forEach( board => straightTasks = [ ...straightTasks, ...Board.straightBoard( board ) ] )
 			this.straightTasks = straightTasks
+
+			// TODO : search for dusplicates and gracefully print error
 		}
 		catch( err )
 		{
@@ -146,52 +148,78 @@ export class Config
 		}
 	}
 
-	/*
-	 * If no name provided, print all boards
+	/**
+	 * If neither boardName nor taskId provided, prints all boards otherwise prints with decoration multiple boards or tasks
 	 */
-	print( options : { boardName?: string, taskId ?: number, hideDesc ?: boolean, depth ?: number } )
+	print( options : { boardNames?: string[], tasksId ?: number[], hideDesc ?: boolean, depth ?: number } )
 	{
-		const { boardName, taskId, hideDesc, depth } = options
+		const { boardNames, tasksId, hideDesc, depth } = options
 
-		if( !boardName && !taskId )
+		if( boardNames && tasksId )
+			throw new Error('Should eaither be printing board(s) or task(s) not both for now')
+
+		////////////////////
+
+		console.log( Printer.charAccrossScreen( '-' ), '\n' )
+
+		if( ( !boardNames && !tasksId ) || ( boardNames?.length === 0 ) && ( tasksId?.length === 0 ) )
 		{
-			this.boards.forEach( ( board, index ) =>
-			{
-				console.log( ( index === 0 ) ? Printer.charAccrossScreen('-') : Printer.separator('-') )
-				console.log('')
-				const options =
-				{
-					board,
-					hideDescription: hideDesc,
-					depth
-				}
-				Printer.printStringified( Board.stringify( options ) )
-				console.log('')
-			})
+			const allBoardNames = this.boards.map( board => board.name )
 
-			console.log( Printer.charAccrossScreen( '-' ) )
+			this.print({ boardNames: allBoardNames, hideDesc, depth })
 		}
-		else
+		else if( boardNames?.length > 0 )
 		{
-			const index = this.boards.findIndex( board => board.name === boardName )
-
-			if( index === -1 )
-				console.error(`Can't find board ${ boardName }`)
-			else
+			boardNames.forEach( ( name, index ) =>
 			{
-				console.log( Printer.charAccrossScreen( '-' ) )
-				console.log('')
-				const options =
+				const matchingBoard = this.boards.find( board => board.name === name )
+	
+				if( !matchingBoard )
+					console.error(`Can't find board ${ name }`)
+				else
 				{
-					board: this.boards[ index ],
-					hideDescription: hideDesc,
-					depth
+					const options =
+					{
+						board: matchingBoard,
+						hideDescription: hideDesc,
+						depth
+					}
+					Printer.printStringified( Board.stringify( options ) )
+					console.log('')
+
+					if( index !== ( boardNames.length - 1 ) )
+						console.log( Printer.separator('-'), '\n' )
 				}
-				Printer.printStringified( Board.stringify( options ) )
-				console.log('')
-				console.log( Printer.charAccrossScreen( '-' ) )
-			}
+			});
 		}
+		else if( tasksId?.length > 0 )
+		{
+			tasksId.forEach( ( id, index ) =>
+			{
+				const matchingTask = this.straightTasks.find( task => task.id === id )
+	
+				if( !matchingTask )
+					console.error(`Can't find task ${ id }`)
+				else
+				{
+					const options =
+					{
+						task: matchingTask,
+						hideDescription: hideDesc,
+						depth
+					}
+					Printer.printStringified( Task.stringify( options ) )
+					console.log('')
+
+					if( index !== ( tasksId.length - 1 ) )
+						console.log( Printer.separator('-'), '\n' )
+				}
+			});
+		}
+
+		////////////////////
+
+		console.log( Printer.charAccrossScreen( '-' ) )
 	}
 }
 
