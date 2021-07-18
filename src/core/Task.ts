@@ -31,6 +31,7 @@ export interface StringifyArgs
 
 	indentLevel ?: number,
 	isLastChild ?: boolean,
+	isLastParent ?: boolean,
 	isFirstChild ?: boolean,
 }
 
@@ -93,7 +94,7 @@ export namespace Task
 
 		////////////////////
 
-		const { indentLevel = DEFAULT_INDENT_LEVEL, isFirstChild = true, isLastChild,
+		const { indentLevel = DEFAULT_INDENT_LEVEL, isFirstChild = true, isLastChild, isLastParent,
 			hideDescription, depth, hideTimestamp, hideSubCounter, hideTree } = options
 
 		let toReturn : string[] = []
@@ -125,6 +126,9 @@ export namespace Task
 		const coloredIcon = chalk.hex( stateColor )( iconText )
 		const coloredName = isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
 
+		if( !hideTree && isLastChild && isLastParent )
+			indentation = indentation.split( TREE_CHARS.branch ).join( INDENT_MARKER );
+
 		const fullLine = ` ${ coloredID }${ MARGIN }${ indentation }${ coloredIcon } ${ coloredName }`
 		toReturn.push( fullLine )
 
@@ -155,7 +159,7 @@ export namespace Task
 					{
 						let toReturn = indentation
 
-						if( !isFirstChild && !hideTree )
+						if( !hideTree && !isFirstChild )
 							toReturn = indentation.split( TREE_CHARS.node ).join( TREE_CHARS.branch );
 
 						return toReturn
@@ -182,8 +186,16 @@ export namespace Task
 				const shallNotPrint = ( depth !== undefined ) && ( indentLevel >= depth + 1 )
 				if( !shallNotPrint )
 				{
-					const isLastChild = index === ( task.subtasks.length - 1 )
-					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1, isLastChild, isFirstChild: false } )
+					const willBeLastChild = index === ( task.subtasks.length - 1 )
+					const childOptions =
+					{ 
+						...options,
+						indentLevel: indentLevel + 1,
+						isLastParent: isLastChild,
+						isLastChild: willBeLastChild,
+						isFirstChild: false
+					}
+					const result = Task.stringify( sub, childOptions )
 
 					toReturn = [ ...toReturn, ...result ]
 				}

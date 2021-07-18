@@ -80,11 +80,17 @@ export class CommandLauncher
 					if( onlyOneInputArg )
 						Prompt.addTask()
 
+					let dependencies
+					if( Array.isArray( linked ))
+						dependencies = [ ...linked ]
+					else
+						dependencies = [ linked ]
+
 					const task : ITask =
 					{
 						name: this.getFirstText(),
 						state: state || DefaultStorage.states[ 0 ].name,
-						dependencies: [ ...linked ],
+						dependencies,
 						description,
 					}
 
