@@ -22,12 +22,14 @@ export interface ITask
 
 export interface StringifyArgs
 {
-	indentLevel ?: number,
 	hideDescription ?: boolean,
 	depth ?: number,
 	hideTimestamp ?: boolean,
 	hideSubCounter ?: boolean,
 	hideTreeHelp ?: boolean,
+
+	indentLevel ?: number,
+	isLastChild ?: boolean,
 }
 
 ////////////////////////////////////////
@@ -67,9 +69,10 @@ export namespace Task
 	export const stringify = ( task : ITask, options ?: StringifyArgs ) =>
 	{
 		const DEFAULT_INDENT_LEVEL = 1
-		const INDENT_MARKER = '\t'
+		const INDENT_MARKER = '    '
+		const INDENT_DESCRIPTION = '  '
+		const MARGIN = '\t'
 		const LINE_BREAK = '\n'
-		const INDENT_DESCRIPTION = '    '
 		const TREE_MARKER =
 		{
 			node: chalk.grey( '├' ),
@@ -78,7 +81,7 @@ export namespace Task
 			branch: chalk.grey( '│' ),
 		}
 
-		const { indentLevel = DEFAULT_INDENT_LEVEL, hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
+		const { indentLevel = DEFAULT_INDENT_LEVEL, isLastChild, hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
 
 		let toReturn : string[] = []
 		let indentation = ''
@@ -92,14 +95,24 @@ export namespace Task
 
 		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
 
-		for( let i = 0; i < ( indentLevel - 1 ); i++ )
-			indentation += INDENT_MARKER
+		if( hideTreeHelp )
+		{
+			for( let i = 0; i < ( indentLevel - 1 ); i++ )
+				indentation += INDENT_MARKER
+		}
+		else
+		{
+			for( let i = 0; i < ( indentLevel - 2 ); i++ )
+				indentation += TREE_MARKER.branch + '   '
+
+			indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node ) + TREE_MARKER.tip + TREE_MARKER.tip + TREE_MARKER.tip
+		}
 
 		const iconText = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
 		const coloredIcon = chalk.hex( stateColor )( iconText )
 		const coloredName = isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
 
-		const fullLine = ` ${ coloredID }${ INDENT_MARKER }${ indentation }${ coloredIcon } ${ coloredName }`
+		const fullLine = ` ${ coloredID }${ MARGIN }${ indentation }${ coloredIcon } ${ coloredName }`
 		toReturn.push( fullLine )
 
 		////////////////////
@@ -119,7 +132,9 @@ export namespace Task
 				{
 					line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
 
-					const text = ` ${ INDENT_MARKER }${ indentation }${ INDENT_DESCRIPTION }${ line }`
+					const separation = !hideTreeHelp ? TREE_MARKER.branch : INDENT_MARKER
+
+					const text = ` ${ MARGIN }${ indentation }${ separation }${ INDENT_DESCRIPTION }${ line }`
 
 					toReturn.push( text )
 				});
@@ -135,12 +150,13 @@ export namespace Task
 			return toReturn
 		else
 		{
-			task.subtasks.forEach( sub =>
+			task.subtasks.forEach( ( sub, index ) =>
 			{
 				const shallNotPrint = ( depth !== undefined ) && ( indentLevel >= depth + 1 )
 				if( !shallNotPrint )
 				{
-					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1 } )
+					const isLastChild = index === ( task.subtasks.length - 1 )
+					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1, isLastChild } )
 
 					toReturn = [ ...toReturn, ...result ]
 				}
