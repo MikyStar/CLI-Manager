@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 
 import { IBoard } from './Board'
-import { config } from './Config'
+import { DefaultStorage } from './Config'
 
 ////////////////////////////////////////
 
@@ -101,10 +101,10 @@ export namespace Task
 
 		////////////////////
 
-		const isFinalState = task.state === config.states[ config.states.length - 1 ].name
-		const isFirstState = task.state === config.states[ 0 ].name
+		const isFinalState = task.state === DefaultStorage.states[ DefaultStorage.states.length - 1 ].name
+		const isFirstState = task.state === DefaultStorage.states[ 0 ].name
 
-		const stateColor = config.states.filter( state => task.state === state.name )[0].hexColor
+		const stateColor = DefaultStorage.states.filter( state => task.state === state.name )[0].hexColor
 
 		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
 
@@ -237,12 +237,12 @@ export namespace Task
 		let toReturn = ' '
 		const totalCount = countTaskAndSub( tasks )
 	
-		config.states.forEach( ( state, index ) =>
+		DefaultStorage.states.forEach( ( state, index ) =>
 		{
 			const count = search( tasks, 'state', state.name ).length
 			const percent = ( count / totalCount ) * 100
 
-			if( ( index !== 0 ) && ( index !== config.states.length ) )
+			if( ( index !== 0 ) && ( index !== DefaultStorage.states.length ) )
 				toReturn += ' ► '
 
 			const text = `${ count } ${ state.name } (${ percent.toFixed(0) }%)`

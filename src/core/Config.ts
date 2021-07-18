@@ -52,6 +52,7 @@ export class Config
 		}
 		catch( err )
 		{
+			console.error(err)
 			console.error("Can't find tasks.json in current working directory, run 'tasks init'")
 
 			process.exit(-1)
@@ -273,4 +274,4 @@ export class Config
 
 ////////////////////////////////////////
 
-export const config = new Config('tasks.json')
+export const DefaultStorage = new Config('tasks.json')

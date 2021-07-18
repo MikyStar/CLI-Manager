@@ -1,5 +1,5 @@
 import { RawArg, Action, Flag } from "./ArgParser";
-import { config } from "./Config";
+import { DefaultStorage } from "./Config";
 import { Prompt } from "./Prompt";
 import { ITask, StringifyArgs } from "./Task";
 
@@ -60,7 +60,7 @@ export class CommandLauncher
 
 		if( noInputArg )
 		{
-			config.print( printOptions )
+			DefaultStorage.print( printOptions )
 			return
 		}
 
@@ -68,7 +68,7 @@ export class CommandLauncher
 		{
 			const tasksId = firstArg.value as number[]
 
-			config.print({ tasksId: tasksId, ...printOptions })
+			DefaultStorage.print({ tasksId: tasksId, ...printOptions })
 		}
 
 		if( firstArg.isAction )
@@ -83,7 +83,7 @@ export class CommandLauncher
 					const task : ITask =
 					{
 						name: this.getFirstText(),
-						state: state || config.states[ 0 ].name,
+						state: state || DefaultStorage.states[ 0 ].name,
 						dependencies: [ ...linked ],
 						description,
 					}
@@ -97,7 +97,7 @@ export class CommandLauncher
 					else
 						parentItem = { boardName: board }
 
-					config.addTask( task, parentItem )
+					DefaultStorage.addTask( task, parentItem )
 
 					break;
 				}
@@ -106,7 +106,7 @@ export class CommandLauncher
 
 				case Action.ADD_BOARD:
 				{
-					config.addBoard( this.getFirstText() )
+					DefaultStorage.addBoard( this.getFirstText() )
 					break;
 				}
 			}

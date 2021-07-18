@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import { config } from './Config'
+import { DefaultStorage } from './Config'
 import { Task, ITask, StringifyArgs } from './Task'
 import { Printer } from './Printer'
 
