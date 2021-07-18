@@ -54,7 +54,7 @@ export namespace Task
 		}
 	}
 
-	export const stringify = ( { task, indentLevel = 1, hideDescription, depth } : { task : ITask, indentLevel : number, hideDescription ?: boolean, depth ?: number } ) =>
+	export const stringify = ( { task, indentLevel = 1, hideDescription, depth } : { task : ITask, indentLevel ?: number, hideDescription ?: boolean, depth ?: number } ) =>
 	{
 		let toReturn : string[] = []
 		let indent = ''

@@ -160,66 +160,67 @@ export class Config
 
 		////////////////////
 
-		console.log( Printer.charAccrossScreen( '-' ), '\n' )
-
 		if( ( !boardNames && !tasksId ) || ( boardNames?.length === 0 ) && ( tasksId?.length === 0 ) )
+			this.print({ boardNames: this.boards.map( board => board.name ), hideDesc, depth })
+		else
 		{
-			const allBoardNames = this.boards.map( board => board.name )
+			console.log( Printer.charAccrossScreen( '-' ), '\n' )
 
-			this.print({ boardNames: allBoardNames, hideDesc, depth })
-		}
-		else if( boardNames?.length > 0 )
-		{
-			boardNames.forEach( ( name, index ) =>
+			////////////////////
+
+			if( boardNames?.length > 0 )
 			{
-				const matchingBoard = this.boards.find( board => board.name === name )
-	
-				if( !matchingBoard )
-					console.error(`Can't find board ${ name }`)
-				else
+				boardNames.forEach( ( name, index ) =>
 				{
-					const options =
+					const matchingBoard = this.boards.find( board => board.name === name )
+		
+					if( !matchingBoard )
+						console.error(`Can't find board ${ name }`)
+					else
 					{
-						board: matchingBoard,
-						hideDescription: hideDesc,
-						depth
+						const options =
+						{
+							board: matchingBoard,
+							hideDescription: hideDesc,
+							depth
+						}
+						Printer.printStringified( Board.stringify( options ) )
+						console.log('')
+	
+						if( index !== ( boardNames.length - 1 ) )
+							console.log( Printer.separator('-'), '\n' )
 					}
-					Printer.printStringified( Board.stringify( options ) )
-					console.log('')
-
-					if( index !== ( boardNames.length - 1 ) )
-						console.log( Printer.separator('-'), '\n' )
-				}
-			});
-		}
-		else if( tasksId?.length > 0 )
-		{
-			tasksId.forEach( ( id, index ) =>
+				});
+			}
+			else if( tasksId?.length > 0 )
 			{
-				const matchingTask = this.straightTasks.find( task => task.id === id )
-	
-				if( !matchingTask )
-					console.error(`Can't find task ${ id }`)
-				else
+				tasksId.forEach( ( id, index ) =>
 				{
-					const options =
+					const matchingTask = this.straightTasks.find( task => task.id === id )
+		
+					if( !matchingTask )
+						console.error(`Can't find task ${ id }`)
+					else
 					{
-						task: matchingTask,
-						hideDescription: hideDesc,
-						depth
+						const options =
+						{
+							task: matchingTask,
+							hideDescription: hideDesc,
+							depth
+						}
+						Printer.printStringified( Task.stringify( options ) )
+						console.log('')
+	
+						if( index !== ( tasksId.length - 1 ) )
+							console.log( Printer.separator('-'), '\n' )
 					}
-					Printer.printStringified( Task.stringify( options ) )
-					console.log('')
-
-					if( index !== ( tasksId.length - 1 ) )
-						console.log( Printer.separator('-'), '\n' )
-				}
-			});
+				});
+			}
+	
+			////////////////////
+	
+			console.log( Printer.charAccrossScreen( '-' ) )
 		}
-
-		////////////////////
-
-		console.log( Printer.charAccrossScreen( '-' ) )
 	}
 }
 
