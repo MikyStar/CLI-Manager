@@ -35,27 +35,28 @@ export class CommandLauncher
 		//////////
 
 		const hideDescription = this.getLastFlag( Flag.HIDE_DESCRIPTION )
+		const hideTimestamp = this.getLastFlag( Flag.HIDE_TIMESTAMP )
+		const hideTree = this.getLastFlag( Flag.HIDE_TREE )
+		const hideSubCounter = this.getLastFlag( Flag.HIDE_SUB_COUNTER )
 		const printDepth = this.getLastFlagFollowingValue( Flag.DEPTH ) as number
+
 		const helpNeeded = this.getLastFlag( Flag.HELP )
 
 		const printOptions : StringifyArgs =
 		{
 			depth: printDepth,
-			hideDescription
+			hideDescription,
+			hideTimestamp,
+			hideSubCounter,
+			hideTree
 		}
+
+		console.log('print options', printOptions )
 
 		const state = this.getLastFlagFollowingValue( Flag.STATE ) as string
 		const description = this.getLastFlagFollowingValue( Flag.DESCRIPTION ) as string
 		const linked = this.getLastFlagFollowingValue( Flag.LINK ) as number[]
 		const board = this.getBoard()
-
-		console.log( 'hidedesc', hideDescription )
-		console.log( 'help', helpNeeded )
-		console.log( 'depth', printDepth )
-		console.log( 'state', state )
-		console.log( 'desc', description )
-		console.log( 'linked', linked )
-		console.log( 'board', board )
 
 		//////////
 

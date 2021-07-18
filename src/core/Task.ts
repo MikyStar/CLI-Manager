@@ -23,10 +23,11 @@ export interface ITask
 export interface StringifyArgs
 {
 	hideDescription ?: boolean,
-	depth ?: number,
 	hideTimestamp ?: boolean,
 	hideSubCounter ?: boolean,
-	hideTreeHelp ?: boolean,
+	hideTree ?: boolean,
+
+	depth ?: number,
 
 	indentLevel ?: number,
 	isLastChild ?: boolean,
@@ -90,7 +91,7 @@ export namespace Task
 		////////////////////
 
 		const { indentLevel = DEFAULT_INDENT_LEVEL, isFirstChild = true, isLastChild,
-			hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
+			hideDescription, depth, hideTimestamp, hideSubCounter, hideTree } = options
 
 		let toReturn : string[] = []
 		let indentation = ''
@@ -104,7 +105,7 @@ export namespace Task
 
 		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
 
-		if( hideTreeHelp || isFirstChild )
+		if( hideTree || isFirstChild )
 		{
 			for( let i = 0; i < ( indentLevel - 1 ); i++ )
 				indentation += INDENT_MARKER
@@ -141,7 +142,7 @@ export namespace Task
 				{
 					line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
 
-					const separation = !hideTreeHelp ? TREE_MARKER.branch : INDENT_MARKER
+					const separation = !hideTree ? TREE_MARKER.branch : INDENT_MARKER
 
 					/**
 					 * As the tree indentation for a subtask is a node but we want a simple
@@ -151,7 +152,7 @@ export namespace Task
 					{
 						let toReturn = indentation
 
-						if( !isFirstChild && !hideTreeHelp )
+						if( !isFirstChild && !hideTree )
 							toReturn = indentation.split( TREE_CHARS.node ).join( TREE_CHARS.branch );
 
 						return toReturn

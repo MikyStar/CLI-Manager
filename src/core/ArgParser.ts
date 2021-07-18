@@ -24,7 +24,10 @@ export enum Flag
 	HELP = '--help',
 	STATE = '-s',
 	DESCRIPTION = '-d',
-	LINK = '-l'
+	LINK = '-l',
+	HIDE_TREE = '--hide-tree',
+	HIDE_TIMESTAMP = '--hide-timestamp',
+	HIDE_SUB_COUNTER = '--hide-sub-counter',
 }
 
 export interface RawArg
