@@ -30,6 +30,7 @@ export interface StringifyArgs
 
 	indentLevel ?: number,
 	isLastChild ?: boolean,
+	isFirstChild ?: boolean,
 }
 
 ////////////////////////////////////////
@@ -75,13 +76,13 @@ export namespace Task
 		const LINE_BREAK = '\n'
 		const TREE_MARKER =
 		{
-			node: chalk.grey( '├' ),
-			lastNode: chalk.grey( '└' ),
-			tip: chalk.grey( '─' ),
-			branch: chalk.grey( '│' ),
+			node: chalk.grey( '├── ' ),
+			lastNode: chalk.grey( '└── ' ),
+			branch: chalk.grey( '│   ' ),
 		}
 
-		const { indentLevel = DEFAULT_INDENT_LEVEL, isLastChild, hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
+		const { indentLevel = DEFAULT_INDENT_LEVEL, isFirstChild = true, isLastChild,
+			hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
 
 		let toReturn : string[] = []
 		let indentation = ''
@@ -95,7 +96,7 @@ export namespace Task
 
 		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
 
-		if( hideTreeHelp )
+		if( hideTreeHelp || isFirstChild )
 		{
 			for( let i = 0; i < ( indentLevel - 1 ); i++ )
 				indentation += INDENT_MARKER
@@ -103,9 +104,9 @@ export namespace Task
 		else
 		{
 			for( let i = 0; i < ( indentLevel - 2 ); i++ )
-				indentation += TREE_MARKER.branch + '   '
+				indentation += TREE_MARKER.branch
 
-			indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node ) + TREE_MARKER.tip + TREE_MARKER.tip + TREE_MARKER.tip
+			indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node )
 		}
 
 		const iconText = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
@@ -156,7 +157,7 @@ export namespace Task
 				if( !shallNotPrint )
 				{
 					const isLastChild = index === ( task.subtasks.length - 1 )
-					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1, isLastChild } )
+					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1, isLastChild, isFirstChild: false } )
 
 					toReturn = [ ...toReturn, ...result ]
 				}
