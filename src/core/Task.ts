@@ -22,12 +22,15 @@ export interface ITask
 
 export interface StringifyArgs
 {
-	indentLevel ?: number,
 	hideDescription ?: boolean,
 	depth ?: number,
 	hideTimestamp ?: boolean,
 	hideSubCounter ?: boolean,
 	hideTreeHelp ?: boolean,
+
+	indentLevel ?: number,
+	isLastChild ?: boolean,
+	isFirstChild ?: boolean,
 }
 
 ////////////////////////////////////////
@@ -66,28 +69,62 @@ export namespace Task
 
 	export const stringify = ( task : ITask, options ?: StringifyArgs ) =>
 	{
-		const { indentLevel = 1, hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
+		const DEFAULT_INDENT_LEVEL = 1
+		const INDENT_MARKER = '    '
+		const INDENT_DESCRIPTION = '  '
+		const MARGIN = '\t'
+		const LINE_BREAK = '\n'
+		const TREE_CHARS =
+		{
+			node: '├── ',
+			lastNode: '└── ',
+			branch: '│   '
+		}
+		const TREE_MARKER =
+		{
+			node: chalk.grey( TREE_CHARS.node ),
+			lastNode: chalk.grey( TREE_CHARS.lastNode ),
+			branch: chalk.grey( TREE_CHARS.branch ),
+		}
+
+		////////////////////
+
+		const { indentLevel = DEFAULT_INDENT_LEVEL, isFirstChild = true, isLastChild,
+			hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
 
 		let toReturn : string[] = []
-		let indent = ''
-		let currentTask = ''
+		let indentation = ''
+
+		////////////////////
 
 		const isFinalState = task.state === config.states[ config.states.length - 1 ].name
 		const isFirstState = task.state === config.states[ 0 ].name
 
 		const stateColor = config.states.filter( state => task.state === state.name )[0].hexColor
 
-		const textID = chalk.hex( stateColor )( `${ task.id }.` )
+		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
 
-		for( let i = 0; i < indentLevel; i++ )
-			indent += '\t'
+		if( hideTreeHelp || isFirstChild )
+		{
+			for( let i = 0; i < ( indentLevel - 1 ); i++ )
+				indentation += INDENT_MARKER
+		}
+		else
+		{
+			for( let i = 0; i < ( indentLevel - 2 ); i++ )
+				indentation += TREE_MARKER.branch
 
-		const icon = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
-		currentTask +=  chalk.hex( stateColor )( icon )
+			indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node )
+		}
 
-		currentTask += ' '
-		currentTask += isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
-		toReturn.push( ' ' + textID + indent + currentTask )
+		const iconText = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
+		const coloredIcon = chalk.hex( stateColor )( iconText )
+		const coloredName = isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
+
+		const fullLine = ` ${ coloredID }${ MARGIN }${ indentation }${ coloredIcon } ${ coloredName }`
+		toReturn.push( fullLine )
+
+		////////////////////
 
 		if( !hideDescription )
 		{
@@ -95,38 +132,55 @@ export namespace Task
 			{
 				if( !task.description )
 					return []
-	
-				const LINE_BREAK = '\n'
-	
+
 				let toReturn : string[] = []
-	
+
 				const descExploded = task.description.split( LINE_BREAK )
-	
+
 				descExploded.forEach( line =>
 				{
 					line = isFinalState ? chalk.grey.strikethrough( line ) : chalk.dim( line )
-	
-					const text = ' ' + indent + '    ' + line
-	
+
+					const separation = !hideTreeHelp ? TREE_MARKER.branch : INDENT_MARKER
+
+					/**
+					 * As the tree indentation for a subtask is a node but we want a simple
+					 * branch for his description
+					 */
+					const handleChangeNodeIconToBranch = () =>
+					{
+						let toReturn = indentation
+
+						if( !isFirstChild && !hideTreeHelp )
+							toReturn = indentation.split( TREE_CHARS.node ).join( TREE_CHARS.branch );
+
+						return toReturn
+					}
+
+					const text = ` ${ MARGIN }${ handleChangeNodeIconToBranch() }${ separation }${ INDENT_DESCRIPTION }${ line }`
+
 					toReturn.push( text )
 				});
-	
+
 				return toReturn
 			}
 			toReturn = [ ...toReturn, ...parseDescriptionLines() ]
 		}
 
+		////////////////////
+
 		if( !task.subtasks || task.subtasks.length === 0 )
 			return toReturn
 		else
 		{
-			task.subtasks.forEach( sub =>
+			task.subtasks.forEach( ( sub, index ) =>
 			{
 				const shallNotPrint = ( depth !== undefined ) && ( indentLevel >= depth + 1 )
 				if( !shallNotPrint )
 				{
-					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1 } )
-	
+					const isLastChild = index === ( task.subtasks.length - 1 )
+					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1, isLastChild, isFirstChild: false } )
+
 					toReturn = [ ...toReturn, ...result ]
 				}
 			});
