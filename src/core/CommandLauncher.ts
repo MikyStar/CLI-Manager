@@ -1,7 +1,7 @@
 import { RawArg, Action, Flag } from "./ArgParser";
 import { config } from "./Config";
 import { Prompt } from "./Prompt";
-import { ITask } from "./Task";
+import { ITask, StringifyArgs } from "./Task";
 
 ////////////////////////////////////////
 
@@ -38,6 +38,12 @@ export class CommandLauncher
 		const printDepth = this.getLastFlagFollowingValue( Flag.DEPTH ) as number
 		const helpNeeded = this.getLastFlag( Flag.HELP )
 
+		const printOptions : StringifyArgs =
+		{
+			depth: printDepth,
+			hideDescription
+		}
+
 		const state = this.getLastFlagFollowingValue( Flag.STATE ) as string
 		const description = this.getLastFlagFollowingValue( Flag.DESCRIPTION ) as string
 		const linked = this.getLastFlagFollowingValue( Flag.LINK ) as number[]
@@ -55,8 +61,15 @@ export class CommandLauncher
 
 		if( noInputArg )
 		{
-			config.print({ depth: printDepth, hideDesc: hideDescription })
+			config.print( printOptions )
 			return
+		}
+
+		if( onlyOneInputArg && firstArg.isTask )
+		{
+			const tasksId = firstArg.value as number[]
+
+			config.print({ tasksId: tasksId, ...printOptions })
 		}
 
 		if( firstArg.isAction )

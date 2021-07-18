@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 
 import { config } from './Config'
-import { Task, ITask } from './Task'
+import { Task, ITask, StringifyArgs } from './Task'
 import { Printer } from './Printer'
 
 ////////////////////////////////////////
@@ -17,7 +17,7 @@ export interface IBoard
 
 export namespace Board
 {
-	export const stringify = ( { board, hideDescription, depth } : { board : IBoard, hideDescription ?: boolean, depth ?: number } ) : string[] =>
+	export const stringify = ( board : IBoard, options ?: StringifyArgs ) : string[] =>
 	{
 		let toReturn : string[] = []
 
@@ -26,14 +26,7 @@ export namespace Board
 
 		board.tasks.forEach( task =>
 		{
-			const options =
-			{
-				task: task,
-				indentLevel: 1,
-				hideDescription,
-				depth
-			}
-			const result = Task.stringify( options )
+			const result = Task.stringify( task, options )
 
 			toReturn = [ ...toReturn, ...result ]
 		})

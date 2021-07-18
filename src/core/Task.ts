@@ -20,6 +20,16 @@ export interface ITask
 	state: string,
 }
 
+export interface StringifyArgs
+{
+	indentLevel ?: number,
+	hideDescription ?: boolean,
+	depth ?: number,
+	hideTimestamp ?: boolean,
+	hideSubCounter ?: boolean,
+	hideTreeHelp ?: boolean,
+}
+
 ////////////////////////////////////////
 
 export namespace Task
@@ -54,8 +64,10 @@ export namespace Task
 		}
 	}
 
-	export const stringify = ( { task, indentLevel = 1, hideDescription, depth } : { task : ITask, indentLevel ?: number, hideDescription ?: boolean, depth ?: number } ) =>
+	export const stringify = ( task : ITask, options ?: StringifyArgs ) =>
 	{
+		const { indentLevel = 1, hideDescription, depth, hideTimestamp, hideSubCounter, hideTreeHelp } = options
+
 		let toReturn : string[] = []
 		let indent = ''
 		let currentTask = ''
@@ -113,14 +125,7 @@ export namespace Task
 				const shallNotPrint = ( depth !== undefined ) && ( indentLevel >= depth + 1 )
 				if( !shallNotPrint )
 				{
-					const options =
-					{
-						task: sub,
-						indentLevel: indentLevel + 1,
-						hideDescription,
-						depth
-					}
-					const result = Task.stringify( options )
+					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1 } )
 	
 					toReturn = [ ...toReturn, ...result ]
 				}

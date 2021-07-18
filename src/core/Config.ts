@@ -3,8 +3,16 @@ import path from 'path';
 import moment from 'moment';
 
 import { IBoard, Board } from './Board';
-import { ITask, Task, TIMESTAMP_FORMAT } from './Task';
+import { ITask, Task, TIMESTAMP_FORMAT, StringifyArgs } from './Task';
 import { Printer } from './Printer';
+
+////////////////////////////////////////
+
+interface PrintArgs extends StringifyArgs
+{
+	boardNames?: string[],
+	tasksId ?: number[],
+}
 
 ////////////////////////////////////////
 
@@ -186,9 +194,9 @@ export class Config
 	/**
 	 * If neither boardName nor taskId provided, prints all boards otherwise prints with decoration multiple boards or tasks
 	 */
-	print( options : { boardNames?: string[], tasksId ?: number[], hideDesc ?: boolean, depth ?: number } )
+	print( options ?: PrintArgs )
 	{
-		const { boardNames, tasksId, hideDesc, depth } = options
+		const { boardNames, tasksId, hideDescription, depth } = options
 
 		if( boardNames && tasksId )
 			throw new Error('Should either be printing board(s) or task(s) not both for now')
@@ -196,7 +204,7 @@ export class Config
 		////////////////////
 
 		if( ( !boardNames && !tasksId ) || ( boardNames?.length === 0 ) && ( tasksId?.length === 0 ) )
-			this.print({ boardNames: this.boards.map( board => board.name ), hideDesc, depth })
+			this.print({ boardNames: this.boards.map( board => board.name ), hideDescription, depth })
 		else
 		{
 			console.log( Printer.charAccrossScreen( '-' ), '\n' )
@@ -213,15 +221,9 @@ export class Config
 						console.error(`Can't find board ${ name }`)
 					else
 					{
-						const options =
-						{
-							board: matchingBoard,
-							hideDescription: hideDesc,
-							depth
-						}
-						Printer.printStringified( Board.stringify( options ) )
+						Printer.printStringified( Board.stringify( matchingBoard, options ) )
 						console.log('')
-	
+
 						if( index !== ( boardNames.length - 1 ) )
 							console.log( Printer.separator('-'), '\n' )
 					}
@@ -237,19 +239,13 @@ export class Config
 					{
 						tasks.push( task )
 
-						const options =
-						{
-							task: task,
-							hideDescription: hideDesc,
-							depth
-						}
-						Printer.printStringified( Task.stringify( options ) )
+						Printer.printStringified( Task.stringify( task, options ) )
 						console.log('')
 	
 						if( index !== ( tasksId.length - 1 ) )
 							console.log( Printer.separator('-'), '\n' )
 						else
-							console.log( Task.getStats( tasks ) )
+							console.log( Task.getStats( tasks ), '\n' )
 					})
 				});
 			}
