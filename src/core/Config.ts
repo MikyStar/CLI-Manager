@@ -40,7 +40,7 @@ export class Config
 			const data = fs.readFileSync( this.filePath, { encoding: 'utf8', flag: 'r' } )
 			const json = JSON.parse( data )
 
-			this.defaultArgs = json.args
+			this.defaultArgs = json.defaultArgs
 			this.boards = json.boards
 			this.states = json.states
 
