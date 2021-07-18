@@ -114,9 +114,18 @@ export class Config
 
 		this.save()
 
-		console.log('')
-		console.log(` Task n°${ taskID } added`)
-		console.log('')
+		Printer.feedBack( `Task n°${ taskID } added` )
+	}
+
+	addBoard = ( boardName: string ) =>
+	{
+		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0
+		if( nameAlreadyTaken )
+			throw new Error( `A board named '${ boardName }' already exists`)
+
+		this.boards.push( { name: boardName, tasks: [] } )
+		this.save()
+		Printer.feedBack( `Board '${ boardName }' added` )
 	}
 
 	/**

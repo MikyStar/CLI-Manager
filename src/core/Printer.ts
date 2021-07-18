@@ -1,3 +1,7 @@
+import chalk from "chalk"
+
+////////////////////////////////////////
+
 export namespace Printer
 {
 	export const printStringified = ( array : string[] ) => array.forEach( str => console.log( str ) )
@@ -35,5 +39,12 @@ export namespace Printer
 		const availableSpace = ( process.stdout.columns - 2 ) - space.length
 
 		// TODO
+	}
+
+	export const feedBack = ( message : string, isError ?: boolean ) =>
+	{
+		console.log('')
+		console.log( ' ' + isError ? chalk.red( message ) : message )
+		console.log('')
 	}
 }

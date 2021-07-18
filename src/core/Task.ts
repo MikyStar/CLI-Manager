@@ -68,6 +68,9 @@ export namespace Task
 		}
 	}
 
+	/**
+	 * TODO implement hide timestamp and sub counter
+	 */
 	export const stringify = ( task : ITask, options ?: StringifyArgs ) =>
 	{
 		const DEFAULT_INDENT_LEVEL = 1

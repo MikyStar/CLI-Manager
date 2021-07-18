@@ -9,8 +9,7 @@ import { Printer } from './Printer'
 export interface IBoard
 {
 	name: string,
-	tasks: ITask[],
-	default: boolean,
+	tasks : ITask[],
 }
 
 ////////////////////////////////////////
@@ -24,7 +23,7 @@ export namespace Board
 		toReturn.push( ' ' + chalk.bold.underline( '@' + board.name ) )
 		toReturn.push('')
 
-		board.tasks.forEach( task =>
+		board.tasks?.forEach( task =>
 		{
 			const result = Task.stringify( task, options )
 

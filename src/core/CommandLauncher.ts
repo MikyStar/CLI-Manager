@@ -51,8 +51,6 @@ export class CommandLauncher
 			hideTree
 		}
 
-		console.log('print options', printOptions )
-
 		const state = this.getLastFlagFollowingValue( Flag.STATE ) as string
 		const description = this.getLastFlagFollowingValue( Flag.DESCRIPTION ) as string
 		const linked = this.getLastFlagFollowingValue( Flag.LINK ) as number[]
@@ -101,6 +99,14 @@ export class CommandLauncher
 
 					config.addTask( task, parentItem )
 
+					break;
+				}
+
+				////////////////////
+
+				case Action.ADD_BOARD:
+				{
+					config.addBoard( this.getFirstText() )
 					break;
 				}
 			}

@@ -26,7 +26,6 @@ task --file  # Use a specific file
 ```sh
 # Creating a board 
 task b mBoard	# Create a board '@mBoard'
-task b mBoard otherBoard	# Create two boards
 
 # Viewing a board
 task @mBoard	# Print all tasks of a board
