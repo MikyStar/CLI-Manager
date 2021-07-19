@@ -186,7 +186,7 @@ export class Config
 		{
 			const finalFormat =
 			{
-				args : this.defaultArgs,
+				defaultArgs : this.defaultArgs,
 				states: this.states,
 				boards : this.boards,
 			}
