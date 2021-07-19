@@ -76,7 +76,6 @@ export namespace Task
 	export const stringify = ( task : ITask, options ?: StringifyArgs ) =>
 	{
 		const INDENT_MARKER = '    '
-		const DEFAULT_INDENT = INDENT_MARKER
 		const DEFAULT_SUBTASK_LEVEL = 1
 		const INDENT_DESCRIPTION = '  '
 		const MARGIN = '\t'
@@ -96,11 +95,11 @@ export namespace Task
 
 		////////////////////
 
-		const { parentIndent = DEFAULT_INDENT, subTaskLevel = DEFAULT_SUBTASK_LEVEL, isSubTask,
+		const { parentIndent, subTaskLevel = DEFAULT_SUBTASK_LEVEL, isSubTask,
 			isLastChild, hideDescription, depth, isLastParent, hideTimestamp, hideSubCounter, hideTree } = options
 
 		let toReturn : string[] = []
-		let indentation = parentIndent
+		let indentation = parentIndent || ''
 
 		////////////////////
 
@@ -121,13 +120,13 @@ export namespace Task
 				{
 					const lastIndex = indentation.lastIndexOf( TREE_MARKER.node )
 
-					if (lastIndex >= 0 && lastIndex + TREE_MARKER.branch.length >= indentation.length )
+					if( lastIndex >= 0 && lastIndex + TREE_MARKER.branch.length >= indentation.length )
 						indentation = indentation.substring(0, lastIndex) + TREE_MARKER.branch
 				})()
 
 				if( isLastParent )
 					indentation = indentation.split( TREE_CHARS.lastNode ).join( INDENT_MARKER );
-				
+
 				indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node )
 			}
 		}
@@ -198,7 +197,7 @@ export namespace Task
 					{ 
 						...options,
 						subTaskLevel: subTaskLevel + 1,
-						parentIndent: indentation, // TODO instead of adding a new level, I should directly pass the parent indentation but need to have a counter for depth
+						parentIndent: indentation,
 						isLastChild: willBeLastChild,
 						isSubTask: true,
 						isLastParent: isLastChild
