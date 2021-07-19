@@ -73,6 +73,7 @@ export class CommandLauncher
 			const tasksId = firstArg.value as number[]
 
 			this.configFile.print({ tasksId: tasksId, ...printOptions })
+			return
 		}
 
 		if( firstArg.isAction )
@@ -110,7 +111,7 @@ export class CommandLauncher
 
 				case Action.ADD_BOARD:
 				{
-					this.configFile.addBoard( this.getFirstText() )
+					this.configFile.addBoard( this.getFirstText(), description )
 					break;
 				}
 			}

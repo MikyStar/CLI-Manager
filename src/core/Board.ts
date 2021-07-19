@@ -9,6 +9,7 @@ import { Printer } from './Printer'
 export interface IBoard
 {
 	name: string,
+	description ?: string,
 	tasks : ITask[],
 }
 
@@ -20,8 +21,12 @@ export namespace Board
 	{
 		let toReturn : string[] = []
 
-		toReturn.push( ' ' + chalk.bold.underline( '@' + board.name ) )
-		toReturn.push('')
+		const boardNameStyled = ' ' + chalk.bold.underline( '@' + board.name )
+		toReturn.push( boardNameStyled + '\n' )	
+
+		const descriptionStyled = chalk.dim( board.description )
+		if( !options.hideDescription && board.description )
+			toReturn.push( '    ' + descriptionStyled + '\n' )
 
 		board.tasks?.forEach( task =>
 		{
