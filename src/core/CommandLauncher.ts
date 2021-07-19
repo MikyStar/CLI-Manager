@@ -84,19 +84,11 @@ export class CommandLauncher
 					if( onlyOneInputArg )
 						Prompt.addTask( this.configFile )
 
-					let dependencies
-					if( Array.isArray( linked ))
-						dependencies = [ ...linked ]
-					else if( linked )
-						dependencies = [ linked ]
-					else
-						dependencies = undefined
-
 					const task : ITask =
 					{
 						name: this.getFirstText(),
 						state: state || this.configFile.states[ 0 ].name,
-						dependencies,
+						dependencies: this.parseDependencies( linked ),
 						description,
 					}
 
@@ -109,7 +101,7 @@ export class CommandLauncher
 					else
 						parentItem = { boardName: board }
 
-						this.configFile.addTask( task, parentItem )
+					this.configFile.addTask( task, parentItem )
 
 					break;
 				}
@@ -152,6 +144,18 @@ export class CommandLauncher
 
 			return value
 		}
+	}
+
+	private parseDependencies = ( tasksId : any ) =>
+	{
+		let dependencies = undefined
+
+		if( Array.isArray( tasksId ))
+			dependencies = [ ...tasksId ]
+		else if( tasksId )
+			dependencies = [ tasksId ]
+
+		return dependencies
 	}
 
 	/**
