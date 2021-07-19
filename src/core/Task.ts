@@ -1,7 +1,6 @@
 import chalk from 'chalk'
 
-import { IBoard } from './Board'
-import { DefaultStorage } from './Config'
+import { ConfigState } from './Config'
 
 ////////////////////////////////////////
 
@@ -29,9 +28,11 @@ export interface StringifyArgs
 
 	depth ?: number,
 
-	indentLevel ?: number,
+	parentIndent ?: string,
+	subTaskLevel ?: number,
 	isLastChild ?: boolean,
-	isFirstChild ?: boolean,
+	isSubTask ?: boolean,
+	isLastParent ?: boolean,
 }
 
 ////////////////////////////////////////
@@ -71,10 +72,10 @@ export namespace Task
 	/**
 	 * TODO implement hide timestamp and sub counter
 	 */
-	export const stringify = ( task : ITask, options ?: StringifyArgs ) =>
+	export const stringify = ( task : ITask, availableStates : ConfigState[], options ?: StringifyArgs ) =>
 	{
-		const DEFAULT_INDENT_LEVEL = 1
 		const INDENT_MARKER = '    '
+		const DEFAULT_SUBTASK_LEVEL = 1
 		const INDENT_DESCRIPTION = '  '
 		const MARGIN = '\t'
 		const LINE_BREAK = '\n'
@@ -93,32 +94,40 @@ export namespace Task
 
 		////////////////////
 
-		const { indentLevel = DEFAULT_INDENT_LEVEL, isFirstChild = true, isLastChild,
-			hideDescription, depth, hideTimestamp, hideSubCounter, hideTree } = options
+		const { parentIndent, subTaskLevel = DEFAULT_SUBTASK_LEVEL, isSubTask,
+			isLastChild, hideDescription, depth, isLastParent, hideTimestamp, hideSubCounter, hideTree } = options
 
 		let toReturn : string[] = []
-		let indentation = ''
+		let indentation = parentIndent || ''
 
 		////////////////////
 
-		const isFinalState = task.state === DefaultStorage.states[ DefaultStorage.states.length - 1 ].name
-		const isFirstState = task.state === DefaultStorage.states[ 0 ].name
+		const isFinalState = task.state === availableStates[ availableStates.length - 1 ].name
+		const isFirstState = task.state === availableStates[ 0 ].name
 
-		const stateColor = DefaultStorage.states.filter( state => task.state === state.name )[0].hexColor
+		const stateColor = availableStates.filter( state => task.state === state.name )[0].hexColor
 
 		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
 
-		if( hideTree || isFirstChild )
+		if( isSubTask )
 		{
-			for( let i = 0; i < ( indentLevel - 1 ); i++ )
+			if( hideTree )
 				indentation += INDENT_MARKER
-		}
-		else
-		{
-			for( let i = 0; i < ( indentLevel - 2 ); i++ )
-				indentation += TREE_MARKER.branch
+			else
+			{
+				( function replaceParentNodeInBranch()
+				{
+					const lastIndex = indentation.lastIndexOf( TREE_MARKER.node )
 
-			indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node )
+					if( lastIndex >= 0 && lastIndex + TREE_MARKER.branch.length >= indentation.length )
+						indentation = indentation.substring(0, lastIndex) + TREE_MARKER.branch
+				})()
+
+				if( isLastParent )
+					indentation = indentation.split( TREE_CHARS.lastNode ).join( INDENT_MARKER );
+
+				indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node )
+			}
 		}
 
 		const iconText = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
@@ -155,7 +164,7 @@ export namespace Task
 					{
 						let toReturn = indentation
 
-						if( !isFirstChild && !hideTree )
+						if( !hideTree )
 							toReturn = indentation.split( TREE_CHARS.node ).join( TREE_CHARS.branch );
 
 						return toReturn
@@ -179,11 +188,20 @@ export namespace Task
 		{
 			task.subtasks.forEach( ( sub, index ) =>
 			{
-				const shallNotPrint = ( depth !== undefined ) && ( indentLevel >= depth + 1 )
+				const shallNotPrint = ( depth !== undefined ) && ( subTaskLevel >= depth + 1 )
 				if( !shallNotPrint )
 				{
-					const isLastChild = index === ( task.subtasks.length - 1 )
-					const result = Task.stringify( sub, { ...options, indentLevel: indentLevel + 1, isLastChild, isFirstChild: false } )
+					const willBeLastChild = index === ( task.subtasks.length - 1 )
+					const childOptions: StringifyArgs =
+					{ 
+						...options,
+						subTaskLevel: subTaskLevel + 1,
+						parentIndent: indentation,
+						isLastChild: willBeLastChild,
+						isSubTask: true,
+						isLastParent: isLastChild
+					}
+					const result = Task.stringify( sub, availableStates, childOptions )
 
 					toReturn = [ ...toReturn, ...result ]
 				}
@@ -232,17 +250,17 @@ export namespace Task
 		return count
 	}
 
-	export const getStats = ( tasks : ITask[] ) : string =>
+	export const getStats = ( tasks : ITask[], availableStates : ConfigState[] ) : string =>
 	{
 		let toReturn = ' '
 		const totalCount = countTaskAndSub( tasks )
 	
-		DefaultStorage.states.forEach( ( state, index ) =>
+		availableStates.forEach( ( state, index ) =>
 		{
 			const count = search( tasks, 'state', state.name ).length
 			const percent = ( count / totalCount ) * 100
 
-			if( ( index !== 0 ) && ( index !== DefaultStorage.states.length ) )
+			if( ( index !== 0 ) && ( index !== availableStates.length ) )
 				toReturn += ' ► '
 
 			const text = `${ count } ${ state.name } (${ percent.toFixed(0) }%)`

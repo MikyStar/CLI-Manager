@@ -1,5 +1,5 @@
-import { RawArg, Action, Flag } from "./ArgParser";
-import { DefaultStorage } from "./Config";
+import { RawArg, Action, Flag, ArgParser } from "./ArgParser";
+import { Config, DEFAULT_CONFIG_NAME } from "./Config";
 import { Prompt } from "./Prompt";
 import { ITask, StringifyArgs } from "./Task";
 
@@ -8,28 +8,32 @@ import { ITask, StringifyArgs } from "./Task";
 export class CommandLauncher
 {
 	userArgs: RawArg[]
+	configFile: Config
 	defaultArgs: RawArg[]
 	untreatedArgs: RawArg[]
-	printDepth: number
-	hideDescription: boolean
-	state: string
-	board: string
-	action: string
 
 	////////////////////
 
-	constructor( userArgs: RawArg[], defaultArgs: RawArg[] )
+	constructor()
 	{
-		this.userArgs = userArgs
-		this.defaultArgs = defaultArgs
-		this.untreatedArgs = [ ...userArgs, ...defaultArgs ]
+		this.userArgs = ArgParser.rawParse( process.argv.slice(2) )
+		this.untreatedArgs = [ ...this.userArgs ]
+
+		const specificFileLocation = this.getLastFlagFollowingValue( Flag.FILE ) as string
+
+		this.configFile = new Config( specificFileLocation || DEFAULT_CONFIG_NAME )
+		this.defaultArgs = ArgParser.rawParse( this.configFile.defaultArgs )
+		this.untreatedArgs = [ ...this.untreatedArgs, ...this.defaultArgs ]
+
+		console.log( 'parsed default', this.defaultArgs)
+		console.log('parsed user', this.userArgs )
 
 		//////////
 
-		const noInputArg = userArgs.length === 0
-		const onlyOneInputArg = userArgs.length === 1
+		const noInputArg = this.userArgs.length === 0
+		const onlyOneInputArg = this.userArgs.length === 1
 
-		const firstArg = userArgs[ 0 ]
+		const firstArg = this.userArgs[ 0 ]
 		this.untreatedArgs.splice( 0, 1 ) // As untreatedArgs starts with userArgs
 
 		//////////
@@ -60,7 +64,7 @@ export class CommandLauncher
 
 		if( noInputArg )
 		{
-			DefaultStorage.print( printOptions )
+			this.configFile.print( printOptions )
 			return
 		}
 
@@ -68,7 +72,7 @@ export class CommandLauncher
 		{
 			const tasksId = firstArg.value as number[]
 
-			DefaultStorage.print({ tasksId: tasksId, ...printOptions })
+			this.configFile.print({ tasksId: tasksId, ...printOptions })
 		}
 
 		if( firstArg.isAction )
@@ -78,13 +82,21 @@ export class CommandLauncher
 				case Action.ADD_TASK:
 				{
 					if( onlyOneInputArg )
-						Prompt.addTask()
+						Prompt.addTask( this.configFile )
+
+					let dependencies
+					if( Array.isArray( linked ))
+						dependencies = [ ...linked ]
+					else if( linked )
+						dependencies = [ linked ]
+					else
+						dependencies = undefined
 
 					const task : ITask =
 					{
 						name: this.getFirstText(),
-						state: state || DefaultStorage.states[ 0 ].name,
-						dependencies: [ ...linked ],
+						state: state || this.configFile.states[ 0 ].name,
+						dependencies,
 						description,
 					}
 
@@ -97,7 +109,7 @@ export class CommandLauncher
 					else
 						parentItem = { boardName: board }
 
-					DefaultStorage.addTask( task, parentItem )
+						this.configFile.addTask( task, parentItem )
 
 					break;
 				}
@@ -106,7 +118,7 @@ export class CommandLauncher
 
 				case Action.ADD_BOARD:
 				{
-					DefaultStorage.addBoard( this.getFirstText() )
+					this.configFile.addBoard( this.getFirstText() )
 					break;
 				}
 			}

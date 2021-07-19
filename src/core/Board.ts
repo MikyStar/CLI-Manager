@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 
-import { DefaultStorage } from './Config'
+import { ConfigState } from './Config'
 import { Task, ITask, StringifyArgs } from './Task'
 import { Printer } from './Printer'
 
@@ -16,7 +16,7 @@ export interface IBoard
 
 export namespace Board
 {
-	export const stringify = ( board : IBoard, options ?: StringifyArgs ) : string[] =>
+	export const stringify = ( board : IBoard, availableStates : ConfigState[], options ?: StringifyArgs ) : string[] =>
 	{
 		let toReturn : string[] = []
 
@@ -25,7 +25,7 @@ export namespace Board
 
 		board.tasks?.forEach( task =>
 		{
-			const result = Task.stringify( task, options )
+			const result = Task.stringify( task, availableStates, options )
 
 			toReturn = [ ...toReturn, ...result ]
 		})
@@ -33,7 +33,7 @@ export namespace Board
 		if( board.tasks && board.tasks.length !== 0 )
 		{
 			toReturn.push('')
-			toReturn.push( Task.getStats( straightBoard( board ) ) )
+			toReturn.push( Task.getStats( straightBoard( board ), availableStates ) )
 		}
 		else
 			toReturn.push( chalk.dim( ' \t' + 'No tasks yet' ) )

@@ -43,8 +43,10 @@ export namespace Printer
 
 	export const feedBack = ( message : string, isError ?: boolean ) =>
 	{
+		const text = ' ' + message
+
 		console.log('')
-		console.log( ' ' + isError ? chalk.red( message ) : message )
+		console.log( isError ? chalk.red( text ) : text )
 		console.log('')
 	}
 }
