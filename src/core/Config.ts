@@ -14,6 +14,16 @@ interface PrintArgs extends StringifyArgs
 	tasksId ?: number[],
 }
 
+export interface ConfigState
+{
+	name: string,
+	hexColor: string
+}
+
+////////////////////////////////////////
+
+export const DEFAULT_CONFIG_NAME = "tasks.json"
+
 ////////////////////////////////////////
 
 export class Config
@@ -22,11 +32,7 @@ export class Config
 
 	defaultArgs : string[]
 	boards: IBoard[]
-	states :
-	{
-		name: string,
-		hexColor: string
-	}[]
+	states : ConfigState[]
 	straightTasks : ITask[]
 
 	////////////////////////////////////////
@@ -236,7 +242,7 @@ export class Config
 						console.error(`Can't find board ${ name }`)
 					else
 					{
-						Printer.printStringified( Board.stringify( matchingBoard, options ) )
+						Printer.printStringified( Board.stringify( matchingBoard, this.states, options ) )
 						console.log('')
 
 						if( index !== ( boardNames.length - 1 ) )
@@ -254,13 +260,13 @@ export class Config
 					{
 						tasks.push( task )
 
-						Printer.printStringified( Task.stringify( task, options ) )
+						Printer.printStringified( Task.stringify( task, this.states, options ) )
 						console.log('')
 	
 						if( index !== ( tasksId.length - 1 ) )
 							console.log( Printer.separator('-'), '\n' )
 						else
-							console.log( Task.getStats( tasks ), '\n' )
+							console.log( Task.getStats( tasks, this.states, ), '\n' )
 					})
 				});
 			}
@@ -271,7 +277,3 @@ export class Config
 		}
 	}
 }
-
-////////////////////////////////////////
-
-export const DefaultStorage = new Config('tasks.json')
