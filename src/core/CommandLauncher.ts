@@ -83,8 +83,10 @@ export class CommandLauncher
 					let dependencies
 					if( Array.isArray( linked ))
 						dependencies = [ ...linked ]
-					else
+					else if( linked )
 						dependencies = [ linked ]
+					else
+						dependencies = undefined
 
 					const task : ITask =
 					{
