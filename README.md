@@ -119,11 +119,7 @@ _Example:_
 
 > CLI commands are ment to use both _defaultArgs_ and _states_ to modify the _boards_ attribute but you can manually edit it if you want !
 
-<br>
-
 ## Commands
-
-<br>
 
 ### Printing arguments
 
