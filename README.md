@@ -1,12 +1,27 @@
 # CLI Manager
 
-## Description
-
 Providing a CLI interface for managing tasks on the fly
 
 Will store inside a local file both datas and configuration so you can track them using version control.
 
-## Installation
+---
+# Table of content
+
+- [Installation](#installation)
+- [Use](#use)
+	- [Init](#init)
+	- [The config file](#the-config-file)
+- [Commands](#commands)
+	- [Printing arguments](#printing-arguments)
+	- [Board](#board)
+	- [Task](#task)
+
+
+---
+
+# Installation
+
+Requires [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ```sh
 npm i -g # TODO
@@ -14,17 +29,16 @@ npm i -g # TODO
 
 ---
 
-## Use
+# Use
 
-### Init
+## Init
 
 ```sh
-# Init a Task Manager
 task init	# Create the config file tasks.json on your current working directory
 task init --file <location> # Create and name the conf file where you want
 ```
 
-#### The config file
+### The config file
 
 After an _init_, will be created a file that will both store your datas and their configurations
 
@@ -58,25 +72,24 @@ An array of `ordered` objects that defined task state progression
 _Example:_
 ```json
 {
-	"states":
-	[
-        {
-            "name": "todo",
-            "hexColor": "#ff8f00"
-        },
-        {
-            "name": "wip",
-            "hexColor": "#ab47bc"
-        },
-        {
-            "name": "to test",
-            "hexColor": "#2196f3"
-        },
-        {
-            "name": "done",
-            "hexColor": "#66bb6a"
-        }
-    ],
+	"states": [
+		{
+			"name": "todo",
+			"hexColor": "#ff8f00"
+		},
+		{
+			"name": "wip",
+			"hexColor": "#ab47bc"
+		},
+		{
+			"name": "to test",
+			"hexColor": "#2196f3"
+		},
+		{
+			"name": "done",
+			"hexColor": "#66bb6a"
+		}
+	],
 }
 
 ```
@@ -87,13 +100,11 @@ An array of object that stores your actual datas
 _Example:_
 ```json
 {
-	"boards":
-	[
+	"boards": [
 		{
 			"name": "backlog",
 			"description": "Where everything belongs",
-			"tasks":
-			[
+			"tasks": [
 				{
 					"name": "Add more stuff",
 					"description": "There's a lot of things to do",
@@ -108,7 +119,13 @@ _Example:_
 
 > CLI commands are ment to use both _defaultArgs_ and _states_ to modify the _boards_ attribute but you can manually edit it if you want !
 
-**Printing arguments**
+<br>
+
+## Commands
+
+<br>
+
+### Printing arguments
 
 Can either be passed as CLI arguments or stored in the `defaultArgs` object in the config file
 
