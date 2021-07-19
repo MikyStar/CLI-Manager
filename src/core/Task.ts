@@ -268,6 +268,8 @@ export namespace Task
 			toReturn += chalk.hex( state.hexColor )( text )
 		});
 
+		toReturn += ` ❯ ${ totalCount }`
+
 		return toReturn
 	}
 }
