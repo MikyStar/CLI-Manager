@@ -17,7 +17,8 @@ interface PrintArgs extends StringifyArgs
 export interface ConfigState
 {
 	name: string,
-	hexColor: string
+	hexColor: string,
+	icon: string
 }
 
 ////////////////////////////////////////

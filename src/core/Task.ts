@@ -103,11 +103,9 @@ export namespace Task
 		////////////////////
 
 		const isFinalState = task.state === availableStates[ availableStates.length - 1 ].name
-		const isFirstState = task.state === availableStates[ 0 ].name
+		const taskState = availableStates.filter( state => task.state === state.name )[0]
 
-		const stateColor = availableStates.filter( state => task.state === state.name )[0].hexColor
-
-		const coloredID = chalk.hex( stateColor )( `${ task.id }.` )
+		const coloredID = chalk.hex( taskState.hexColor )( `${ task.id }.` )
 
 		if( isSubTask )
 		{
@@ -130,8 +128,7 @@ export namespace Task
 			}
 		}
 
-		const iconText = isFinalState ? '✔' : ( isFirstState ? '☐' : '♦' )
-		const coloredIcon = chalk.hex( stateColor )( iconText )
+		const coloredIcon = chalk.hex( taskState.hexColor )( taskState.icon )
 		const coloredName = isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
 
 		const fullLine = ` ${ coloredID }${ MARGIN }${ indentation }${ coloredIcon } ${ coloredName }`

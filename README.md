@@ -75,19 +75,23 @@ _Example:_
 	"states": [
 		{
 			"name": "todo",
-			"hexColor": "#ff8f00"
+			"hexColor": "#ff8f00",
+			"icon": "☐"
 		},
 		{
 			"name": "wip",
-			"hexColor": "#ab47bc"
+			"hexColor": "#ab47bc",
+			"icon": "✹"
 		},
 		{
 			"name": "to test",
-			"hexColor": "#2196f3"
+			"hexColor": "#2196f3",
+			"icon": "♦"
 		},
 		{
 			"name": "done",
-			"hexColor": "#66bb6a"
+			"hexColor": "#66bb6a",
+			"icon": "✔"
 		}
 	],
 }
