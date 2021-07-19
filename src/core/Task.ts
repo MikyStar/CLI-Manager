@@ -125,12 +125,10 @@ export namespace Task
 						indentation = indentation.substring(0, lastIndex) + TREE_MARKER.branch
 				})()
 
-				//indentation = indentation.replace( new RegExp( `\\${ TREE_MARKER.node }$` ), TREE_MARKER.branch )
-
 				if( isLastParent )
 					indentation = indentation.split( TREE_CHARS.lastNode ).join( INDENT_MARKER );
-				else
-					indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node )
+				
+				indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node )
 			}
 		}
 
