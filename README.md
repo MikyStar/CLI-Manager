@@ -1,9 +1,15 @@
 # CLI Manager
 
+## Description
+
+Providing a CLI interface for managing tasks on the fly
+
+Will store inside a local file both datas and configuration so you can track them using version control.
+
 ## Installation
 
 ```sh
-npm i && npm start
+npm i -g # TODO
 ```
 
 ## Use
@@ -12,13 +18,14 @@ npm i && npm start
 
 ```sh
 # Init a Task Manager
-task init	# Create the config file on working directory
+task init	# Create the config file tasks.json on your current working directory
+task init --file myTasks.file # Create the conf file where you want
 
 # Seeing tasks
 task  # Print every tasks accross all local boards
 task --depth 2  # Print every tasks and also 2 levels of subtasks
 task --hide-desc  # Print every board but never task descriptions
-task --file  # Use a specific file
+task --file myTasks.file # Use a specific file
 ```
 
 ### Board
@@ -53,7 +60,7 @@ task 9,13	# Print details on what's in task n°9 and 13
 
 # Editing tasks
 task e 9	# Edit taks attributes with interactive prompt
-task 9 'renaming the task'	# Rename task n°9
+task e 9 'renaming the task' -s 'wip'	# Rename task n°9 and change its state
 task 9,7,2 -s 'to test'  	# Change state to 'done'
 task c 7	# Put task to final state, 'Check'
 task i 11,14	# Pass tasks 11 and 14 to next state, "Increment"

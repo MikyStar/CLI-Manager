@@ -18,7 +18,7 @@ export enum Action
 
 export enum Flag
 {
-	FILE = '-f',
+	FILE = '--file',
 	DEPTH = '--depth',
 	HIDE_DESCRIPTION = '--hide-description',
 	HELP = '--help',
