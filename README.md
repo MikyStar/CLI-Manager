@@ -1,6 +1,6 @@
 # CLI Manager
 
-Providing a CLI interface for managing tasks on the fly
+Providing an easy and usefull Command Line Interface for managing tasks on the fly
 
 Will store inside a local file both datas and configuration so you can track them using version control.
 
