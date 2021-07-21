@@ -43,20 +43,17 @@ export interface RawArg
 
 ////////////////////////////////////////
 
-export class ArgHandler
+export class CliArgHandler
 {
 	userArgs: RawArg[]
-	defaultArgs ?: DefaultArgs
 
 	untreatedArgs: RawArg[]
 
 	////////////////////
 
-	constructor( configDefaultArgs: DefaultArgs )
+	constructor()
 	{
 		this.userArgs = this.rawParse( process.argv.slice( 2) )
-		this.defaultArgs = configDefaultArgs
-
 		this.untreatedArgs = [ ...this.userArgs ]
 	}
 
@@ -76,15 +73,15 @@ export class ArgHandler
 		return firstArg
 	}
 
-	getStorageLocation = () : string => this.popLastFlagAndValue( Flag.FILE ) as string || this.defaultArgs.storageFile
+	getStorageLocation = () : string => this.popLastFlagAndValue( Flag.FILE ) as string
 
 	getStringifyArgs = () : StringifyArgs =>
 	{
-		const hideDescription = this.popLastFlag( Flag.HIDE_DESCRIPTION ) || this.defaultArgs.hideDescription || false
-		const hideTimestamp = this.popLastFlag( Flag.HIDE_TIMESTAMP ) || this.defaultArgs.hideTimestamp || false
-		const hideTree = this.popLastFlag( Flag.HIDE_TREE ) || this.defaultArgs.hideTree || false
-		const hideSubCounter = this.popLastFlag( Flag.HIDE_SUB_COUNTER ) || this.defaultArgs.hideSubCounter || false
-		const depth = this.popLastFlagAndValue( Flag.DEPTH ) as number || this.defaultArgs.depth || undefined
+		const hideDescription = this.popLastFlag( Flag.HIDE_DESCRIPTION )
+		const hideTimestamp = this.popLastFlag( Flag.HIDE_TIMESTAMP )
+		const hideTree = this.popLastFlag( Flag.HIDE_TREE )
+		const hideSubCounter = this.popLastFlag( Flag.HIDE_SUB_COUNTER )
+		const depth = this.popLastFlagAndValue( Flag.DEPTH ) as number
 
 		return	{
 					hideDescription,
@@ -137,7 +134,7 @@ export class ArgHandler
 			}
 		})
 
-		return toReturn || this.defaultArgs.board
+		return toReturn
 	}
 
 	/**

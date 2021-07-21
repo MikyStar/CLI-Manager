@@ -1,8 +1,8 @@
-import { RawArg, Action, Flag, ArgHandler } from "./ArgHandler";
+import { Action, CliArgHandler } from "./CliArgHandler";
 import { Config } from "./Config";
 import { Storage, DEFAULT_STORAGE_FILE_NAME } from "./Storage";
 import { Prompt } from "./Prompt";
-import { ITask, StringifyArgs } from "./Task";
+import { ITask } from "./Task";
 import { PrintArgs, Printer } from "./Printer";
 
 ////////////////////////////////////////
@@ -16,29 +16,33 @@ export class CommandLauncher
 
 	constructor()
 	{
-		this.config = new Config()
-
-		const argHandler = new ArgHandler( this.config.defaultArgs )
-		const specificFileLocation = argHandler.getStorageLocation()
-
-		this.storage = new Storage( specificFileLocation || DEFAULT_STORAGE_FILE_NAME )
-
-		//////////
+		const argHandler = new CliArgHandler()
 
 		const firstArg = argHandler.getFirstArg()
 		const isHelpNeeded = argHandler.isHelpNeeded()
 
-		const { description, state, linked } = argHandler.getTaskFlags()
-		const board = argHandler.getBoard()
+		//////////
+
+		const isInit = argHandler.isThereOnlyOneCLIArgs() && ( firstArg.isAction ) && ( firstArg.value === Action.INIT )  
+		if( isInit )
+		{
+
+		}
+
+		//////////
+
+		this.config = new Config()
+		const specificFileLocation = argHandler.getStorageLocation() || this.config.defaultArgs.storageFile
+		this.storage = new Storage( specificFileLocation || DEFAULT_STORAGE_FILE_NAME )
+
 
 		const printOptions : PrintArgs =
 		{
 			datas: this.storage,
 			states: this.config.states,
-			...argHandler.getStringifyArgs()
+			...argHandler.getStringifyArgs(),
+			...this.config.defaultArgs
 		}
-
-		//////////
 
 		if( !argHandler.isThereCLIArgs() )
 		{
@@ -53,6 +57,11 @@ export class CommandLauncher
 			Printer.printTasks( tasksId, printOptions )
 			return
 		}
+
+		//////////
+
+		const { description, state, linked } = argHandler.getTaskFlags()
+		const board = argHandler.getBoard() || this.config.defaultArgs.board
 
 		if( firstArg.isAction )
 		{
