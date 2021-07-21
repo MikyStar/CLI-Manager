@@ -6,7 +6,7 @@ import { IBoard, Board } from './Board';
 import { ITask, TIMESTAMP_FORMAT } from './Task';
 import { Printer } from './Printer';
 
-import { readJsonFile, getAbsolutePath } from '../utils'
+import { System } from './System'
 
 ////////////////////////////////////////
 
@@ -28,8 +28,8 @@ export class Storage
 
 	constructor( relativePath : string )
 	{
-		this.filePath = getAbsolutePath( relativePath )
-		const storageDatas = readJsonFile( this.filePath )
+		this.filePath = System.getAbsolutePath( relativePath )
+		const storageDatas = System.readJSONFile( this.filePath )
 
 		this.boards = storageDatas
 
@@ -163,17 +163,5 @@ export class Storage
 
 	////////////////////////////////////////
 
-	save()
-	{
-		try
-		{
-			fs.writeFileSync( this.filePath, JSON.stringify( this.boards, null, 4 ) )
-		}
-		catch( error )
-		{
-			console.error( 'Error during saving' )
-
-			process.exit( -1 )
-		}
-	}
+	save = () => System.writeJSONFile( this.filePath, this.boards )
 }

@@ -1,4 +1,4 @@
-import { readJsonFile, getAbsolutePath } from '../utils'
+import { System } from './System'
 
 ////////////////////////////////////////
 
@@ -43,8 +43,8 @@ export class Config
 
 	constructor( relativePath : string )
 	{
-		this.filePath = getAbsolutePath( relativePath )
-		const configDatas = readJsonFile( this.filePath )
+		this.filePath = System.getAbsolutePath( relativePath )
+		const configDatas = System.readJSONFile( this.filePath )
 
 		this.defaultArgs = configDatas.defaultArgs
 		this.states = configDatas.states

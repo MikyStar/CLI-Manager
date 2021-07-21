@@ -5,7 +5,7 @@ import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
 import { PrintArgs, Printer } from "./core/Printer";
 
-import { exit } from './utils'
+import { System } from './core/System'
 
 ////////////////////////////////////////
 
@@ -47,7 +47,7 @@ try
 	if( !argHandler.isThereCLIArgs() )
 	{
 		Printer.printAll( printOptions )
-		exit()
+		System.exit()
 	}
 	
 	if( argHandler.isThereOnlyOneCLIArgs() && firstArg.isTask )
@@ -55,7 +55,7 @@ try
 		const tasksId = firstArg.value as number[]
 	
 		Printer.printTasks( tasksId, printOptions )
-		exit()
+		System.exit()
 	}
 	
 	//////////
@@ -114,5 +114,5 @@ catch( error )
 {
 	Printer.error( 'in main catch' + error )
 
-	exit( - 1 )
+	System.exit( - 1 )
 }
