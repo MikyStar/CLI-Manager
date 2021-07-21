@@ -1,18 +1,21 @@
 {
 	"name": "cli-manager",
 	"version": "0.1.0",
-	"description": "",
-	"main": "Main.js",
-	"scripts": {
-		"start": "NODE_ENV=dev tsc && node dist/Main.js",
-		"deploy": "NODE_ENV=prod npm start",
-		"test": "jest",
-		"update": "ncu -u && npm update",
-		"clear": "rm -rf node_modules dist"
-	},
+	"description": "Providing an easy and usefull Command Line Interface for managing tasks with local files",
 	"keywords": [ "cli", "tasks", "management" ],
 	"author": "Mike AUBENAS",
 	"license": "ISC",
+	"main": "Main.js",
+	"scripts": {
+		"start": "NODE_ENV=dev npm run tsc && node dist/Main.js",
+		"tsc": "tsc",
+		"test": "echo 'No jest tests written yet'",
+		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
+		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
+		"dependencies:check": "ncu -e 2",
+		"dependencies:update": "ncu -u && npm run clear && npm install && npm run test",
+		"clear": "rm -rf node_modules dist"
+	},
 	"devDependencies": {
 		"@types/jest": "^26.0.15",
 		"jest": "^26.6.3",
