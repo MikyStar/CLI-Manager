@@ -1,7 +1,9 @@
 {
-	"defaultArgs": [
-		"--hide-description"
-	],
+	"defaultArgs":
+	{
+		"hideDescription": true,
+		"board": "backlog"
+	},
 	"states": [
 		{
 			"name": "todo",

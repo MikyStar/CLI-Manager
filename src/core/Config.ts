@@ -10,6 +10,18 @@ export interface ConfigState
 	icon: string
 }
 
+export interface DefaultArgs
+{
+	hideDescription ?: boolean,
+	hideTimestamp ?: boolean,
+	hideSubCounter ?: boolean,
+	hideTree ?: boolean,
+
+	depth ?: number,
+
+	board ?: string
+}
+
 ////////////////////////////////////////
 
 export const CONFIG_FILE_NAME = "task.config.json"
@@ -23,7 +35,7 @@ export class Config
 {
 	configPath : string
 
-	defaultArgs : string[]
+	defaultArgs : DefaultArgs
 	states : ConfigState[]
 
 	////////////////////////////////////////

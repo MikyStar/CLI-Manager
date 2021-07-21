@@ -1,4 +1,4 @@
-import { PrintArgs } from './Printer'
+import { DefaultArgs } from './Config'
 import { StringifyArgs } from './Task'
 
 ////////////////////////////////////////
@@ -46,31 +46,25 @@ export interface RawArg
 export class ArgHandler
 {
 	userArgs: RawArg[]
-	defaultArgs ?: RawArg[]
+	defaultArgs ?: DefaultArgs
 
 	untreatedArgs: RawArg[]
 
 	////////////////////
 
-	constructor( configDefaultArgs: string[])
+	constructor( configDefaultArgs: DefaultArgs )
 	{
 		this.userArgs = this.rawParse( process.argv.slice( 2) )
-		this.defaultArgs = this.rawParse( configDefaultArgs )
+		this.defaultArgs = configDefaultArgs
 
-		this.untreatedArgs = [ ...this.userArgs, ...this.defaultArgs ]
+		this.untreatedArgs = [ ...this.userArgs ]
 	}
 
 	////////////////////
 
-	addConfigDefaultArgs = ( args: string[] ) =>
-	{
-		this.defaultArgs = this.rawParse( args )
-		this.untreatedArgs = [ ...this.untreatedArgs, ...this.defaultArgs ]
-	}
-
-	isThereCLIArgs = () : boolean => this.userArgs.length === 0
+	isThereCLIArgs = () : boolean => this.userArgs.length !== 0
 	isThereOnlyOneCLIArgs = () : boolean => this.userArgs.length === 1
-	isHelpNeeded = () : boolean => this.getLastFlag( Flag.HELP )
+	isHelpNeeded = () : boolean => this.popLastFlag( Flag.HELP )
 
 	////////////////////
 
@@ -82,15 +76,15 @@ export class ArgHandler
 		return firstArg
 	}
 
-	getFile = () : string => this.getLastFlagFollowingValue( Flag.FILE ) as string
+	getStorageLocation = () : string => this.popLastFlagAndValue( Flag.FILE ) as string
 
 	getStringifyArgs = () : StringifyArgs =>
 	{
-		const hideDescription = this.getLastFlag( Flag.HIDE_DESCRIPTION )
-		const hideTimestamp = this.getLastFlag( Flag.HIDE_TIMESTAMP )
-		const hideTree = this.getLastFlag( Flag.HIDE_TREE )
-		const hideSubCounter = this.getLastFlag( Flag.HIDE_SUB_COUNTER )
-		const depth = this.getLastFlagFollowingValue( Flag.DEPTH ) as number
+		const hideDescription = this.popLastFlag( Flag.HIDE_DESCRIPTION ) || this.defaultArgs.hideDescription || false
+		const hideTimestamp = this.popLastFlag( Flag.HIDE_TIMESTAMP ) || this.defaultArgs.hideTimestamp || false
+		const hideTree = this.popLastFlag( Flag.HIDE_TREE ) || this.defaultArgs.hideTree || false
+		const hideSubCounter = this.popLastFlag( Flag.HIDE_SUB_COUNTER ) || this.defaultArgs.hideSubCounter || false
+		const depth = this.popLastFlagAndValue( Flag.DEPTH ) as number || this.defaultArgs.depth || undefined
 
 		return	{
 					hideDescription,
@@ -101,13 +95,22 @@ export class ArgHandler
 				}
 	}
 
-	getState = () : string => this.getLastFlagFollowingValue( Flag.STATE ) as string
+	getTaskFlags = () =>
+	{
+		return	{
+					description: this.getDescription(),
+					state: this.getState(),
+					linked: this.getLinks()
+				}
+	}
 
-	getDescription = () : string => this.getLastFlagFollowingValue( Flag.DESCRIPTION ) as string
+	getState = () : string => this.popLastFlagAndValue( Flag.STATE ) as string
+
+	getDescription = () : string => this.popLastFlagAndValue( Flag.DESCRIPTION ) as string
 
 	getLinks = () : number[] =>
 	{
-		const linked = this.getLastFlagFollowingValue( Flag.LINK )
+		const linked = this.popLastFlagAndValue( Flag.LINK )
 
 		let toReturn = []
 
@@ -198,7 +201,7 @@ export class ArgHandler
 	 * Uses untreatedArgs and remove them from list
 	 * @returns boolean
 	 */
-	private getLastFlag = ( flag: Flag ) =>
+	private popLastFlag = ( flag: Flag ) =>
 	{
 		let lastFlagIndex = -1
 
@@ -221,10 +224,10 @@ export class ArgHandler
 	}
 
 	/**
-	 * Uses untreatedArgs and remove them from list
+	 * Uses untreatedArgs and remove both the flag and its following value from list
 	 * @returns last value for flag or undefined
 	 */
-	private getLastFlagFollowingValue = ( flag: Flag ) =>
+	private popLastFlagAndValue = ( flag: Flag ) =>
 	{
 		let lastFlagIndex = -1
 

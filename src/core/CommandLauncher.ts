@@ -20,17 +20,16 @@ export class CommandLauncher
 		this.config = new Config()
 
 		const argHandler = new ArgHandler( this.config.defaultArgs )
-		const specificFileLocation = argHandler.getFile()
+		const specificFileLocation = argHandler.getStorageLocation()
 
 		this.storage = new Storage( specificFileLocation || DEFAULT_STORAGE_FILE_NAME )
 
 		//////////
 
 		const firstArg = argHandler.getFirstArg()
+		const isHelpNeeded = argHandler.isHelpNeeded()
 
-		const description = argHandler.getDescription()
-		const state = argHandler.getState()
-		const linked = argHandler.getLinks()
+		const { description, state, linked } = argHandler.getTaskFlags()
 		const board = argHandler.getBoard()
 
 		const printOptions : PrintArgs =

@@ -56,12 +56,21 @@ In your config file, will be three main attributes
 
 _defaultArgs_:
 
-An array of strings that will be passed for every CLI command, _can be empty_
+An object defining default behaviour, such as [printing options](#printing-arguments) or default board to use
 
 _Example:_
 ```json
 {
-	"defaultArgs": [ "--hide-desc", "-s", "wip" ]
+	"defaultArgs": {
+		"hideDescription": true,
+		"hideTimestamp": true,
+		"hideSubCounter": true,
+		"hideTree": true,
+
+		"depth" : 3,
+
+		"board": "backlog"
+	}
 }
 ```
 
