@@ -67,7 +67,7 @@ export const DEFAULT_CONFIG_DATAS =
  */
 export class Config
 {
-	filePath : string
+	relativePath : string
 	defaultArgs : DefaultArgs
 	states : ConfigState[]
 
@@ -75,8 +75,8 @@ export class Config
 
 	constructor( relativePath : string )
 	{
-		this.filePath = System.getAbsolutePath( relativePath )
-		const configDatas = System.readJSONFile( this.filePath )
+		this.relativePath = relativePath
+		const configDatas = System.readJSONFile( this.relativePath )
 
 		this.defaultArgs = configDatas.defaultArgs
 		this.states = configDatas.states
