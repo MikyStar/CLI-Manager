@@ -2,6 +2,7 @@
 	"defaultArgs":
 	{
 		"hideDescription": true,
+		"printAfterEdition": true,
 		"board": "TODO",
 		"storageFile": "./tasks/v0.1.0.json"
 	},
