@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import { DefaultArgs } from './Config'
 
 import { ConfigState } from './Config'
 
@@ -19,15 +20,8 @@ export interface ITask
 	state: string,
 }
 
-export interface StringifyArgs
+export interface StringifyArgs extends DefaultArgs
 {
-	hideDescription ?: boolean,
-	hideTimestamp ?: boolean,
-	hideSubCounter ?: boolean,
-	hideTree ?: boolean,
-
-	depth ?: number,
-
 	parentIndent ?: string,
 	subTaskLevel ?: number,
 	isLastChild ?: boolean,
