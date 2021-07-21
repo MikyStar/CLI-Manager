@@ -28,6 +28,38 @@ export interface DefaultArgs
 
 export const DEFAULT_CONFIG_FILE_NAME = "task.config.json"
 
+export const DEFAULT_CONFIG_DATAS =
+{
+	"defaultArgs":
+	{
+		"printAfterEdition": true,
+		"board": "backlog",
+		"storageFile": "tasks.json"
+	},
+	"states": [
+		{
+			"name": "todo",
+			"hexColor": "#ff8f00",
+			"icon": "☐"
+		},
+		{
+			"name": "wip",
+			"hexColor": "#ab47bc",
+			"icon": "✹"
+		},
+		{
+			"name": "to test",
+			"hexColor": "#2196f3",
+			"icon": "♦"
+		},
+		{
+			"name": "done",
+			"hexColor": "#66bb6a",
+			"icon": "✔"
+		}
+	]
+}
+
 ////////////////////////////////////////
 
 /**

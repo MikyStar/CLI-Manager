@@ -10,6 +10,14 @@ export class FileNotFoundError extends CatchableError
 	}
 }
 
+export class FileAlreadyExistsError extends CatchableError
+{
+	constructor( fullPath: string )
+	{
+		super( `File ${ fullPath } already exists` )
+	}
+}
+
 export class JSONParseError extends CatchableError
 {
 	constructor( fullPath: string, error ?: any )

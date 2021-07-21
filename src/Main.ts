@@ -1,11 +1,12 @@
 import { Action, CliArgHandler } from "./core/CliArgHandler";
-import { Config, DEFAULT_CONFIG_FILE_NAME } from "./core/Config";
-import { Storage, DEFAULT_STORAGE_FILE_NAME } from "./core/Storage";
+import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "./core/Config";
+import { Storage, DEFAULT_STORAGE_FILE_NAME, DEFAULT_STORAGE_DATAS } from "./core/Storage";
 import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
 import { PrintArgs, Printer } from "./core/Printer";
-
 import { System } from './core/System'
+
+import { FileAlreadyExistsError } from './errors/FileErrors'
 
 ////////////////////////////////////////
 
@@ -20,13 +21,29 @@ try
 	
 	//////////
 	
-	const isInit = argHandler.isThereOnlyOneCLIArgs() && ( firstArg.isAction ) && ( firstArg.value === Action.INIT )  
+	const isInit = argHandler.isThereCLIArgs() && ( firstArg.isAction ) && ( firstArg.value === Action.INIT )  
 	if( isInit )
 	{
-		/*
-			TODO, case where config file already existes, where file already exists ...
-		*/
-	
+		const configLocationFromCLI = System.getAbsolutePath( argHandler.getConfigLocation() )
+		const storageLocation = System.getAbsolutePath( argHandler.getStorageLocation() || DEFAULT_STORAGE_FILE_NAME )
+
+		if( System.doesFileExists( configLocationFromCLI ) )
+			throw new FileAlreadyExistsError( configLocationFromCLI )
+		else
+		{
+			const configFileLocation = configLocationFromCLI || DEFAULT_CONFIG_FILE_NAME
+			System.writeJSONFile( configFileLocation, DEFAULT_CONFIG_DATAS )
+
+			Printer.feedBack( `Config file '${ configFileLocation }' created` )
+		}
+
+		if( System.doesFileExists( storageLocation ) )
+			throw new FileAlreadyExistsError( storageLocation )
+		else
+		{
+			System.writeJSONFile( storageLocation, DEFAULT_STORAGE_DATAS )
+			Printer.feedBack( `Storage file '${ storageLocation }' created` )
+		}
 	}
 	
 	//////////

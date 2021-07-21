@@ -38,6 +38,7 @@ npm i -g # TODO
 ```sh
 task init	# Will generate task.config.json and tasks.json under working directory
 task init --storage <location> --config <location> # Will generate both file where you want
+task init --storage <location> # Will generate a new storage file
 ```
 
 ### Files

@@ -38,7 +38,9 @@ export namespace System
 	
 		return datas
 	}
-	
+
+	export const doesFileExists = ( absolutePath: string ) : boolean => fs.existsSync( absolutePath ) || false
+
 	export const writeJSONFile = ( absolutePath: string, datas: any ) : any =>
 	{
 		try

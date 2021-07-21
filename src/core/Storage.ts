@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import moment from 'moment';
 
 import { IBoard, Board } from './Board';
@@ -11,6 +9,14 @@ import { System } from './System'
 ////////////////////////////////////////
 
 export const DEFAULT_STORAGE_FILE_NAME = "tasks.json"
+export const DEFAULT_STORAGE_DATAS =
+[
+    {
+        "name": "backlog",
+		"description": "Where everything lies",
+        "tasks": []
+    }
+]
 
 ////////////////////////////////////////
 
