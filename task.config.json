@@ -2,7 +2,8 @@
 	"defaultArgs":
 	{
 		"hideDescription": true,
-		"board": "backlog"
+		"board": "TODO",
+		"storageFile": "./tasks/v0.1.0.json"
 	},
 	"states": [
 		{
