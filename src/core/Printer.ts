@@ -54,12 +54,21 @@ export namespace Printer
 		// TODO
 	}
 
-	export const feedBack = ( message : string, isError ?: boolean ) =>
+	export const feedBack = ( message : string) =>
 	{
 		const text = ' ' + message
 
 		console.log('')
-		console.log( isError ? chalk.red( text ) : text )
+		console.log( text )
+		console.log('')
+	}
+
+	export const error = ( message: string ) =>
+	{
+		const text = ' ' + message
+
+		console.log('')
+		console.error( chalk.red( text ) )
 		console.log('')
 	}
 

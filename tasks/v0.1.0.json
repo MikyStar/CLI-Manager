@@ -1,0 +1,18 @@
+[
+    {
+        "name": "TOFIX",
+        "tasks": []
+    },
+    {
+        "name": "TODO",
+        "tasks": [
+            {
+                "name": "devrait etre todo",
+                "state": "todo",
+                "dependencies": [],
+                "id": 0,
+                "timestamp": "21/07/2021"
+            }
+        ]
+    }
+]

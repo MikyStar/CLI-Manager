@@ -6,6 +6,8 @@ import { IBoard, Board } from './Board';
 import { ITask, TIMESTAMP_FORMAT } from './Task';
 import { Printer } from './Printer';
 
+import { readJsonFile } from '../utils'
+
 ////////////////////////////////////////
 
 export const DEFAULT_STORAGE_FILE_NAME = "tasks.json"
@@ -26,26 +28,16 @@ export class Storage
 
 	constructor( storagePath ?: string )
 	{
-		try
-		{
-			this.storagePath = path.join( process.cwd(), storagePath || DEFAULT_STORAGE_FILE_NAME )
-			const storageDatas = JSON.parse( fs.readFileSync( this.storagePath, { encoding: 'utf8', flag: 'r' } ) )
+		this.storagePath = path.join( process.cwd(), storagePath )
+		const storageDatas = readJsonFile( storagePath || DEFAULT_STORAGE_FILE_NAME )
 
-			this.boards = storageDatas
+		this.boards = storageDatas
 
-			let straightTasks = []
-			this.boards.forEach( board => straightTasks = [ ...straightTasks, ...Board.straightBoard( board ) ] )
-			this.straightTasks = straightTasks
+		let straightTasks = []
+		this.boards.forEach( board => straightTasks = [ ...straightTasks, ...Board.straightBoard( board ) ] )
+		this.straightTasks = straightTasks
 
-			// TODO : search for dusplicates and gracefully print error
-		}
-		catch( err )
-		{
-			console.error(err)
-			console.error(`Can't find ${ storagePath } in current working directory, run 'tasks init'`)
-
-			process.exit(-1)
-		}
+		// TODO : search for dusplicates and gracefully print error
 	}
 
 	////////////////////////////////////////

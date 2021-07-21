@@ -1,7 +1,10 @@
 {
-	"defaultArgs": [
-		"--hide-description"
-	],
+	"defaultArgs":
+	{
+		"hideDescription": true,
+		"board": "TODO",
+		"storageFile": "./tasks/v0.1.0.json"
+	},
 	"states": [
 		{
 			"name": "todo",
