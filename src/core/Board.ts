@@ -2,7 +2,6 @@ import chalk from 'chalk'
 
 import { ConfigState } from './Config'
 import { Task, ITask, StringifyArgs } from './Task'
-import { Printer } from './Printer'
 
 ////////////////////////////////////////
 

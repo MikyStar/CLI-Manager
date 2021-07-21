@@ -1,8 +1,8 @@
 import chalk from "chalk"
 
-import { IBoard, Board } from "./Board";
-import { Config, ConfigState } from "./Config";
-import { ITask, Task, TIMESTAMP_FORMAT, StringifyArgs } from './Task';
+import { Board } from "./Board";
+import { ConfigState } from "./Config";
+import { Task, StringifyArgs } from './Task';
 import { Storage } from './Storage';
 
 ////////////////////////////////////////
