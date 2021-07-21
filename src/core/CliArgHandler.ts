@@ -19,16 +19,18 @@ export enum Action
 
 export enum Flag
 {
-	FILE = '--file',
-	DEPTH = '--depth',
-	HIDE_DESCRIPTION = '--hide-description',
 	HELP = '--help',
-	STATE = '-s',
-	DESCRIPTION = '-d',
-	LINK = '-l',
+	STORAGE_FILE = '--storage',
+	CONFIG_FILE = '--config',
+	HIDE_DESCRIPTION = '--hide-description',
 	HIDE_TREE = '--hide-tree',
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
+	DEPTH = '--depth',
+	PRINT_AFTER_EDIT = '--print',
+	STATE = '-s',
+	DESCRIPTION = '-d',
+	LINK = '-l',
 }
 
 export interface RawArg
@@ -68,12 +70,13 @@ export class CliArgHandler
 	getFirstArg = () =>
 	{
 		const firstArg = this.userArgs[ 0 ]
-		this.untreatedArgs.splice( 0, 1 ) // As untreatedArgs starts with userArgs
+		this.untreatedArgs.splice( 0, 1 )
 
 		return firstArg
 	}
 
-	getStorageLocation = () : string => this.popLastFlagAndValue( Flag.FILE ) as string
+	getStorageLocation = () : string => this.popLastFlagAndValue( Flag.STORAGE_FILE ) as string
+	getConfigLocation = () : string => this.popLastFlagAndValue( Flag.CONFIG_FILE ) as string
 
 	getStringifyArgs = () : StringifyArgs =>
 	{
@@ -102,8 +105,8 @@ export class CliArgHandler
 	}
 
 	getState = () : string => this.popLastFlagAndValue( Flag.STATE ) as string
-
 	getDescription = () : string => this.popLastFlagAndValue( Flag.DESCRIPTION ) as string
+	getPrintAfterEdit = () : boolean => this.popLastFlag( Flag.PRINT_AFTER_EDIT )
 
 	getLinks = () : number[] =>
 	{

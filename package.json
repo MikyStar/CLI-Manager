@@ -10,8 +10,8 @@
 		"update": "ncu -u && npm update",
 		"clear": "rm -rf node_modules dist"
 	},
-	"keywords": [],
-	"author": "",
+	"keywords": [ "cli", "tasks", "management" ],
+	"author": "Mike AUBENAS",
 	"license": "ISC",
 	"devDependencies": {
 		"@types/jest": "^26.0.15",

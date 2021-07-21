@@ -1,16 +1,22 @@
-import fs from 'fs';
-import path from 'path';
 import moment from 'moment';
 
 import { IBoard, Board } from './Board';
 import { ITask, TIMESTAMP_FORMAT } from './Task';
 import { Printer } from './Printer';
 
-import { readJsonFile } from '../utils'
+import { System } from './System'
 
 ////////////////////////////////////////
 
 export const DEFAULT_STORAGE_FILE_NAME = "tasks.json"
+export const DEFAULT_STORAGE_DATAS =
+[
+    {
+        "name": "backlog",
+		"description": "Where everything lies",
+        "tasks": []
+    }
+]
 
 ////////////////////////////////////////
 
@@ -19,17 +25,17 @@ export const DEFAULT_STORAGE_FILE_NAME = "tasks.json"
  */
 export class Storage
 {
-	storagePath : string
+	filePath : string
 
 	boards: IBoard[]
 	straightTasks : ITask[]
 
 	////////////////////////////////////////
 
-	constructor( storagePath ?: string )
+	constructor( relativePath : string )
 	{
-		this.storagePath = path.join( process.cwd(), storagePath )
-		const storageDatas = readJsonFile( storagePath || DEFAULT_STORAGE_FILE_NAME )
+		this.filePath = System.getAbsolutePath( relativePath )
+		const storageDatas = System.readJSONFile( this.filePath )
 
 		this.boards = storageDatas
 
@@ -163,17 +169,5 @@ export class Storage
 
 	////////////////////////////////////////
 
-	save()
-	{
-		try
-		{
-			fs.writeFileSync( this.storagePath, JSON.stringify( this.boards, null, 4 ) )
-		}
-		catch( error )
-		{
-			console.error( 'Error during saving' )
-
-			process.exit( -1 )
-		}
-	}
+	save = () => System.writeJSONFile( this.filePath, this.boards )
 }

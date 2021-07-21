@@ -1,11 +1,12 @@
 import { Action, CliArgHandler } from "./core/CliArgHandler";
-import { Config } from "./core/Config";
-import { Storage, DEFAULT_STORAGE_FILE_NAME } from "./core/Storage";
+import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "./core/Config";
+import { Storage, DEFAULT_STORAGE_FILE_NAME, DEFAULT_STORAGE_DATAS } from "./core/Storage";
 import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
 import { PrintArgs, Printer } from "./core/Printer";
+import { System } from './core/System'
 
-import { exit } from './utils'
+import { FileAlreadyExistsError } from './errors/FileErrors'
 
 ////////////////////////////////////////
 
@@ -20,19 +21,52 @@ try
 	
 	//////////
 	
-	const isInit = argHandler.isThereOnlyOneCLIArgs() && ( firstArg.isAction ) && ( firstArg.value === Action.INIT )  
+	const isInit = argHandler.isThereCLIArgs() && ( firstArg.isAction ) && ( firstArg.value === Action.INIT )  
 	if( isInit )
 	{
-	
+		let feedBack = ''
+		const configLocationFromCLI = argHandler.getConfigLocation()
+		const storageLocation = System.getAbsolutePath( argHandler.getStorageLocation() || DEFAULT_STORAGE_FILE_NAME )
+
+		if( configLocationFromCLI )
+		{
+			const configPath = System.getAbsolutePath( configLocationFromCLI )
+
+			if( System.doesFileExists( configPath ) )
+				throw new FileAlreadyExistsError( configLocationFromCLI )
+			else
+			{
+				System.writeJSONFile( configPath, DEFAULT_CONFIG_DATAS )
+				feedBack += `Config file '${ configPath }' created\n`
+			}
+		}
+		else
+		{
+			if( !System.doesFileExists( System.getAbsolutePath( DEFAULT_CONFIG_FILE_NAME ) ))
+			{
+				System.writeJSONFile( DEFAULT_STORAGE_FILE_NAME, DEFAULT_CONFIG_DATAS )
+				feedBack += `Config file '${ DEFAULT_STORAGE_FILE_NAME }' created\n`
+			}
+		}
+
+		if( System.doesFileExists( storageLocation ) )
+			throw new FileAlreadyExistsError( storageLocation )
+		else
+		{
+			System.writeJSONFile( storageLocation, DEFAULT_STORAGE_DATAS )
+			feedBack +=`Storage file '${ storageLocation }' created`
+		}
+
+		Printer.feedBack( feedBack )
 	}
 	
 	//////////
 	
-	const config = new Config()
-	const specificFileLocation = argHandler.getStorageLocation() || config.defaultArgs.storageFile
-	const storage = new Storage( specificFileLocation || DEFAULT_STORAGE_FILE_NAME )
-	
-	
+	const configLocation = argHandler.getConfigLocation() || DEFAULT_CONFIG_FILE_NAME
+	const config = new Config( configLocation )
+	const storageLocation = argHandler.getStorageLocation() || config.defaultArgs.storageFile || DEFAULT_STORAGE_FILE_NAME
+	const storage = new Storage( storageLocation )
+
 	const printOptions : PrintArgs =
 	{
 		datas: storage,
@@ -44,7 +78,7 @@ try
 	if( !argHandler.isThereCLIArgs() )
 	{
 		Printer.printAll( printOptions )
-		exit()
+		System.exit()
 	}
 	
 	if( argHandler.isThereOnlyOneCLIArgs() && firstArg.isTask )
@@ -52,13 +86,14 @@ try
 		const tasksId = firstArg.value as number[]
 	
 		Printer.printTasks( tasksId, printOptions )
-		exit()
+		System.exit()
 	}
 	
 	//////////
 	
 	const { description, state, linked } = argHandler.getTaskFlags()
 	const board = argHandler.getBoard() || config.defaultArgs.board
+	const printAfterEdit = argHandler.getPrintAfterEdit() || config.defaultArgs.printAfterEdition
 	
 	if( firstArg.isAction )
 	{
@@ -100,10 +135,15 @@ try
 			}
 		}
 	}
+
+	if( printAfterEdit )
+	{
+		// TODO -> got to first print the updated board or file then say task added, not the other way arround
+	}
 }
 catch( error )
 {
 	Printer.error( 'in main catch' + error )
 
-	exit( - 1 )
+	System.exit( - 1 )
 }

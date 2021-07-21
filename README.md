@@ -17,7 +17,7 @@ Will store inside a local file your tasks and boards in a simple format so you c
 	- [Printing arguments](#printing-arguments)
 	- [Board](#board)
 	- [Task](#task)
-
+- [Intended workflow](#intended-workflow)
 
 ---
 
@@ -37,7 +37,8 @@ npm i -g # TODO
 
 ```sh
 task init	# Will generate task.config.json and tasks.json under working directory
-task init --file <location> # Will generate task.config.json if it doesn't exists under working directory and the storage file at the name and location you want
+task init --storage <location> --config <location> # Will generate both file where you want
+task init --storage <location> # Will generate a new storage file
 ```
 
 ### Files
@@ -48,7 +49,9 @@ After an _init_, will be created two files:
 
 #### The config file
 
-Named `task.config.json` in your working directory, he defines your custom states and default argument to provide for the CLI
+Named `task.config.json` in your working directory, he defines your custom states and default argument to provide for the CLI.
+
+> If your config file is different than the default `task.config.json` under your current working directory, you will have to pass the _config_ argument for every CLI commands 
 
 _defaultArgs_:
 
@@ -62,6 +65,7 @@ _Example:_
 		"hideTimestamp": true,
 		"hideSubCounter": true,
 		"hideTree": true,
+		"printAfterEdition": true,
 
 		"depth" : 3,
 
@@ -106,11 +110,11 @@ _Example:_
 
 By default named `tasks.json` in your working directory, he stores your tasks and boards
 
-> If your storage file is different than the default `tasks.json`, you either have to pass the file argument for every CLI commands 
+> If your storage file is different than the default `tasks.json`, you either have to pass the _storage_ argument for every CLI commands 
 > or use the _storageFile_ attribute in the _defaultArgs_ of the [config file](#the-config-file)
 
 ```sh
---file <location> # Use or create a specific file
+--storage <location> # Use or create a specific file
 ```
 
 _Example:_
@@ -141,10 +145,11 @@ Can either be passed as CLI arguments or stored in the `defaultArgs` object in t
 
 ```sh
 --depth n	# Every tasks and also n levels of subtasks
---hide-desc		# No descriptions
+--hide-description		# No descriptions
 --hide-tree		# No tree branches
 --hide-timestamp	# No timestamp
 --hide-sub-counter	# No subtask counter in parent task
+--print	# Print tasks after edition
 ```
 
 ### Board
@@ -197,3 +202,13 @@ task mv 9		# Change associated board with interactive prompt
 task mv 9 @otherBoard	# Change associated board
 task mv 9,7,11 @otherBoard		# Move multiple tasks to board
 ```
+
+# Intended Workflow
+
+Have a single config file for your project at its root
+
+Create and manage your boards, tasks and subtasks with CLI or direct file edition
+
+If you feel like you should breakdown even more your file as it become to crowded, extract some of its boards into a new task file, and change the default storage path in your config file
+
+Keep track of stuff you need to do using VCS
