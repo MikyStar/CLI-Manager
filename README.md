@@ -2,7 +2,7 @@
 
 Providing an easy and usefull Command Line Interface for managing tasks on the fly
 
-Will store inside a local file both datas and configuration so you can track them using version control.
+Will store inside a local file your tasks and boards in a simple format so you can track them using version control.
 
 ---
 # Table of content
@@ -10,7 +10,9 @@ Will store inside a local file both datas and configuration so you can track the
 - [Installation](#installation)
 - [Use](#use)
 	- [Init](#init)
-	- [The config file](#the-config-file)
+	- [Files](#files)
+		- [The config file](#the-config-file)
+		- [The storage file](#the-storage-file)
 - [Commands](#commands)
 	- [Printing arguments](#printing-arguments)
 	- [Board](#board)
@@ -34,25 +36,19 @@ npm i -g # TODO
 ## Init
 
 ```sh
-task init	# Create the config file tasks.json on your current working directory
-task init --file <location> # Create and name the conf file where you want
+task init	# Will generate task.config.json and tasks.json under working directory
+task init --file <location> # Will generate task.config.json under working directory and the storage file at the name and location you want
 ```
 
-### The config file
+### Files
 
-After an _init_, will be created a file that will both store your datas and their configurations
+After an _init_, will be created two files:
+	- `task.config.json`, the configuration file
+	- `tasks.json or the name you want`, the storage file
 
-If you're not providing a location through _--file \<location\>_ the config file will be created in your current working directory under the name `tasks.json`
+#### The config file
 
-> If your target file used to store is different than the default `tasks.json`, you need to pass the file argument for every CLI commands
-
-```sh
---file <location> # Use a specific file
-```
-
-**Attributes**
-
-In your config file, will be three main attributes
+Named `task.config.json` in your working directory, he defines your custom states and default argument to provide for the CLI
 
 _defaultArgs_:
 
@@ -69,6 +65,7 @@ _Example:_
 
 		"depth" : 3,
 
+		"storageFile": "./tasks/v0.1.0.json",
 		"board": "backlog"
 	}
 }
@@ -104,16 +101,21 @@ _Example:_
 		}
 	],
 }
-
 ```
-_boards_:
+#### The storage file
 
-An array of object that stores your actual datas
+By default named `tasks.json` in your working directory, he stores your tasks and boards
+
+> If your storage file is different than the default `tasks.json`, you either have to pass the file argument for every CLI commands 
+> or use the _storageFile_ attribute in the _defaultArgs_ of the [config file](#the-config-file)
+
+```sh
+--file <location> # Use or create a specific file
+```
 
 _Example:_
 ```json
-{
-	"boards": [
+[
 		{
 			"name": "backlog",
 			"description": "Where everything belongs",
@@ -122,15 +124,14 @@ _Example:_
 					"name": "Add more stuff",
 					"description": "There's a lot of things to do",
 					"state": "todo",
-					"id": 32,
+					"id": 0,
 				}
 			]
 		}
-    ],
-}
+]
 ```
 
-> CLI commands are ment to use both _defaultArgs_ and _states_ to modify the _boards_ attribute but you can manually edit it if you want !
+> CLI commands are ment to use the config file to modify your tasks and boards but you can manually edit them if you want !
 
 ## Commands
 
