@@ -13,18 +13,18 @@ export namespace System
 
 	////////////////////
 
-	export const readJSONFile = ( absolutePath: string ) : any =>
+	export const readJSONFile = ( relativePath: string ) : any =>
 	{
 		let file
 		let datas = {}
 	
 		try
 		{
-			file = fs.readFileSync( absolutePath, { encoding: 'utf8', flag: 'r' } )
+			file = fs.readFileSync( getAbsolutePath( relativePath ), { encoding: 'utf8', flag: 'r' } )
 		}
 		catch( error )
 		{
-			throw new FileNotFoundError( absolutePath, error )
+			throw new FileNotFoundError( relativePath, error )
 		}
 	
 		try
@@ -33,23 +33,23 @@ export namespace System
 		}
 		catch( error )
 		{
-			throw new JSONParseError( absolutePath, error )
+			throw new JSONParseError( relativePath, error )
 		}
 	
 		return datas
 	}
 
-	export const doesFileExists = ( absolutePath: string ) : boolean => fs.existsSync( absolutePath ) || false
+	export const doesFileExists = ( relativePath: string ) : boolean => fs.existsSync( getAbsolutePath( relativePath ) ) || false
 
-	export const writeJSONFile = ( absolutePath: string, datas: any ) : any =>
+	export const writeJSONFile = ( relativePath: string, datas: any ) : any =>
 	{
 		try
 		{
-			fs.writeFileSync( absolutePath, JSON.stringify( datas, null, 4 ) )
+			fs.writeFileSync( getAbsolutePath( relativePath ), JSON.stringify( datas, null, 4 ) )
 		}
 		catch( error )
 		{
-			throw new SaveFileError( absolutePath, error )
+			throw new SaveFileError( relativePath, error )
 		}
 	}
 }

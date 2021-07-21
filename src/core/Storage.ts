@@ -25,7 +25,7 @@ export const DEFAULT_STORAGE_DATAS =
  */
 export class Storage
 {
-	filePath : string
+	relativePath : string
 
 	boards: IBoard[]
 	straightTasks : ITask[]
@@ -34,8 +34,8 @@ export class Storage
 
 	constructor( relativePath : string )
 	{
-		this.filePath = System.getAbsolutePath( relativePath )
-		const storageDatas = System.readJSONFile( this.filePath )
+		this.relativePath = relativePath
+		const storageDatas = System.readJSONFile( this.relativePath )
 
 		this.boards = storageDatas
 
@@ -169,5 +169,5 @@ export class Storage
 
 	////////////////////////////////////////
 
-	save = () => System.writeJSONFile( this.filePath, this.boards )
+	save = () => System.writeJSONFile( this.relativePath, this.boards )
 }

@@ -26,23 +26,21 @@ try
 	{
 		let feedBack = ''
 		const configLocationFromCLI = argHandler.getConfigLocation()
-		const storageLocation = System.getAbsolutePath( argHandler.getStorageLocation() || DEFAULT_STORAGE_FILE_NAME )
+		const storageLocation = argHandler.getStorageLocation() || DEFAULT_STORAGE_FILE_NAME
 
 		if( configLocationFromCLI )
 		{
-			const configPath = System.getAbsolutePath( configLocationFromCLI )
-
-			if( System.doesFileExists( configPath ) )
+			if( System.doesFileExists( configLocationFromCLI ) )
 				throw new FileAlreadyExistsError( configLocationFromCLI )
 			else
 			{
-				System.writeJSONFile( configPath, DEFAULT_CONFIG_DATAS )
-				feedBack += `Config file '${ configPath }' created\n`
+				System.writeJSONFile( configLocationFromCLI, DEFAULT_CONFIG_DATAS )
+				feedBack += `Config file '${ configLocationFromCLI }' created\n`
 			}
 		}
 		else
 		{
-			if( !System.doesFileExists( System.getAbsolutePath( DEFAULT_CONFIG_FILE_NAME ) ))
+			if( !System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
 			{
 				System.writeJSONFile( DEFAULT_STORAGE_FILE_NAME, DEFAULT_CONFIG_DATAS )
 				feedBack += `Config file '${ DEFAULT_STORAGE_FILE_NAME }' created\n`
