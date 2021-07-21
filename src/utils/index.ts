@@ -7,20 +7,20 @@ import { FileNotFoundError, JSONParseError } from '../errors/FileErrors';
 
 export const exit = ( code = 0 ) => process.exit( code )
 
+export const getAbsolutePath = ( relativePath: string ) => path.join( process.cwd(), relativePath )
 
-export const readJsonFile = ( relativePath: string ) : any =>
+export const readJsonFile = ( absolutePath: string ) : any =>
 {
 	let file
 	let datas = {}
 
-	const fullPath = path.join( process.cwd(), relativePath )
 	try
 	{
-		file = fs.readFileSync( fullPath, { encoding: 'utf8', flag: 'r' } )
+		file = fs.readFileSync( absolutePath, { encoding: 'utf8', flag: 'r' } )
 	}
 	catch( error )
 	{
-		throw new FileNotFoundError( fullPath )
+		throw new FileNotFoundError( absolutePath )
 	}
 
 	try
@@ -29,7 +29,7 @@ export const readJsonFile = ( relativePath: string ) : any =>
 	}
 	catch( error )
 	{
-		throw new JSONParseError( fullPath )
+		throw new JSONParseError( absolutePath )
 	}
 
 	return datas

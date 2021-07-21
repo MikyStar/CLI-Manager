@@ -1,5 +1,5 @@
 import { Action, CliArgHandler } from "./core/CliArgHandler";
-import { Config } from "./core/Config";
+import { Config, DEFAULT_CONFIG_FILE_NAME } from "./core/Config";
 import { Storage, DEFAULT_STORAGE_FILE_NAME } from "./core/Storage";
 import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
@@ -23,16 +23,19 @@ try
 	const isInit = argHandler.isThereOnlyOneCLIArgs() && ( firstArg.isAction ) && ( firstArg.value === Action.INIT )  
 	if( isInit )
 	{
+		/*
+			TODO, case where config file already existes, where file already exists ...
+		*/
 	
 	}
 	
 	//////////
 	
-	const config = new Config()
-	const specificFileLocation = argHandler.getStorageLocation() || config.defaultArgs.storageFile
-	const storage = new Storage( specificFileLocation || DEFAULT_STORAGE_FILE_NAME )
-	
-	
+	const configLocation = argHandler.getConfigLocation() || DEFAULT_CONFIG_FILE_NAME
+	const config = new Config( configLocation )
+	const storageLocation = argHandler.getStorageLocation() || config.defaultArgs.storageFile || DEFAULT_STORAGE_FILE_NAME
+	const storage = new Storage( storageLocation )
+
 	const printOptions : PrintArgs =
 	{
 		datas: storage,
@@ -59,6 +62,7 @@ try
 	
 	const { description, state, linked } = argHandler.getTaskFlags()
 	const board = argHandler.getBoard() || config.defaultArgs.board
+	const printAfterEdit = argHandler.getPrintAfterEdit() || config.defaultArgs.printAfterEdition
 	
 	if( firstArg.isAction )
 	{
@@ -99,6 +103,11 @@ try
 				break;
 			}
 		}
+	}
+
+	if( printAfterEdit )
+	{
+		// TODO -> got to first print the updated board or file then say task added, not the other way arround
 	}
 }
 catch( error )

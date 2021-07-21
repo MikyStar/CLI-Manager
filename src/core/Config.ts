@@ -1,4 +1,4 @@
-import { readJsonFile } from '../utils'
+import { readJsonFile, getAbsolutePath } from '../utils'
 
 ////////////////////////////////////////
 
@@ -17,14 +17,16 @@ export interface DefaultArgs
 	hideTree ?: boolean,
 
 	depth ?: number,
-
 	board ?: string,
+	printAfterEdition ?: boolean
+
 	storageFile ?: string,
+	configFile ?: string,
 }
 
 ////////////////////////////////////////
 
-export const CONFIG_FILE_NAME = "task.config.json"
+export const DEFAULT_CONFIG_FILE_NAME = "task.config.json"
 
 ////////////////////////////////////////
 
@@ -33,14 +35,16 @@ export const CONFIG_FILE_NAME = "task.config.json"
  */
 export class Config
 {
+	filePath : string
 	defaultArgs : DefaultArgs
 	states : ConfigState[]
 
 	////////////////////////////////////////
 
-	constructor()
+	constructor( relativePath : string )
 	{
-		const configDatas = readJsonFile( CONFIG_FILE_NAME )
+		this.filePath = getAbsolutePath( relativePath )
+		const configDatas = readJsonFile( this.filePath )
 
 		this.defaultArgs = configDatas.defaultArgs
 		this.states = configDatas.states

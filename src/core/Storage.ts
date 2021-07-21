@@ -6,7 +6,7 @@ import { IBoard, Board } from './Board';
 import { ITask, TIMESTAMP_FORMAT } from './Task';
 import { Printer } from './Printer';
 
-import { readJsonFile } from '../utils'
+import { readJsonFile, getAbsolutePath } from '../utils'
 
 ////////////////////////////////////////
 
@@ -19,17 +19,17 @@ export const DEFAULT_STORAGE_FILE_NAME = "tasks.json"
  */
 export class Storage
 {
-	storagePath : string
+	filePath : string
 
 	boards: IBoard[]
 	straightTasks : ITask[]
 
 	////////////////////////////////////////
 
-	constructor( storagePath ?: string )
+	constructor( relativePath : string )
 	{
-		this.storagePath = path.join( process.cwd(), storagePath )
-		const storageDatas = readJsonFile( storagePath || DEFAULT_STORAGE_FILE_NAME )
+		this.filePath = getAbsolutePath( relativePath )
+		const storageDatas = readJsonFile( this.filePath )
 
 		this.boards = storageDatas
 
@@ -167,7 +167,7 @@ export class Storage
 	{
 		try
 		{
-			fs.writeFileSync( this.storagePath, JSON.stringify( this.boards, null, 4 ) )
+			fs.writeFileSync( this.filePath, JSON.stringify( this.boards, null, 4 ) )
 		}
 		catch( error )
 		{
