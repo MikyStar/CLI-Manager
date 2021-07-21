@@ -24,17 +24,29 @@ try
 	const isInit = argHandler.isThereCLIArgs() && ( firstArg.isAction ) && ( firstArg.value === Action.INIT )  
 	if( isInit )
 	{
-		const configLocationFromCLI = System.getAbsolutePath( argHandler.getConfigLocation() )
+		let feedBack = ''
+		const configLocationFromCLI = argHandler.getConfigLocation()
 		const storageLocation = System.getAbsolutePath( argHandler.getStorageLocation() || DEFAULT_STORAGE_FILE_NAME )
 
-		if( System.doesFileExists( configLocationFromCLI ) )
-			throw new FileAlreadyExistsError( configLocationFromCLI )
+		if( configLocationFromCLI )
+		{
+			const configPath = System.getAbsolutePath( configLocationFromCLI )
+
+			if( System.doesFileExists( configPath ) )
+				throw new FileAlreadyExistsError( configLocationFromCLI )
+			else
+			{
+				System.writeJSONFile( configPath, DEFAULT_CONFIG_DATAS )
+				feedBack += `Config file '${ configPath }' created\n`
+			}
+		}
 		else
 		{
-			const configFileLocation = configLocationFromCLI || DEFAULT_CONFIG_FILE_NAME
-			System.writeJSONFile( configFileLocation, DEFAULT_CONFIG_DATAS )
-
-			Printer.feedBack( `Config file '${ configFileLocation }' created` )
+			if( !System.doesFileExists( System.getAbsolutePath( DEFAULT_CONFIG_FILE_NAME ) ))
+			{
+				System.writeJSONFile( DEFAULT_STORAGE_FILE_NAME, DEFAULT_CONFIG_DATAS )
+				feedBack += `Config file '${ DEFAULT_STORAGE_FILE_NAME }' created\n`
+			}
 		}
 
 		if( System.doesFileExists( storageLocation ) )
@@ -42,8 +54,10 @@ try
 		else
 		{
 			System.writeJSONFile( storageLocation, DEFAULT_STORAGE_DATAS )
-			Printer.feedBack( `Storage file '${ storageLocation }' created` )
+			feedBack +=`Storage file '${ storageLocation }' created`
 		}
+
+		Printer.feedBack( feedBack )
 	}
 	
 	//////////
