@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { readJsonFile } from '../utils'
 
 ////////////////////////////////////////
 
@@ -34,8 +33,6 @@ export const CONFIG_FILE_NAME = "task.config.json"
  */
 export class Config
 {
-	configPath : string
-
 	defaultArgs : DefaultArgs
 	states : ConfigState[]
 
@@ -43,20 +40,9 @@ export class Config
 
 	constructor()
 	{
-		try
-		{
-			this.configPath = path.join( process.cwd(), CONFIG_FILE_NAME )
-			const configDatas = JSON.parse( fs.readFileSync( this.configPath, { encoding: 'utf8', flag: 'r' } ) )
+		const configDatas = readJsonFile( CONFIG_FILE_NAME )
 
-			this.defaultArgs = configDatas.defaultArgs
-			this.states = configDatas.states
-		}
-		catch( err )
-		{
-			console.error(err)
-			console.error(`Can't find ${ CONFIG_FILE_NAME } in current working directory, run 'tasks init'`)
-
-			process.exit(-1)
-		}
+		this.defaultArgs = configDatas.defaultArgs
+		this.states = configDatas.states
 	}
 }
