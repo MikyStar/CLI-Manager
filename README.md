@@ -5,6 +5,7 @@ Providing an easy and usefull Command Line Interface for managing tasks on the f
 Will store inside a local file your tasks and boards in a simple format so you can track them using version control.
 
 ---
+
 # Table of content
 
 - [Installation](#installation)
@@ -44,14 +45,19 @@ task init --storage <location> # Will generate a new storage file
 ### Files
 
 After an _init_, will be created two files:
-	- `task.config.json`, the configuration file
-	- `tasks.json or the name you want`, the storage file
+
+- `task.config.json or the name you want`, the configuration file
+- `tasks.json or the name you want`, the storage file
 
 #### The config file
 
-Named `task.config.json` in your working directory, he defines your custom states and default argument to provide for the CLI.
+By default named `task.config.json` in your working directory, he defines your custom states and default argument to provide for the CLI.
 
 > If your config file is different than the default `task.config.json` under your current working directory, you will have to pass the _config_ argument for every CLI commands 
+
+```sh
+--config <location> # Use or create a specific config file
+```
 
 _defaultArgs_:
 
@@ -114,7 +120,7 @@ By default named `tasks.json` in your working directory, he stores your tasks an
 > or use the _storageFile_ attribute in the _defaultArgs_ of the [config file](#the-config-file)
 
 ```sh
---storage <location> # Use or create a specific file
+--storage <location> # Use or create a specific storage file
 ```
 
 _Example:_
@@ -169,6 +175,9 @@ task @mBoard -d 'Our board'	# Change board description
 task rn @previousName newName # Renaming
 task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 task clean @mBoard	# Remove all task in board @mBoard which are at final state
+
+# Extracting
+task x @board1 @board2 location	# Create a new storage file from one or multiple boards, "Extract"
 ```
 
 ### Task
@@ -194,21 +203,22 @@ task 9,7,2 -s 'to test'  	# Change state to 'done'
 task c 7	# Put task to final state, 'Check'
 task i 11,14	# Pass tasks 11 and 14 to next state, "Increment"
 task i 11,14 -r	# Pass tasks 11 and 14 and their subtasks to next state, "Increment"
-task x 11	# Make a new board out of a task subtasks, "Extract"
-task x 11 newBoard	# Make a new board out of a task subtasks and rename the parent task, "Extract"
 
 # Moving tasks
-task mv 9		# Change associated board with interactive prompt
-task mv 9 @otherBoard	# Change associated board
-task mv 9,7,11 @otherBoard		# Move multiple tasks to board
+task mv 9 -d 'A brand new board'	# Make a new board out of a task subtasks and give a description
+task mv 9 @otherBoard	# Move task and subtasks to board
+task mv 9,7,11 @otherBoard	# Move multiple tasks and subtasks to board
+task mv 9,7,11 3	# Move multiple tasks and subtasks to task as subtasks (maintining tree structure)
 ```
 
 # Intended Workflow
 
-Have a single config file for your project at its root
+Start by a simple `task init` at the root of your project
 
 Create and manage your boards, tasks and subtasks with CLI or direct file edition
 
-If you feel like you should breakdown even more your file as it become to crowded, extract some of its boards into a new task file, and change the default storage path in your config file
+If you feel like you should break down your storage file as it become to crowded, extract some of its boards into a new storage file, and change the default storage path in your config file
 
 Keep track of stuff you need to do using VCS
+
+You may want to create a _tasks_ folder where you could add a new storage file for every release, with version control, it could act as a changelog for instance
