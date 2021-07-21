@@ -12,7 +12,6 @@ export class CommandLauncher
 	config: Config
 	storage: Storage
 
-
 	////////////////////
 
 	constructor()
@@ -95,12 +94,5 @@ export class CommandLauncher
 				}
 			}
 		}
-	}
-
-	////////////////////
-
-	private parseDependencies = ( tasksId : any ) =>
-	{
-		
 	}
 }

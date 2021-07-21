@@ -76,7 +76,7 @@ export class ArgHandler
 		return firstArg
 	}
 
-	getStorageLocation = () : string => this.popLastFlagAndValue( Flag.FILE ) as string
+	getStorageLocation = () : string => this.popLastFlagAndValue( Flag.FILE ) as string || this.defaultArgs.storageFile
 
 	getStringifyArgs = () : StringifyArgs =>
 	{
@@ -137,7 +137,7 @@ export class ArgHandler
 			}
 		})
 
-		return toReturn
+		return toReturn || this.defaultArgs.board
 	}
 
 	/**

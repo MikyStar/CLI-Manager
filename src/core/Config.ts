@@ -19,7 +19,8 @@ export interface DefaultArgs
 
 	depth ?: number,
 
-	board ?: string
+	board ?: string,
+	storageFile ?: string,
 }
 
 ////////////////////////////////////////
