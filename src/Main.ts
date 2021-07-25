@@ -12,8 +12,6 @@ import { FileAlreadyExistsError } from './errors/FileErrors'
 
 try
 {
-	console.log('system args', process.argv )
-	
 	const argHandler = new CliArgHandler()
 	
 	const firstArg = argHandler.getFirstArg()

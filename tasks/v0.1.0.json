@@ -7,11 +7,39 @@
         "name": "TODO",
         "tasks": [
             {
-                "name": "devrait etre todo",
+                "name": "extraction",
                 "state": "todo",
                 "dependencies": [],
-                "id": 0,
-                "timestamp": "21/07/2021"
+                "id": 1,
+                "timestamp": "25/07/2021"
+            },
+            {
+                "name": "delete",
+                "state": "todo",
+                "dependencies": [],
+                "id": 2,
+                "timestamp": "25/07/2021"
+            },
+            {
+                "name": "edit",
+                "state": "todo",
+                "dependencies": [],
+                "id": 3,
+                "timestamp": "25/07/2021"
+            },
+            {
+                "name": "improve doc for commands",
+                "state": "todo",
+                "dependencies": [],
+                "description": "Bash like doc with optional arguments, examples ...",
+                "id": 4,
+                "timestamp": "25/07/2021"
+            },
+            {
+                "state": "todo",
+                "dependencies": [],
+                "id": 5,
+                "timestamp": "25/07/2021"
             }
         ]
     }

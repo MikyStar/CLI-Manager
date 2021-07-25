@@ -2,7 +2,11 @@
 	"name": "cli-manager",
 	"version": "0.1.0",
 	"description": "Providing an easy and usefull Command Line Interface for managing tasks with local files",
-	"keywords": [ "cli", "tasks", "management" ],
+	"keywords": [
+		"cli",
+		"tasks",
+		"management"
+	],
 	"author": "Mike AUBENAS",
 	"license": "ISC",
 	"main": "Main.js",
@@ -14,6 +18,7 @@
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
 		"dependencies:check": "ncu -e 2",
 		"dependencies:update": "ncu -u && npm run clear && npm install && npm run test",
+		"build": "webpack-cli",
 		"clear": "rm -rf node_modules dist"
 	},
 	"devDependencies": {
@@ -31,6 +36,10 @@
 		"dotenv": "^8.2.0",
 		"moment": "^2.29.1",
 		"prompts": "^2.4.0",
-		"ts-node": "^9.0.0"
+		"ts-loader": "^9.2.4",
+		"ts-node": "^9.0.0",
+		"webpack": "^5.46.0",
+		"webpack-cli": "^4.7.2",
+		"webpack-node-externals": "^3.0.0"
 	}
 }
