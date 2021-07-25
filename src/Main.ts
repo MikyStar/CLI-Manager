@@ -20,9 +20,7 @@ try
 
 	if( !argHandler.isThereCLIArgs() )
 	{
-		if( !printAfter ) // Don't print twice as stop will handle it
-			controller.printAll()
-
+		controller.printAll()
 		controller.stop()
 	}
 
@@ -70,7 +68,7 @@ try
 				}
 
 				controller.addFeedbackLine( `Task n°${ id } added` )
-				controller.stop()
+				controller.exit()
 				break;
 			}
 	
@@ -81,7 +79,7 @@ try
 				const boardName = storage.addBoard( argHandler.getFirstText(), description )
 
 				controller.addFeedbackLine( `Board '${ boardName }' added` )
-				controller.stop()
+				controller.exit()
 				break;
 			}
 		}

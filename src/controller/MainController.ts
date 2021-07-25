@@ -97,17 +97,19 @@ export class MainController
 			this.addFeedbackLine( `Storage file '${ this.storageLocation }' created` )
 		}
 
-		this.stop()
+		this.exit()
 	}
 
 	printAll = () => Printer.printAll( this.printOptions )
-	printTasks = ( tasksID: number[] ) => Printer.printTasks( tasksID, this.printOptions )
-	printBoards = ( boardNames: string[] ) => Printer.printBoards( boardNames, this.printOptions )
+	printTasks = ( tasksID: number | number[] ) => Printer.printTasks( tasksID, this.printOptions )
+	printBoards = ( boardNames: string | string[] ) => Printer.printBoards( boardNames, this.printOptions )
+
+	stop = ( code ?: number ) => System.exit( code )
 
 	/**
-	 * Prints feedback if needed and print all if user params print afer then stop
+	 * Handles feedback, print afer and stopping
 	 */
-	stop = ( code ?: number ) =>
+	exit = ( code ?: number ) =>
 	{
 		if( this.userFeedback !== '' )
 			this.printFeedback()
@@ -115,11 +117,11 @@ export class MainController
 		if( this.printAfter )
 		{
 			if( this.board )
-				this.printBoards( [ this.board ] )
+				this.printBoards( this.board )
 			else
 				this.printAll()
 		}
 
-		System.exit( code )
+		this.stop( code )
 	}
 }
