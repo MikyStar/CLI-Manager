@@ -55,23 +55,43 @@ export interface TaskFlags
 export class CliArgHandler
 {
 	cliArgs: RawArg[]
-
 	untreatedArgs: RawArg[]
+
+	isThereCLIArgs: boolean
+	isThereOnlyOneCLIArgs: boolean
+	isHelpNeeded: boolean
+	isVersion: boolean
+	shouldPrintAfter: boolean
+	configLocation: string
+	storageLocation: string
+
+	stringifyArgs ?: StringifyArgs
+	taskFlags ?: TaskFlags
+	board ?: string
 
 	////////////////////
 
 	constructor()
 	{
-		this.cliArgs = this.rawParse( process.argv.slice( 2) )
+		this.cliArgs = this.rawParse( process.argv.slice( 2 ) )
 		this.untreatedArgs = [ ...this.cliArgs ]
+
+		//////////
+
+		this.isThereCLIArgs = this.cliArgs.length !== 0
+		this.isThereOnlyOneCLIArgs = this.cliArgs.length === 1
+
+		this.isHelpNeeded = this.popLastFlag( Flag.HELP )
+		this.isVersion = this.popLastFlag( Flag.VERSION )
+		this.shouldPrintAfter = this.popLastFlag( Flag.PRINT_AFTER )
+
+		this.storageLocation = this.popLastFlagAndValue( Flag.STORAGE_FILE ) as string
+		this.configLocation = this.popLastFlagAndValue( Flag.CONFIG_FILE ) as string
+
+		this.stringifyArgs = this.getStringifyArgs()
+		this.taskFlags = this.getTaskFlags()
+		this.board = this.getBoard()
 	}
-
-	////////////////////
-
-	isThereCLIArgs = () : boolean => this.cliArgs.length !== 0
-	isThereOnlyOneCLIArgs = () : boolean => this.cliArgs.length === 1
-	isHelpNeeded = () : boolean => this.popLastFlag( Flag.HELP )
-	isVersion = () : boolean => this.popLastFlag( Flag.VERSION )
 
 	////////////////////
 
@@ -81,71 +101,6 @@ export class CliArgHandler
 		this.untreatedArgs.splice( 0, 1 )
 
 		return firstArg
-	}
-
-	getStorageLocation = () : string => this.popLastFlagAndValue( Flag.STORAGE_FILE ) as string
-	getConfigLocation = () : string => this.popLastFlagAndValue( Flag.CONFIG_FILE ) as string
-
-	getStringifyArgs = () : StringifyArgs =>
-	{
-		const hideDescription = this.popLastFlag( Flag.HIDE_DESCRIPTION )
-		const hideTimestamp = this.popLastFlag( Flag.HIDE_TIMESTAMP )
-		const hideTree = this.popLastFlag( Flag.HIDE_TREE )
-		const hideSubCounter = this.popLastFlag( Flag.HIDE_SUB_COUNTER )
-		const depth = this.popLastFlagAndValue( Flag.DEPTH ) as number
-
-		return	{
-					hideDescription,
-					hideTimestamp,
-					hideSubCounter,
-					hideTree,
-					depth,
-				}
-	}
-
-	getTaskFlags = () : TaskFlags =>
-	{
-		return	{
-					description: this.getDescription(),
-					state: this.getState(),
-					linked: this.getLinks()
-				}
-	}
-
-	getState = () : string => this.popLastFlagAndValue( Flag.STATE ) as string
-	getDescription = () : string => this.popLastFlagAndValue( Flag.DESCRIPTION ) as string
-	getPrintAfter = () : boolean => this.popLastFlag( Flag.PRINT_AFTER )
-
-	getLinks = () : number[] =>
-	{
-		const linked = this.popLastFlagAndValue( Flag.LINK )
-
-		let toReturn = []
-
-		if( Array.isArray( linked ))
-			toReturn = [ ...linked ]
-		else if( linked )
-			toReturn = [ linked ]
-
-		return toReturn
-	}
-
-	////////////////////
-
-	getBoard = () =>
-	{
-		let toReturn = undefined
-
-		this.untreatedArgs.forEach( ( arg, index ) =>
-		{
-			if( arg.isBoard )
-			{
-				toReturn = arg.value
-				this.untreatedArgs.splice( index, 1 )
-			}
-		})
-
-		return toReturn
 	}
 
 	/**
@@ -169,6 +124,65 @@ export class CliArgHandler
 	}
 
 	////////////////////
+
+	private getStringifyArgs = () : StringifyArgs =>
+	{
+		const hideDescription = this.popLastFlag( Flag.HIDE_DESCRIPTION )
+		const hideTimestamp = this.popLastFlag( Flag.HIDE_TIMESTAMP )
+		const hideTree = this.popLastFlag( Flag.HIDE_TREE )
+		const hideSubCounter = this.popLastFlag( Flag.HIDE_SUB_COUNTER )
+		const depth = this.popLastFlagAndValue( Flag.DEPTH ) as number
+
+		return	{
+					hideDescription,
+					hideTimestamp,
+					hideSubCounter,
+					hideTree,
+					depth,
+				}
+	}
+
+	private getTaskFlags = () : TaskFlags =>
+	{
+		const state = this.popLastFlagAndValue( Flag.STATE ) as string
+		const description = this.popLastFlagAndValue( Flag.DESCRIPTION ) as string
+
+		return	{
+					state,
+					description,
+					linked: this.getLinks()
+				}
+	}
+
+	private getLinks = () : number[] =>
+	{
+		const linked = this.popLastFlagAndValue( Flag.LINK )
+
+		let toReturn = []
+
+		if( Array.isArray( linked ))
+			toReturn = [ ...linked ]
+		else if( linked )
+			toReturn = [ linked ]
+
+		return toReturn
+	}
+
+	private getBoard = () =>
+	{
+		let toReturn = undefined
+
+		this.untreatedArgs.forEach( ( arg, index ) =>
+		{
+			if( arg.isBoard )
+			{
+				toReturn = arg.value
+				this.untreatedArgs.splice( index, 1 )
+			}
+		})
+
+		return toReturn
+	}
 
 	private rawParse = ( args: string[] ) : RawArg[] =>
 	{

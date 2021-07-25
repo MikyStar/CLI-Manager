@@ -44,11 +44,11 @@ export class MainController
 		this.userFeedback = []
 
 		this.firstArg = this.argHandler.getFirstArg()
-		this.isHelpNeeded = this.argHandler.isHelpNeeded()
+		this.isHelpNeeded = this.argHandler.isHelpNeeded
 
 
-		this.configLocation = this.argHandler.getConfigLocation() || DEFAULT_CONFIG_FILE_NAME
-		this.storageLocation = this.argHandler.getStorageLocation()
+		this.configLocation = this.argHandler.configLocation || DEFAULT_CONFIG_FILE_NAME
+		this.storageLocation = this.argHandler.storageLocation
 
 		if( System.doesFileExists( this.configLocation ) )
 		{
@@ -62,7 +62,7 @@ export class MainController
 		if( System.doesFileExists( this.storageLocation ) )
 			this.storage = new Storage( this.storageLocation )
 
-		const isInit = this.argHandler.isThereCLIArgs() && ( this.firstArg.isAction ) && ( this.firstArg.value === Action.INIT )  
+		const isInit = this.argHandler.isThereCLIArgs && ( this.firstArg.isAction ) && ( this.firstArg.value === Action.INIT )  
 		if( isInit )
 			this.handleInit()
 
@@ -77,13 +77,13 @@ export class MainController
 		{
 			datas: this.storage,
 			states: this.config.states,
-			...this.argHandler.getStringifyArgs(),
+			...this.argHandler.stringifyArgs,
 			...this.config.defaultArgs
 		}
 
-		this.taskFlags = this.argHandler.getTaskFlags()
-		this.board = this.argHandler.getBoard() || this.config.defaultArgs.board
-		this.printAfter = this.argHandler.getPrintAfter() || this.config.defaultArgs.printAfter
+		this.taskFlags = this.argHandler.taskFlags
+		this.board = this.argHandler.board || this.config.defaultArgs.board
+		this.printAfter = this.argHandler.shouldPrintAfter || this.config.defaultArgs.printAfter
 	}
 
 	////////////////////
