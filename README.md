@@ -39,7 +39,7 @@ npm i -g # TODO
 ```sh
 task init	# Will generate task.config.json and tasks.json under working directory
 task init --storage <relative path> --config <relative path> # Will generate both file where you want
-task init --storage <relative path> # Will generate a new storage file
+task init --storage <relative path> # Will just generate a new storage file
 ```
 
 ### Files
@@ -220,4 +220,4 @@ If you feel like you should break down your storage file as it become to crowded
 
 Keep track of stuff you need to do using VCS
 
-You may want to create a _tasks_ folder where you could add a new storage file for every release, with version control, it could act as a changelog for instance
+You may want to create a _tasks_ folder where you could add a new storage file for every release with `task init --storage ./tasks/v1.json`, with version control, it could act as a changelog for instance
