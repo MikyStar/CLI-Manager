@@ -26,7 +26,7 @@ export enum Flag
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
 	DEPTH = '--depth',
-	PRINT_AFTER_EDIT = '--print',
+	PRINT_AFTER = '--print',
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
@@ -42,11 +42,18 @@ export interface RawArg
 	isFlag ?: boolean
 }
 
+export interface TaskFlags
+{
+	description ?: string
+	state ?: string
+	linked ?: number[]
+}
+
 ////////////////////////////////////////
 
 export class CliArgHandler
 {
-	userArgs: RawArg[]
+	cliArgs: RawArg[]
 
 	untreatedArgs: RawArg[]
 
@@ -54,21 +61,21 @@ export class CliArgHandler
 
 	constructor()
 	{
-		this.userArgs = this.rawParse( process.argv.slice( 2) )
-		this.untreatedArgs = [ ...this.userArgs ]
+		this.cliArgs = this.rawParse( process.argv.slice( 2) )
+		this.untreatedArgs = [ ...this.cliArgs ]
 	}
 
 	////////////////////
 
-	isThereCLIArgs = () : boolean => this.userArgs.length !== 0
-	isThereOnlyOneCLIArgs = () : boolean => this.userArgs.length === 1
+	isThereCLIArgs = () : boolean => this.cliArgs.length !== 0
+	isThereOnlyOneCLIArgs = () : boolean => this.cliArgs.length === 1
 	isHelpNeeded = () : boolean => this.popLastFlag( Flag.HELP )
 
 	////////////////////
 
 	getFirstArg = () =>
 	{
-		const firstArg = this.userArgs[ 0 ]
+		const firstArg = this.cliArgs[ 0 ]
 		this.untreatedArgs.splice( 0, 1 )
 
 		return firstArg
@@ -94,7 +101,7 @@ export class CliArgHandler
 				}
 	}
 
-	getTaskFlags = () =>
+	getTaskFlags = () : TaskFlags =>
 	{
 		return	{
 					description: this.getDescription(),
@@ -105,7 +112,7 @@ export class CliArgHandler
 
 	getState = () : string => this.popLastFlagAndValue( Flag.STATE ) as string
 	getDescription = () : string => this.popLastFlagAndValue( Flag.DESCRIPTION ) as string
-	getPrintAfterEdit = () : boolean => this.popLastFlag( Flag.PRINT_AFTER_EDIT )
+	getPrintAfter = () : boolean => this.popLastFlag( Flag.PRINT_AFTER )
 
 	getLinks = () : number[] =>
 	{

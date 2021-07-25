@@ -102,7 +102,7 @@ export class Storage
 
 		this.save()
 
-		Printer.feedBack( `Task n°${ taskID } added` )
+		return taskID
 	}
 
 	addBoard = ( boardName: string, description ?: string ) =>
@@ -113,7 +113,8 @@ export class Storage
 
 		this.boards.push( { name: boardName, tasks: [], description } )
 		this.save()
-		Printer.feedBack( `Board '${ boardName }' added` )
+
+		return boardName
 	}
 
 	/**

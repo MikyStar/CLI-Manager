@@ -53,7 +53,9 @@ export namespace Prompt
 				description: inputs.description
 			}
 
-			storage.addTask(task, inputs.board )
+			const id = storage.addTask(task, inputs.board )
+
+			return id
 		}
 		catch( error )
 		{

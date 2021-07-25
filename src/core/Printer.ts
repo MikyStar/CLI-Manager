@@ -54,35 +54,43 @@ export namespace Printer
 		// TODO
 	}
 
-	export const feedBack = ( message : string) =>
+	export const feedBack = ( message : string | string[], chalkColor ?: string ) =>
 	{
-		const text = ' ' + message
+		if( ( message === '' ) || ( message === [] ) )
+			return
+
+		const MARGIN = ' '
+		message = Array.isArray( message ) ? message : [ message ]
 
 		console.log('')
-		console.log( text )
+		message.forEach( line =>
+		{
+			let text = MARGIN + line
+			text = chalkColor ? chalk[ chalkColor ]( test ) : text
+			console.log( text )
+		})
 		console.log('')
 	}
 
-	export const error = ( message: string ) =>
-	{
-		const text = ' ' + message
-
-		console.log('')
-		console.error( chalk.red( text ) )
-		console.log('')
-	}
+	export const error = ( message: string | string[] ) => feedBack( message, 'red' )
 
 	//////////
 
-	export const printTasks = ( tasksID: number[], printArgs: PrintArgs ) =>
+	export const printTasks = ( tasksID: number | number[], printArgs: PrintArgs ) =>
 	{
+		let theTasksID = []
 		const { datas, states } = printArgs
 
 		const tasks = []
 
+		if( Array.isArray( tasksID) )
+			theTasksID = tasksID
+		else
+			theTasksID = [ tasksID ]
+
 		console.log( charAccrossScreen( '-' ), '\n' )
 
-		tasksID.forEach( ( id, index ) =>
+		theTasksID.forEach( ( id, index ) =>
 		{
 			datas.retrieveNestedTask( id, task =>
 			{
@@ -91,21 +99,29 @@ export namespace Printer
 				Printer.printStringified( Task.stringify( task, states, printArgs ) )
 				console.log('')
 
-				if( index !== ( tasksID.length - 1 ) )
+				if( index !== ( theTasksID.length - 1 ) )
 					console.log( Printer.separator('-'), '\n' )
 				else
 					console.log( Task.getStats( tasks, states, ), '\n' )
 			})
 		});
+
+		console.log( charAccrossScreen( '-' ), '\n' )
 	}
 
-	export const printBoards = ( boardNames: string[], printArgs: PrintArgs ) =>
+	export const printBoards = ( boardNames: string | string[], printArgs: PrintArgs ) =>
 	{
+		let theBoards = []
 		const { datas, states } = printArgs
+
+		if( Array.isArray( boardNames) )
+			theBoards = boardNames
+		else
+			theBoards = [ boardNames ]
 
 		console.log( charAccrossScreen( '-' ), '\n' )
 
-		boardNames.forEach( ( name, index ) =>
+		theBoards.forEach( ( name, index ) =>
 		{
 			const matchingBoard = datas.boards.find( board => board.name === name )
 
@@ -116,7 +132,7 @@ export namespace Printer
 				printStringified( Board.stringify( matchingBoard, states, printArgs ) )
 				console.log('')
 
-				if( index !== ( boardNames.length - 1 ) )
+				if( index !== ( theBoards.length - 1 ) )
 					console.log( separator('-'), '\n' )
 			}
 		});

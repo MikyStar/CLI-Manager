@@ -18,7 +18,7 @@ export interface DefaultArgs
 
 	depth ?: number,
 	board ?: string,
-	printAfterEdition ?: boolean
+	printAfter ?: boolean
 
 	storageFile ?: string,
 	configFile ?: string,
@@ -32,7 +32,7 @@ export const DEFAULT_CONFIG_DATAS =
 {
 	"defaultArgs":
 	{
-		"printAfterEdition": true,
+		"printAfter": true,
 		"board": "backlog",
 		"storageFile": "tasks.json"
 	},

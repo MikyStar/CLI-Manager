@@ -40,6 +40,14 @@
                 "dependencies": [],
                 "id": 5,
                 "timestamp": "25/07/2021"
+            },
+            {
+                "name": "printing user if update available",
+                "state": "todo",
+                "dependencies": [],
+                "description": "fetch at begining from github and compare to current pkg version",
+                "id": 0,
+                "timestamp": "25/07/2021"
             }
         ]
     }
