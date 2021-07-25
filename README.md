@@ -147,6 +147,14 @@ _Example:_
 
 ## Commands
 
+You can use the _help_ flag if you want a quick reminder of the CLI commands
+
+_Example:_
+```sh
+task --help # Full manuel
+task a --help # Print help for adding task
+```
+
 ### Printing arguments
 
 Can either be passed as CLI arguments or stored in the `defaultArgs` object in the config file

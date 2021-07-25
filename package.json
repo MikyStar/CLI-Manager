@@ -1,7 +1,7 @@
 {
 	"name": "cli-manager",
 	"version": "0.1.0",
-	"description": "Providing an easy and usefull Command Line Interface for managing tasks with local files",
+	"description": "Providing an easy and usefull command line interface for managing tasks with local files",
 	"keywords": [
 		"cli",
 		"tasks",

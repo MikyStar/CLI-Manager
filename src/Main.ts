@@ -18,6 +18,11 @@ try
 
 	//////////
 
+	// ! REMOVE
+	controller.addFeedback( Help.init() )
+	controller.exit({bypassPrintAfter: true})
+	// ! REMOVE
+
 	if( !argHandler.isThereCLIArgs )
 	{
 		controller.printAll()
@@ -33,9 +38,9 @@ try
 			controller.printTasks( tasksId )
 		}
 		else if( argHandler.isHelpNeeded )
-			controller.addFeedback( Help.getFullMan() )
+			controller.addFeedback( Help.fullMan() )
 		else if( argHandler.isVersion )
-			controller.addFeedback( Help.version )
+			controller.addFeedback( Help.version() )
 
 		controller.exit({ bypassPrintAfter: true })
 	}
