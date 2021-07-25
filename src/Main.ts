@@ -18,13 +18,13 @@ try
 
 	//////////
 
-	if( !argHandler.isThereCLIArgs() )
+	if( !argHandler.isThereCLIArgs )
 	{
 		controller.printAll()
 		controller.exit({ bypassPrintAfter: true })
 	}
 
-	if( argHandler.isThereOnlyOneCLIArgs() )
+	if( argHandler.isThereOnlyOneCLIArgs )
 	{
 		if( firstArg.isTask )
 		{
@@ -32,9 +32,9 @@ try
 
 			controller.printTasks( tasksId )
 		}
-		else if( argHandler.isHelpNeeded() )
+		else if( argHandler.isHelpNeeded )
 			controller.addFeedback( Help.getFullMan() )
-		else if( argHandler.isVersion() )
+		else if( argHandler.isVersion )
 		{
 			const temp = Help.version
 			controller.addFeedback( Help.version )
@@ -53,7 +53,7 @@ try
 			{
 				let id
 
-				if( argHandler.isThereOnlyOneCLIArgs() )
+				if( argHandler.isThereOnlyOneCLIArgs )
 					id = Prompt.addTask( storage, config )
 				else
 				{
