@@ -42,6 +42,13 @@ export interface RawArg
 	isFlag ?: boolean
 }
 
+export interface TaskFlags
+{
+	description ?: string
+	state ?: string
+	linked ?: number[]
+}
+
 ////////////////////////////////////////
 
 export class CliArgHandler
@@ -94,7 +101,7 @@ export class CliArgHandler
 				}
 	}
 
-	getTaskFlags = () =>
+	getTaskFlags = () : TaskFlags =>
 	{
 		return	{
 					description: this.getDescription(),
