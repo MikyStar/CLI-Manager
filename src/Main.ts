@@ -72,7 +72,7 @@ try
 					id = storage.addTask( task, parentItem )
 				}
 
-				controller.addFeedbackLine( `Task n°${ id } added` )
+				controller.addFeedback( `Task n°${ id } added` )
 				controller.exit()
 				break;
 			}
@@ -83,7 +83,7 @@ try
 			{
 				const boardName = storage.addBoard( argHandler.getFirstText(), description )
 
-				controller.addFeedbackLine( `Board '${ boardName }' added` )
+				controller.addFeedback( `Board '${ boardName }' added` )
 				controller.exit()
 				break;
 			}

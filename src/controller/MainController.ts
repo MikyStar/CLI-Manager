@@ -80,7 +80,7 @@ export class MainController
 
 	////////////////////
 
-	addFeedbackLine = ( message: string ) => this.userFeedback.push( message )
+	addFeedback = ( message: string ) => this.userFeedback.push( message )
 	printFeedback = () => Printer.feedBack( this.userFeedback )
 
 	handleInit = () =>
@@ -88,13 +88,13 @@ export class MainController
 		if( !this.config )
 		{
 			System.writeJSONFile( this.configLocation, DEFAULT_CONFIG_DATAS )
-			this.addFeedbackLine( `Config file '${ this.configLocation }' created` )
+			this.addFeedback( `Config file '${ this.configLocation }' created` )
 		}
 
 		if( !this.storage )
 		{
 			System.writeJSONFile( this.storageLocation, DEFAULT_STORAGE_DATAS )
-			this.addFeedbackLine( `Storage file '${ this.storageLocation }' created` )
+			this.addFeedback( `Storage file '${ this.storageLocation }' created` )
 		}
 
 		this.exit()
@@ -111,9 +111,6 @@ export class MainController
 	 */
 	exit = ( code ?: number ) =>
 	{
-		if( this.userFeedback.length !== 0 )
-			this.printFeedback()
-
 		if( this.printAfter )
 		{
 			if( this.board )
@@ -121,6 +118,9 @@ export class MainController
 			else
 				this.printAll()
 		}
+
+		if( this.userFeedback.length !== 0 )
+			this.printFeedback()
 
 		this.stop( code )
 	}
