@@ -28,6 +28,8 @@ Requires [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 
 ```sh
 npm i -g # TODO
+
+task --version # Print installed version
 ```
 
 ---

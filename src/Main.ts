@@ -35,10 +35,7 @@ try
 		else if( argHandler.isHelpNeeded )
 			controller.addFeedback( Help.getFullMan() )
 		else if( argHandler.isVersion )
-		{
-			const temp = Help.version
 			controller.addFeedback( Help.version )
-		}
 
 		controller.exit({ bypassPrintAfter: true })
 	}
