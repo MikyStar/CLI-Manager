@@ -48,6 +48,13 @@
                 "description": "fetch at begining from github and compare to current pkg version",
                 "id": 0,
                 "timestamp": "25/07/2021"
+            },
+            {
+                "name": "printing action documentation",
+                "state": "todo",
+                "dependencies": [],
+                "id": 6,
+                "timestamp": "25/07/2021"
             }
         ]
     }
