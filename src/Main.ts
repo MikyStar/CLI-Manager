@@ -13,14 +13,16 @@ try
 	const argHandler = new CliArgHandler()
 	const controller = new MainController( argHandler )
 
-	const { firstArg, storage, config, taskFlags, board } = controller
+	const { firstArg, storage, config, taskFlags, board, printAfter } = controller
 	const { state, description, linked } = taskFlags
 
 	//////////
 
 	if( !argHandler.isThereCLIArgs() )
 	{
-		controller.printAll()
+		if( !printAfter ) // Don't print twice as stop will handle it
+			controller.printAll()
+
 		controller.stop()
 	}
 
@@ -68,7 +70,7 @@ try
 				}
 
 				controller.addFeedbackLine( `Task n°${ id } added` )
-				controller.stop({ wasActionEdition: true })
+				controller.stop()
 				break;
 			}
 	

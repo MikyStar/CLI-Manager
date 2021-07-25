@@ -8,14 +8,6 @@ import { FileNotFoundError } from '../errors/FileErrors'
 
 ////////////////////////////////////////
 
-interface StopParameters
-{
-	errorCode ?: number,
-	wasActionEdition ?: boolean
-}
-
-////////////////////////////////////////
-
 export class MainController
 {
 	argHandler: CliArgHandler
@@ -23,7 +15,7 @@ export class MainController
 	printOptions ?: PrintArgs
 	firstArg ?: RawArg
 	isHelpNeeded: boolean
-	printAfterEdit: boolean
+	printAfter: boolean
 
 	configLocation : string
 	config ?: Config
@@ -83,7 +75,7 @@ export class MainController
 
 		this.taskFlags = this.argHandler.getTaskFlags()
 		this.board = this.argHandler.getBoard() || this.config.defaultArgs.board
-		this.printAfterEdit = this.argHandler.getPrintAfterEdit() || this.config.defaultArgs.printAfterEdition
+		this.printAfter = this.argHandler.getPrintAfter() || this.config.defaultArgs.printAfter
 	}
 
 	////////////////////
@@ -110,17 +102,24 @@ export class MainController
 
 	printAll = () => Printer.printAll( this.printOptions )
 	printTasks = ( tasksID: number[] ) => Printer.printTasks( tasksID, this.printOptions )
+	printBoards = ( boardNames: string[] ) => Printer.printBoards( boardNames, this.printOptions )
 
-	stop = ( params ?: StopParameters ) =>
+	/**
+	 * Prints feedback if needed and print all if user params print afer then stop
+	 */
+	stop = ( code ?: number ) =>
 	{
-		const { errorCode, wasActionEdition } = params || {}
-
 		if( this.userFeedback !== '' )
 			this.printFeedback()
 
-		if( wasActionEdition && this.printAfterEdit )
-			this.printAll()
+		if( this.printAfter )
+		{
+			if( this.board )
+				this.printBoards( [ this.board ] )
+			else
+				this.printAll()
+		}
 
-		System.exit( errorCode )
+		System.exit( code )
 	}
 }

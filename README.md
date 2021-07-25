@@ -71,7 +71,7 @@ _Example:_
 		"hideTimestamp": true,
 		"hideSubCounter": true,
 		"hideTree": true,
-		"printAfterEdition": true,
+		"printAfter": true,
 
 		"depth" : 3,
 

@@ -26,7 +26,7 @@ export enum Flag
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
 	DEPTH = '--depth',
-	PRINT_AFTER_EDIT = '--print',
+	PRINT_AFTER = '--print',
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
@@ -112,7 +112,7 @@ export class CliArgHandler
 
 	getState = () : string => this.popLastFlagAndValue( Flag.STATE ) as string
 	getDescription = () : string => this.popLastFlagAndValue( Flag.DESCRIPTION ) as string
-	getPrintAfterEdit = () : boolean => this.popLastFlag( Flag.PRINT_AFTER_EDIT )
+	getPrintAfter = () : boolean => this.popLastFlag( Flag.PRINT_AFTER )
 
 	getLinks = () : number[] =>
 	{
