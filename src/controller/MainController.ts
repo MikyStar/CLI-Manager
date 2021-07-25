@@ -11,7 +11,7 @@ import { FileNotFoundError } from '../errors/FileErrors'
 export class MainController
 {
 	argHandler: CliArgHandler
-	userFeedback: string
+	userFeedback: string[]
 	printOptions ?: PrintArgs
 	firstArg ?: RawArg
 	isHelpNeeded: boolean
@@ -33,7 +33,7 @@ export class MainController
 	constructor()
 	{
 		this.argHandler = new CliArgHandler()
-		this.userFeedback = ''
+		this.userFeedback = []
 
 		this.firstArg = this.argHandler.getFirstArg()
 		this.isHelpNeeded = this.argHandler.isHelpNeeded()
@@ -80,7 +80,7 @@ export class MainController
 
 	////////////////////
 
-	addFeedbackLine = ( message: string ) => this.userFeedback += message + '\n'
+	addFeedbackLine = ( message: string ) => this.userFeedback.push( message )
 	printFeedback = () => Printer.feedBack( this.userFeedback )
 
 	handleInit = () =>
@@ -111,7 +111,7 @@ export class MainController
 	 */
 	exit = ( code ?: number ) =>
 	{
-		if( this.userFeedback !== '' )
+		if( this.userFeedback.length !== 0 )
 			this.printFeedback()
 
 		if( this.printAfter )

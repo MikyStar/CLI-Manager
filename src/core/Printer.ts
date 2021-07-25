@@ -54,23 +54,25 @@ export namespace Printer
 		// TODO
 	}
 
-	export const feedBack = ( message : string) =>
+	export const feedBack = ( message : string | string[], chalkColor ?: string ) =>
 	{
-		const text = ' ' + message
+		if( ( message === '' ) || ( message === [] ) )
+			return
+
+		const MARGIN = ' '
+		message = Array.isArray( message ) ? message : [ message ]
 
 		console.log('')
-		console.log( text )
+		message.forEach( line =>
+		{
+			let text = MARGIN + line
+			text = chalkColor ? chalk[ chalkColor ]( test ) : text
+			console.log( text )
+		})
 		console.log('')
 	}
 
-	export const error = ( message: string ) =>
-	{
-		const text = ' ' + message
-
-		console.log('')
-		console.error( chalk.red( text ) )
-		console.log('')
-	}
+	export const error = ( message: string | string[] ) => feedBack( message, 'red' )
 
 	//////////
 
