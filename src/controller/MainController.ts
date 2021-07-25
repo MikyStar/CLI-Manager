@@ -8,6 +8,14 @@ import { FileNotFoundError } from '../errors/FileErrors'
 
 ////////////////////////////////////////
 
+interface ExitArgs
+{
+	code ?: number,
+	bypassPrintAfter ?: boolean
+}
+
+////////////////////////////////////////
+
 export class MainController
 {
 	argHandler: CliArgHandler
@@ -80,7 +88,12 @@ export class MainController
 
 	////////////////////
 
-	addFeedback = ( message: string ) => this.userFeedback.push( message )
+	addFeedback = ( message: string | string[] ) =>
+	{
+		const lines = Array.isArray( message ) ? message : [ message ]
+		this.userFeedback = [ ...this.userFeedback, ...lines ]
+	}
+
 	printFeedback = () => Printer.feedBack( this.userFeedback )
 
 	handleInit = () =>
@@ -104,14 +117,15 @@ export class MainController
 	printTasks = ( tasksID: number | number[] ) => Printer.printTasks( tasksID, this.printOptions )
 	printBoards = ( boardNames: string | string[] ) => Printer.printBoards( boardNames, this.printOptions )
 
-	stop = ( code ?: number ) => System.exit( code )
-
 	/**
 	 * Handles feedback, print afer and stopping
 	 */
-	exit = ( code ?: number ) =>
+	exit = ( args ?: ExitArgs ) =>
 	{
-		if( this.printAfter )
+		args = args || {}
+		const { code, bypassPrintAfter } = args
+
+		if( this.printAfter && !bypassPrintAfter )
 		{
 			if( this.board )
 				this.printBoards( this.board )
@@ -122,6 +136,6 @@ export class MainController
 		if( this.userFeedback.length !== 0 )
 			this.printFeedback()
 
-		this.stop( code )
+		System.exit( code )
 	}
 }

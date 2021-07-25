@@ -10,6 +10,10 @@
 	"author": "Mike AUBENAS",
 	"license": "ISC",
 	"main": "Main.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/MikyStar/CLI-Manager"
+	},
 	"scripts": {
 		"start": "NODE_ENV=dev npm run tsc && node dist/Main.js",
 		"tsc": "tsc",

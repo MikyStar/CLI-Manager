@@ -19,6 +19,7 @@ export enum Action
 export enum Flag
 {
 	HELP = '--help',
+	VERSION = '--version',
 	STORAGE_FILE = '--storage',
 	CONFIG_FILE = '--config',
 	HIDE_DESCRIPTION = '--hide-description',
@@ -70,6 +71,7 @@ export class CliArgHandler
 	isThereCLIArgs = () : boolean => this.cliArgs.length !== 0
 	isThereOnlyOneCLIArgs = () : boolean => this.cliArgs.length === 1
 	isHelpNeeded = () : boolean => this.popLastFlag( Flag.HELP )
+	isVersion = () : boolean => this.popLastFlag( Flag.VERSION )
 
 	////////////////////
 

@@ -1,8 +1,10 @@
-import { Action, CliArgHandler } from "./core/CliArgHandler";
+import { Action } from "./core/CliArgHandler";
 import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
 import { Printer } from "./core/Printer";
 import { System } from './core/System'
+
+import Help from './utils/Help'
 
 import { MainController } from "./controller/MainController";
 
@@ -19,7 +21,7 @@ try
 	if( !argHandler.isThereCLIArgs() )
 	{
 		controller.printAll()
-		controller.stop()
+		controller.exit({ bypassPrintAfter: true })
 	}
 
 	if( argHandler.isThereOnlyOneCLIArgs() )
@@ -29,12 +31,16 @@ try
 			const tasksId = firstArg.value as number[]
 
 			controller.printTasks( tasksId )
-			controller.stop()
 		}
 		else if( argHandler.isHelpNeeded() )
+			controller.addFeedback( Help.getFullMan() )
+		else if( argHandler.isVersion() )
 		{
-			// TODO
+			const temp = Help.version
+			controller.addFeedback( Help.version )
 		}
+
+		controller.exit({ bypassPrintAfter: true })
 	}
 
 	//////////
