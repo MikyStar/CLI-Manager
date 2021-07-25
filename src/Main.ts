@@ -22,12 +22,19 @@ try
 		controller.stop()
 	}
 
-	if( argHandler.isThereOnlyOneCLIArgs() && firstArg.isTask )
+	if( argHandler.isThereOnlyOneCLIArgs() )
 	{
-		const tasksId = firstArg.value as number[]
-	
-		controller.printTasks( tasksId )
-		controller.stop()
+		if( firstArg.isTask )
+		{
+			const tasksId = firstArg.value as number[]
+
+			controller.printTasks( tasksId )
+			controller.stop()
+		}
+		else if( argHandler.isHelpNeeded() )
+		{
+			// TODO
+		}
 	}
 
 	//////////
@@ -51,7 +58,7 @@ try
 						dependencies: linked,
 						description,
 					}
-	
+
 					let parentItem = {}
 					const isRemainingOnlyATask = ( argHandler.untreatedArgs.length === 1 ) && ( argHandler.untreatedArgs[ 0 ].isTask ) 
 					if( isRemainingOnlyATask )
@@ -61,7 +68,7 @@ try
 					}
 					else
 						parentItem = { boardName: board }
-	
+
 					id = storage.addTask( task, parentItem )
 				}
 
@@ -69,9 +76,9 @@ try
 				controller.exit()
 				break;
 			}
-	
+
 			////////////////////
-	
+
 			case Action.ADD_BOARD:
 			{
 				const boardName = storage.addBoard( argHandler.getFirstText(), description )
@@ -85,7 +92,6 @@ try
 }
 catch( error )
 {
-	Printer.error( 'in main catch' + error )
-
-	System.exit( - 1 )
+	Printer.error( error )
+	System.exit( -1 )
 }
