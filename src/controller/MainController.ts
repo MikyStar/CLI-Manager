@@ -28,11 +28,11 @@ export class MainController
 	////////////////////
 
 	/**
-	 * Handles init and expose context to handle the Main flow
+	 * Handles init and expose context to Main flow
 	 */
-	constructor( cliArgHandler: CliArgHandler )
+	constructor()
 	{
-		this.argHandler = cliArgHandler
+		this.argHandler = new CliArgHandler()
 		this.userFeedback = ''
 
 		this.firstArg = this.argHandler.getFirstArg()

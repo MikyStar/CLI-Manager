@@ -53,7 +53,7 @@ export interface TaskFlags
 
 export class CliArgHandler
 {
-	userArgs: RawArg[]
+	cliArgs: RawArg[]
 
 	untreatedArgs: RawArg[]
 
@@ -61,21 +61,21 @@ export class CliArgHandler
 
 	constructor()
 	{
-		this.userArgs = this.rawParse( process.argv.slice( 2) )
-		this.untreatedArgs = [ ...this.userArgs ]
+		this.cliArgs = this.rawParse( process.argv.slice( 2) )
+		this.untreatedArgs = [ ...this.cliArgs ]
 	}
 
 	////////////////////
 
-	isThereCLIArgs = () : boolean => this.userArgs.length !== 0
-	isThereOnlyOneCLIArgs = () : boolean => this.userArgs.length === 1
+	isThereCLIArgs = () : boolean => this.cliArgs.length !== 0
+	isThereOnlyOneCLIArgs = () : boolean => this.cliArgs.length === 1
 	isHelpNeeded = () : boolean => this.popLastFlag( Flag.HELP )
 
 	////////////////////
 
 	getFirstArg = () =>
 	{
-		const firstArg = this.userArgs[ 0 ]
+		const firstArg = this.cliArgs[ 0 ]
 		this.untreatedArgs.splice( 0, 1 )
 
 		return firstArg

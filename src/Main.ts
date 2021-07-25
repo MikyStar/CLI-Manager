@@ -10,10 +10,8 @@ import { MainController } from "./controller/MainController";
 
 try
 {
-	const argHandler = new CliArgHandler()
-	const controller = new MainController( argHandler )
-
-	const { firstArg, storage, config, taskFlags, board, printAfter } = controller
+	const controller = new MainController()
+	const { argHandler, firstArg, storage, config, taskFlags, board } = controller
 	const { state, description, linked } = taskFlags
 
 	//////////

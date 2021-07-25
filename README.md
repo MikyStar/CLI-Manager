@@ -155,7 +155,7 @@ Can either be passed as CLI arguments or stored in the `defaultArgs` object in t
 --hide-tree		# No tree branches
 --hide-timestamp	# No timestamp
 --hide-sub-counter	# No subtask counter in parent task
---print	# Print tasks after edition
+--print	# Print your tasks or boards after having ran your command
 ```
 
 ### Board
