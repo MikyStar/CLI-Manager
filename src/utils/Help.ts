@@ -61,7 +61,7 @@ class Help
 
 	init = () => this.makeMan(
 		{
-			title: 'Create required files',
+			title: 'Creating required files',
 			prototype: 'task init [--config <relative path>] [--storage <relative path>]',
 			argDef:
 			[
@@ -75,7 +75,7 @@ class Help
 
 	viewing = () => this.makeMan(
 		{
-			title: 'View',
+			title: 'Viewing',
 			prototype: 'task [@<board name>] [<task(s)>] [printing args]',
 			argDef:
 			[
@@ -97,12 +97,12 @@ class Help
 
 	createTask = () => this.makeMan(
 		{
-			title: 'Create a task',
+			title: 'Creating a task',
 			prototype: 'task a [@<board name>] [<task>] [<task name>] [-d <description>] [-s <state>] [-l <task(s)>]',
 			argDef:
 			[
 				"@<board name> : The board you want to display preceded by '@'",
-				'task : Task id uppon which you want to add a child subtask',
+				'<task> : Task id uppon which you want to add a child subtask',
 				'<name> : Task name',
 				'-d <description> : Task description',
 				'-s <state> : Task state defined by the config file',
@@ -117,9 +117,88 @@ class Help
 		}
 	)
 
+	editingTask = () => this.makeMan(
+		{
+			title: 'Editing task',
+			prototype: 'task e <task(s)> [<new name>] [-d <description>] [-s <state>] [-l <task(s)>]',
+			argDef:
+			[
+				"<task(s)> : The id of the task you want to edit, you can pass multiple by separating the ids by ',' without space",
+				'<new name> : Edit task name',
+				'-d <description> : Edit task description',
+				'-s <state> : Edit task state defined by the config file',
+				"-l <task(s)> : Edit task dependencies, you can pass multiple by separating the ids by ',' without space",
+			],
+			furtherDescription:
+			[
+				"If no args are provided after 'e' you will enter interactive mode to edit your task"
+			],
+			globalArgs: true,
+			footer: true
+		}
+	)
+
+	checkTask = () => this.makeMan(
+		{
+			title: 'Checking task',
+			prototype: 'task c <task(s)> [-r]',
+			argDef:
+			[
+				"<task(s)> : The id of the task you want to change, you can pass multiple by separating the ids by ',' without space",
+				"-r: Also update target task's subtasks, 'recursive'"
+			],
+			furtherDescription:
+			[
+				"Will put tasks to the final state (last index in config file)"
+			],
+			globalArgs: true,
+			footer: true
+		}
+	)
+
+	incrementTask = () => this.makeMan(
+		{
+			title: 'Incrementing task',
+			prototype: 'task i <task(s)> [-r]',
+			argDef:
+			[
+				"<task(s)> : The id of the task you want to increment, you can pass multiple by separating the ids by ',' without space",
+				"-r: Also update target task's subtasks, 'recursive'"
+			],
+			furtherDescription:
+			[
+				"Will put tasks to the next state (next index in config file)"
+			],
+			globalArgs: true,
+			footer: true
+		}
+	)
+
+	moveTask = () => this.makeMan(
+		{
+			title: 'Moving task',
+			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [-d <new board description>]',
+			argDef:
+			[
+				"<target task(s)> : The id of the task you want to move, you can pass multiple by separating the ids by ',' without space",
+				"@<existing board name dest> : The target board preceded by '@'",
+				"<task id dest> : The id of the target task",
+				'-d <new board description> : The description of the new board made out from the target task',
+			],
+			furtherDescription:
+			[
+				"If no destination board or task provided, will create a new board out of the task"
+					+ ", use task name as board name and subtasks as task",
+				"Tree structure will be maintained"
+			],
+			globalArgs: true,
+			footer: true
+		}
+	)
+
 	createBoard = () => this.makeMan(
 		{
-			title: 'Create a boad',
+			title: 'Creating a boad',
 			prototype: 'task b <board name> [-d <description>]',
 			argDef:
 			[
@@ -130,6 +209,13 @@ class Help
 			footer: true
 		}
 	)
+
+	/*
+	renameBoard
+	deleteBoard
+	cleanBoard
+	extractBoards
+	*/
 
 	fullMan = () =>
 		[

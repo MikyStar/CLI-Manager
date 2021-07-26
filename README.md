@@ -208,7 +208,7 @@ task 9,13	# Print details on what's in task n°9 and 13
 # Editing tasks
 task e 9	# Edit taks attributes with interactive prompt
 task e 9 'renaming the task' -s 'wip'	# Rename task n°9 and change its state
-task 9,7,2 -s 'to test'	# Change state to 'done'
+task e 9,7,2 -s 'to test'	# Change state to 'done'
 task c 7	# Put task to final state, 'Check'
 task i 11,14	# Pass tasks 11 and 14 to next state, "Increment"
 task i 11,14 -r	# Pass tasks 11 and 14 and their subtasks to next state, "Increment"
