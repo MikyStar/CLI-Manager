@@ -1,7 +1,7 @@
 {
 	"name": "cli-manager",
 	"version": "0.1.0",
-	"description": "Providing an easy and usefull Command Line Interface for managing tasks with local files",
+	"description": "Providing an easy and usefull command line interface for managing tasks with local files",
 	"keywords": [
 		"cli",
 		"tasks",
@@ -10,6 +10,10 @@
 	"author": "Mike AUBENAS",
 	"license": "ISC",
 	"main": "Main.js",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/MikyStar/CLI-Manager"
+	},
 	"scripts": {
 		"start": "NODE_ENV=dev npm run tsc && node dist/Main.js",
 		"tsc": "tsc",

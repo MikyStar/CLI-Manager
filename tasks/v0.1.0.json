@@ -29,7 +29,7 @@
             },
             {
                 "name": "improve doc for commands",
-                "state": "todo",
+                "state": "wip",
                 "dependencies": [],
                 "description": "Bash like doc with optional arguments, examples ...",
                 "id": 4,
@@ -55,6 +55,88 @@
                 "dependencies": [],
                 "id": 6,
                 "timestamp": "25/07/2021"
+            },
+            {
+                "name": "add taggs with #",
+                "state": "todo",
+                "dependencies": [],
+                "id": 7,
+                "timestamp": "27/07/2021",
+                "subtasks": [
+                    {
+                        "name": "new flag to hide taggs",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 13,
+                        "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "print tags like description but with #",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 14,
+                        "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "searching through tags",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 15,
+                        "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "taggs defined in config file",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 17,
+                        "timestamp": "27/07/2021"
+                    }
+                ]
+            },
+            {
+                "name": "add deadline",
+                "state": "todo",
+                "dependencies": [],
+                "id": 8,
+                "timestamp": "27/07/2021",
+                "subtasks": [
+                    {
+                        "name": "change timestamp into deadline",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 9,
+                        "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "print remaining time aligned to the right with color code",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 10,
+                        "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "new flag --sort asc desc to print flatlisted",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 11,
+                        "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "new flag to hide deadline",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 12,
+                        "timestamp": "27/07/2021"
+                    }
+                ]
+            },
+            {
+                "name": "searching task",
+                "state": "todo",
+                "dependencies": [],
+                "description": "Maybe more of a grep work ???",
+                "id": 16,
+                "timestamp": "27/07/2021"
             }
         ]
     }

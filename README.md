@@ -28,6 +28,8 @@ Requires [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 
 ```sh
 npm i -g # TODO
+
+task --version # Print installed version
 ```
 
 ---
@@ -145,6 +147,14 @@ _Example:_
 
 ## Commands
 
+You can use the _help_ flag if you want a quick reminder of the CLI commands
+
+_Example:_
+```sh
+task --help # Full manuel
+task a --help # Print help for adding task
+```
+
 ### Printing arguments
 
 Can either be passed as CLI arguments or stored in the `defaultArgs` object in the config file
@@ -176,7 +186,7 @@ task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 task clean @mBoard	# Remove all task in board @mBoard which are at final state
 
 # Extracting
-task x @board1 @board2 relative path	# Create a new storage file from one or multiple boards, "Extract"
+task x @board1 @board2 relativePath	# Create a new storage file from one or multiple boards, "Extract"
 ```
 
 ### Task
@@ -198,7 +208,7 @@ task 9,13	# Print details on what's in task n°9 and 13
 # Editing tasks
 task e 9	# Edit taks attributes with interactive prompt
 task e 9 'renaming the task' -s 'wip'	# Rename task n°9 and change its state
-task 9,7,2 -s 'to test'	# Change state to 'done'
+task e 9,7,2 -s 'to test'	# Change state to 'done'
 task c 7	# Put task to final state, 'Check'
 task i 11,14	# Pass tasks 11 and 14 to next state, "Increment"
 task i 11,14 -r	# Pass tasks 11 and 14 and their subtasks to next state, "Increment"
@@ -208,6 +218,9 @@ task mv 9 -d 'A brand new board'	# Make a new board out of a task subtasks and g
 task mv 9 @otherBoard	# Move task and subtasks to board
 task mv 9,7,11 @otherBoard	# Move multiple tasks and subtasks to board
 task mv 9,7,11 3	# Move multiple tasks and subtasks to task as subtasks (maintining tree structure)
+
+# Deleting tasks
+task d 9,7,11	# Delting task 9, 7 and 11
 ```
 
 # Intended Workflow

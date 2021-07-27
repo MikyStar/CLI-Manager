@@ -1,8 +1,10 @@
-import { Action, CliArgHandler } from "./core/CliArgHandler";
+import { Action } from "./core/CliArgHandler";
 import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
 import { Printer } from "./core/Printer";
 import { System } from './core/System'
+
+import Help from './utils/Help'
 
 import { MainController } from "./controller/MainController";
 
@@ -16,25 +18,37 @@ try
 
 	//////////
 
-	if( !argHandler.isThereCLIArgs() )
+
+
+
+	// ! REMOVE
+	controller.addFeedback( Help.fullMan() )
+	controller.exit({bypassPrintAfter: true})
+	// ! REMOVE
+
+
+
+
+	if( !argHandler.isThereCLIArgs )
 	{
 		controller.printAll()
-		controller.stop()
+		controller.exit({ bypassPrintAfter: true })
 	}
 
-	if( argHandler.isThereOnlyOneCLIArgs() )
+	if( argHandler.isThereOnlyOneCLIArgs )
 	{
 		if( firstArg.isTask )
 		{
 			const tasksId = firstArg.value as number[]
 
 			controller.printTasks( tasksId )
-			controller.stop()
 		}
-		else if( argHandler.isHelpNeeded() )
-		{
-			// TODO
-		}
+		else if( argHandler.isHelpNeeded )
+			controller.addFeedback( Help.fullMan() )
+		else if( argHandler.isVersion )
+			controller.addFeedback( Help.version )
+
+		controller.exit({ bypassPrintAfter: true })
 	}
 
 	//////////
@@ -47,7 +61,7 @@ try
 			{
 				let id
 
-				if( argHandler.isThereOnlyOneCLIArgs() )
+				if( argHandler.isThereOnlyOneCLIArgs )
 					id = Prompt.addTask( storage, config )
 				else
 				{
