@@ -22,7 +22,7 @@ try
 
 
 	// ! REMOVE
-	controller.addFeedback( Help.getMan( "checkingTask" ) )
+	controller.addFeedback( Help.fullMan() )
 	controller.exit({bypassPrintAfter: true})
 	// ! REMOVE
 

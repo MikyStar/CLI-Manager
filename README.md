@@ -186,7 +186,7 @@ task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 task clean @mBoard	# Remove all task in board @mBoard which are at final state
 
 # Extracting
-task x @board1 @board2 relative path	# Create a new storage file from one or multiple boards, "Extract"
+task x @board1 @board2 relativePath	# Create a new storage file from one or multiple boards, "Extract"
 ```
 
 ### Task
@@ -218,6 +218,9 @@ task mv 9 -d 'A brand new board'	# Make a new board out of a task subtasks and g
 task mv 9 @otherBoard	# Move task and subtasks to board
 task mv 9,7,11 @otherBoard	# Move multiple tasks and subtasks to board
 task mv 9,7,11 3	# Move multiple tasks and subtasks to task as subtasks (maintining tree structure)
+
+# Deleting tasks
+task d 9,7,11	# Delting task 9, 7 and 11
 ```
 
 # Intended Workflow

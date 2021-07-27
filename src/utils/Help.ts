@@ -28,14 +28,17 @@ interface ManEntries
 	checkingTask: ManPage
 	incrementingTask: ManPage
 	movingTask: ManPage
-	deletingTask: ManPage
 
 	creatingBoard: ManPage
-	renameBoard: ManPage
-	deleteBoard: ManPage
-	cleanBoard: ManPage
-	extractBoards: ManPage
+	renamingBoard: ManPage
+	cleaningBoard: ManPage
+	extractingBoards: ManPage
+
+	deleting: ManPage
+
 }
+
+type Entries = keyof ManEntries
 
 ////////////////////////////////////////
 
@@ -47,11 +50,7 @@ class Help implements ManEntries
 	private footer: string[]
 	private globalArgs: string[]
 
-	/////
-
 	version: string[]
-
-	/////
 
 	init: ManPage
 	viewing: ManPage
@@ -61,13 +60,13 @@ class Help implements ManEntries
 	checkingTask: ManPage
 	incrementingTask: ManPage
 	movingTask: ManPage
-	deletingTask: ManPage
 
 	creatingBoard: ManPage
-	renameBoard: ManPage
-	deleteBoard: ManPage
-	cleanBoard: ManPage
-	extractBoards: ManPage
+	renamingBoard: ManPage
+	cleaningBoard: ManPage
+	extractingBoards: ManPage
+
+	deleting: ManPage
 
 	////////////////////
 
@@ -109,7 +108,6 @@ class Help implements ManEntries
 				`--storage : The storage file, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }, `
 					+ 'could be used to create a new storage file for an existing configuration',
 			],
-			footer: true
 		}
 
 		this.viewing =
@@ -130,7 +128,6 @@ class Help implements ManEntries
 				'--hide-sub-counter : No subtask counter in parent task',
 				'--print : Print your tasks or boards after having ran your command'
 			],
-			footer: true
 		}
 
 		this.creatingTask =
@@ -151,7 +148,6 @@ class Help implements ManEntries
 				"If no args are provided after 'a' you will enter interactive mode to create your task"
 			],
 			globalArgs: true,
-			footer: true
 		}
 
 		this.editingTask =
@@ -171,7 +167,6 @@ class Help implements ManEntries
 				"If no args are provided after 'e' you will enter interactive mode to edit your task"
 			],
 			globalArgs: true,
-			footer: true
 		}
 
 		this.checkingTask =
@@ -188,7 +183,6 @@ class Help implements ManEntries
 				"Will put tasks to the final state (last index in config file)"
 			],
 			globalArgs: true,
-			footer: true
 		}
 
 		this.incrementingTask =
@@ -205,7 +199,6 @@ class Help implements ManEntries
 				"Will put tasks to the next state (next index in config file)"
 			],
 			globalArgs: true,
-			footer: true
 		}
 
 		this.movingTask =
@@ -226,14 +219,25 @@ class Help implements ManEntries
 				"Tree structure will be maintained"
 			],
 			globalArgs: true,
-			footer: true
+		}
+
+		this.deleting =
+		{
+			title: 'Deleting',
+			prototype: 'task d [@<board name>] [<task(s)>]',
+			argDef:
+			[
+				"@<board name> : The target board preceded by '@'",
+				"<task(s)> : The id of the task you want to remove, you can pass multiple by separating the ids by ',' without space",
+			],
+			globalArgs: true,
 		}
 
 		//////////
 
 		this.creatingBoard =
 		{
-			title: 'Creating a boad',
+			title: 'Creating boad',
 			prototype: 'task b <board name> [-d <description>] [global args]',
 			argDef:
 			[
@@ -241,20 +245,69 @@ class Help implements ManEntries
 				'-d <description> : Board description',
 			],
 			globalArgs: true,
-			footer: true
+		}
+
+		this.renamingBoard =
+		{
+			title: 'Renaming board',
+			prototype: 'task rn @<previous board name> <new board name>',
+			argDef:
+			[
+				"@<previous board name> : The target board preceded by '@'",
+				"<new board name> : The new board name",
+			],
+			globalArgs: true,
+		}
+
+		this.cleaningBoard =
+		{
+			title: 'Cleaning board',
+			prototype: 'task clean @<board name>',
+			argDef:
+			[
+				"@<board name> : The target board preceded by '@'",
+			],
+			globalArgs: true
+		}
+
+		this.extractingBoards =
+		{
+			title: 'Extracting board',
+			prototype: 'task x @<board name 1>  @<board name x>',
+			argDef:
+			[
+				"@<board name 1...x> : Target board names preceded by '@'"
+			],
+			globalArgs: true
 		}
 	}
 
 	////////////////////
 
-	getMan = <K extends keyof ManEntries>( action: K ) => this.makeMan( this[ action ] )
+	getMan = <K extends keyof ManEntries>( action: K ) => this.makeMan( { ...this[ action ], footer: true } )
 
 	////////////////////
 
 	fullMan = () =>
-		[
-			// TODO
-		]
+	{
+		let toReturn = []
+
+		const entries = [ 'init', 'viewing', 'creatingTask', 'editingTask'
+			, 'checkingTask', 'incrementingTask', 'movingTask', 'creatingBoard'
+			, 'renamingBoard', 'cleaningBoard', 'extractingBoards', 'deleting' ]
+
+		entries.forEach( entry =>
+		{
+			const man = this.makeMan({ ...this[ entry ], footer: false, globalArgs: false })
+			toReturn = [ ...toReturn, ...man, , '', '-----' ]
+		});
+
+		return	[
+					...toReturn,
+					...this.globalArgs,
+					...this.footer
+				]
+	}
 
 	////////////////////
 
@@ -276,9 +329,6 @@ class Help implements ManEntries
 
 		if( manPage.globalArgs )
 			toReturn = [ ...toReturn, ...this.globalArgs ]
-
-		if( manPage.footer )
-			toReturn = [ ...toReturn, ...this.footer ]
 
 		return toReturn
 	}
