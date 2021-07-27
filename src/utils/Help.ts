@@ -18,15 +18,56 @@ interface ManPage
 	footer ?: boolean,
 }
 
+interface ManEntries
+{
+	init: ManPage
+	viewing: ManPage
+
+	creatingTask: ManPage
+	editingTask: ManPage
+	checkingTask: ManPage
+	incrementingTask: ManPage
+	movingTask: ManPage
+	deletingTask: ManPage
+
+	creatingBoard: ManPage
+	renameBoard: ManPage
+	deleteBoard: ManPage
+	cleanBoard: ManPage
+	extractBoards: ManPage
+}
+
 ////////////////////////////////////////
 
 /**
  * Expose lines of decorated text as array for help flag
  */
-class Help
+class Help implements ManEntries
 {
 	private footer: string[]
 	private globalArgs: string[]
+
+	/////
+
+	version: string[]
+
+	/////
+
+	init: ManPage
+	viewing: ManPage
+
+	creatingTask: ManPage
+	editingTask: ManPage
+	checkingTask: ManPage
+	incrementingTask: ManPage
+	movingTask: ManPage
+	deletingTask: ManPage
+
+	creatingBoard: ManPage
+	renameBoard: ManPage
+	deleteBoard: ManPage
+	cleanBoard: ManPage
+	extractBoards: ManPage
 
 	////////////////////
 
@@ -50,16 +91,15 @@ class Help
 			'--storage <relative path> : The specific storage file to use',
 			'--config <relative path> : The specific configuration file to use',
 		]
-	}
 
-	////////////////////
+		//////////
 
-	version = () =>
-	[
-		`${ pkg.version }`,
-	]
+		this.version =
+		[
+			`${ pkg.version }`,
+		]
 
-	init = () => this.makeMan(
+		this.init =
 		{
 			title: 'Creating required files',
 			prototype: 'task init [--config <relative path>] [--storage <relative path>]',
@@ -71,9 +111,8 @@ class Help
 			],
 			footer: true
 		}
-	)
 
-	viewing = () => this.makeMan(
+		this.viewing =
 		{
 			title: 'Viewing',
 			prototype: 'task [@<board name>] [<task(s)>] [printing args]',
@@ -93,12 +132,11 @@ class Help
 			],
 			footer: true
 		}
-	)
 
-	createTask = () => this.makeMan(
+		this.creatingTask =
 		{
 			title: 'Creating a task',
-			prototype: 'task a [@<board name>] [<task>] [<task name>] [-d <description>] [-s <state>] [-l <task(s)>]',
+			prototype: 'task a [@<board name>] [<task>] [<task name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
 			argDef:
 			[
 				"@<board name> : The board you want to display preceded by '@'",
@@ -115,12 +153,11 @@ class Help
 			globalArgs: true,
 			footer: true
 		}
-	)
 
-	editingTask = () => this.makeMan(
+		this.editingTask =
 		{
 			title: 'Editing task',
-			prototype: 'task e <task(s)> [<new name>] [-d <description>] [-s <state>] [-l <task(s)>]',
+			prototype: 'task e <task(s)> [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to edit, you can pass multiple by separating the ids by ',' without space",
@@ -136,12 +173,11 @@ class Help
 			globalArgs: true,
 			footer: true
 		}
-	)
 
-	checkTask = () => this.makeMan(
+		this.checkingTask =
 		{
 			title: 'Checking task',
-			prototype: 'task c <task(s)> [-r]',
+			prototype: 'task c <task(s)> [-r] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to change, you can pass multiple by separating the ids by ',' without space",
@@ -154,12 +190,11 @@ class Help
 			globalArgs: true,
 			footer: true
 		}
-	)
 
-	incrementTask = () => this.makeMan(
+		this.incrementingTask =
 		{
 			title: 'Incrementing task',
-			prototype: 'task i <task(s)> [-r]',
+			prototype: 'task i <task(s)> [-r] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to increment, you can pass multiple by separating the ids by ',' without space",
@@ -172,12 +207,11 @@ class Help
 			globalArgs: true,
 			footer: true
 		}
-	)
 
-	moveTask = () => this.makeMan(
+		this.movingTask =
 		{
 			title: 'Moving task',
-			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [-d <new board description>]',
+			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [-d <new board description>] [global args]',
 			argDef:
 			[
 				"<target task(s)> : The id of the task you want to move, you can pass multiple by separating the ids by ',' without space",
@@ -194,12 +228,13 @@ class Help
 			globalArgs: true,
 			footer: true
 		}
-	)
 
-	createBoard = () => this.makeMan(
+		//////////
+
+		this.creatingBoard =
 		{
 			title: 'Creating a boad',
-			prototype: 'task b <board name> [-d <description>]',
+			prototype: 'task b <board name> [-d <description>] [global args]',
 			argDef:
 			[
 				'<board name> : Board name',
@@ -208,14 +243,13 @@ class Help
 			globalArgs: true,
 			footer: true
 		}
-	)
+	}
 
-	/*
-	renameBoard
-	deleteBoard
-	cleanBoard
-	extractBoards
-	*/
+	////////////////////
+
+	getMan = <K extends keyof ManEntries>( action: K ) => this.makeMan( this[ action ] )
+
+	////////////////////
 
 	fullMan = () =>
 		[
@@ -232,12 +266,7 @@ class Help
 			toReturn = [ ...toReturn, underline( manPage.title ), '' ]
 
 		if( manPage.prototype )
-		{
-			if( manPage.globalArgs )
-				manPage.prototype = manPage.prototype + ' [global arguments]'
-
 			toReturn = [ ...toReturn, bold( manPage.prototype ), '' ]
-		}
 
 		if( manPage.argDef )
 			toReturn = [ ...toReturn, ...manPage.argDef ]

@@ -18,10 +18,16 @@ try
 
 	//////////
 
+
+
+
 	// ! REMOVE
-	controller.addFeedback( Help.init() )
+	controller.addFeedback( Help.getMan( "checkingTask" ) )
 	controller.exit({bypassPrintAfter: true})
 	// ! REMOVE
+
+
+
 
 	if( !argHandler.isThereCLIArgs )
 	{
@@ -40,7 +46,7 @@ try
 		else if( argHandler.isHelpNeeded )
 			controller.addFeedback( Help.fullMan() )
 		else if( argHandler.isVersion )
-			controller.addFeedback( Help.version() )
+			controller.addFeedback( Help.version )
 
 		controller.exit({ bypassPrintAfter: true })
 	}
