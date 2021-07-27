@@ -129,8 +129,8 @@ try
 				const ids = secondArg.value as number | number[]
 				const tasksID = storage.editTask( ids, newAttributes, argHandler.isRecursive )
 
-				const taskPluralHandled = ( tasksID.length > 0 ) ? 'Tasks' : 'Task'
-				const stringifyiedIDS = ( tasksID.length > 0 ) ? ( tasksID.join(',') ) : tasksID
+				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
+				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
 				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
 				controller.exit()
 				break;

@@ -18,7 +18,7 @@
 			"cwd": "${workspaceRoot}",
 			"protocol": "inspector",
 			"runtimeArgs": ["-r", "ts-node/register"],
-			"args": ["${workspaceRoot}/src/Main.ts", "--version"],
+			"args": ["${workspaceRoot}/src/Main.ts", "e", "16", "CHANGE ME BACK"],
 			"runtimeExecutable": "/Users/mike/.nvm/versions/node/v14.4.0/bin/node",
 			"skipFiles": [
 				"${workspaceFolder}/node_modules/**/*",
