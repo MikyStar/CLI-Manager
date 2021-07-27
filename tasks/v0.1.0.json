@@ -76,6 +76,20 @@
                         "dependencies": [],
                         "id": 14,
                         "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "searching through tags",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 15,
+                        "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "taggs defined in config file",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 17,
+                        "timestamp": "27/07/2021"
                     }
                 ]
             },
@@ -115,6 +129,14 @@
                         "timestamp": "27/07/2021"
                     }
                 ]
+            },
+            {
+                "name": "searching task",
+                "state": "todo",
+                "dependencies": [],
+                "description": "Maybe more of a grep work ???",
+                "id": 16,
+                "timestamp": "27/07/2021"
             }
         ]
     }
