@@ -69,7 +69,7 @@ try
 					}
 
 					let parentItem = {}
-					const isRemainingOnlyATask = ( argHandler.untreatedArgs.length === 1 ) && ( argHandler.untreatedArgs[ 0 ].isTask ) 
+					const isRemainingOnlyATask = ( argHandler.untreatedArgs.length === 1 ) && ( argHandler.untreatedArgs[ 0 ].isTask )
 					if( isRemainingOnlyATask )
 					{
 						parentItem = { subTaskOf: argHandler.untreatedArgs[ 0 ].value }
@@ -93,6 +93,45 @@ try
 				const boardName = storage.addBoard( argHandler.getFirstText(), description )
 
 				controller.addFeedback( `Board '${ boardName }' added` )
+				controller.exit()
+				break;
+			}
+
+
+			////////////////////
+
+			case Action.EDIT:
+			{
+				const secondArg = argHandler.cliArgs[ 1 ]
+				if( !secondArg.isTask )
+					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+
+				const name = argHandler.getFirstText()
+				const dependencies = linked
+
+				const newAttributes: ITask =
+				{
+					name,
+					dependencies,
+					state,
+					description,
+				}
+
+				if( !name )
+					delete newAttributes.name
+				if( !dependencies )
+					delete newAttributes.dependencies
+				if( !state )
+					delete newAttributes.state
+				if( !description )
+					delete newAttributes.description
+
+				const ids = secondArg.value as number | number[]
+				const tasksID = storage.editTask( ids, newAttributes, argHandler.isRecursive )
+
+				const taskPluralHandled = ( tasksID.length > 0 ) ? 'Tasks' : 'Task'
+				const stringifyiedIDS = ( tasksID.length > 0 ) ? ( tasksID.join(',') ) : tasksID
+				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
 				controller.exit()
 				break;
 			}

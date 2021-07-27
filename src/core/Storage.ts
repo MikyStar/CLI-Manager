@@ -48,7 +48,7 @@ export class Storage
 
 	////////////////////////////////////////
 
-	addTask( task: ITask, { boardName, subTaskOf } : { boardName ?: string, subTaskOf ?: number } )
+	addTask = ( task: ITask, { boardName, subTaskOf } : { boardName ?: string, subTaskOf ?: number } ) =>
 	{
 		const createUniqueId = () =>
 		{
@@ -105,6 +105,27 @@ export class Storage
 		return taskID
 	}
 
+	editTask = ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) =>
+	{
+		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
+
+		tasksID.forEach( id =>
+		{
+			this.retrieveNestedTask( id, task =>
+			{
+				for( const [k, v] of Object.entries( newAttributes ) )
+				{
+					task[ k ] = v
+
+				}
+			});
+		});
+
+		this.save()
+
+		return tasksID
+	}
+
 	addBoard = ( boardName: string, description ?: string ) =>
 	{
 		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0
@@ -120,7 +141,7 @@ export class Storage
 	/**
 	 * Use recursion to return a single task  given id within any boards and any subtask
 	 */
-	retrieveNestedTask = ( taskID: number, callback: ( task: ITask, board ?: IBoard, taskIndex ?: number, boardIndex ?: number ) => any ) =>
+	retrieveNestedTask = ( taskID: number, callback: ( task: ITask, board ?: IBoard, taskIndex ?: number, boardIndex ?: number ) => void ) =>
 	{
 		let wasParentFound = false
 
