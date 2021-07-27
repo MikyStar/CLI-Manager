@@ -31,6 +31,7 @@ export enum Flag
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
+	RECURSIVE = '-r'
 }
 
 export interface RawArg
@@ -61,6 +62,7 @@ export class CliArgHandler
 	isThereOnlyOneCLIArgs: boolean
 	isThereOnlyTwoCLIArgs: boolean
 	isHelpNeeded: boolean
+	isRecursive: boolean
 	isVersion: boolean
 	shouldPrintAfter: boolean
 	configLocation: string
@@ -86,13 +88,15 @@ export class CliArgHandler
 		this.isHelpNeeded = this.popLastFlag( Flag.HELP )
 		this.isVersion = this.popLastFlag( Flag.VERSION )
 		this.shouldPrintAfter = this.popLastFlag( Flag.PRINT_AFTER )
-
+		
 		this.storageLocation = this.popLastFlagAndValue( Flag.STORAGE_FILE ) as string
 		this.configLocation = this.popLastFlagAndValue( Flag.CONFIG_FILE ) as string
-
+		
 		this.stringifyArgs = this.getStringifyArgs()
 		this.taskFlags = this.getTaskFlags()
 		this.board = this.getBoard()
+	
+		this.isRecursive = this.popLastFlag( Flag.RECURSIVE )
 	}
 
 	////////////////////

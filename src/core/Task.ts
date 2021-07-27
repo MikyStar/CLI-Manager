@@ -11,13 +11,13 @@ export const TIMESTAMP_FORMAT = 'DD/MM/YYYY'
 
 export interface ITask
 {
-	name : string,
+	name ?: string,
 	description ?: string,
 	id ?: number,
 	subtasks ?: ITask[],
 	dependencies ?: number[], // Tasks IDS
 	timestamp ?: string,
-	state: string,
+	state ?: string,
 }
 
 export interface StringifyArgs extends DefaultArgs
