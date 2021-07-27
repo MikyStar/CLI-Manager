@@ -2,6 +2,7 @@ import { bold, underline } from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
+import { Action } from "../core/CliArgHandler"
 
 import { DEFAULT_CONFIG_FILE_NAME } from '../core/Config'
 import { DEFAULT_STORAGE_FILE_NAME } from '../core/Storage'
@@ -273,10 +274,11 @@ class Help implements ManEntries
 		this.extractingBoards =
 		{
 			title: 'Extracting board',
-			prototype: 'task x @<board name 1>  @<board name x>',
+			prototype: 'task x @<board name 1>  @<board name x> <relative path>',
 			argDef:
 			[
-				"@<board name 1...x> : Target board names preceded by '@'"
+				"@<board name 1...x> : Target board names preceded by '@'",
+				"relative path : The path where you want to make a new storage file"
 			],
 			globalArgs: true
 		}
@@ -285,8 +287,6 @@ class Help implements ManEntries
 	////////////////////
 
 	getMan = <K extends keyof ManEntries>( action: K ) => this.makeMan( { ...this[ action ], footer: true } )
-
-	////////////////////
 
 	fullMan = () =>
 	{
@@ -307,6 +307,47 @@ class Help implements ManEntries
 					...this.globalArgs,
 					...this.footer
 				]
+	}
+
+	handleAction = ( action: Action ) =>
+	{
+		let toReturn: string[] = []
+
+		switch( action )
+		{
+			case Action.INIT:
+				toReturn = this.getMan( 'init' )
+				break;
+			case Action.ADD_BOARD:
+				toReturn = this.getMan( 'creatingBoard' )
+				break;
+			case Action.ADD_TASK:
+				toReturn = this.getMan( 'creatingTask' )
+				break;
+			case Action.DELETE:
+				toReturn = this.getMan( 'deleting' )
+				break;
+			case Action.CHECK:
+				toReturn = this.getMan( 'checkingTask' )
+				break;
+			case Action.INCREMENT:
+				toReturn = this.getMan( 'incrementingTask' )
+				break;
+			case Action.EDIT:
+				toReturn = this.getMan( 'editingTask' )
+				break;
+			case Action.EXTRACT:
+				toReturn = this.getMan( 'extractingBoards' )
+				break;
+			case Action.MOVE:
+				toReturn = this.getMan( 'movingTask' )
+				break;
+			case Action.RENAME:
+				toReturn = this.getMan( 'renamingBoard' )
+				break;
+		}
+
+		return toReturn
 	}
 
 	////////////////////

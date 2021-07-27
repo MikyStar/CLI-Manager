@@ -59,6 +59,7 @@ export class CliArgHandler
 
 	isThereCLIArgs: boolean
 	isThereOnlyOneCLIArgs: boolean
+	isThereOnlyTwoCLIArgs: boolean
 	isHelpNeeded: boolean
 	isVersion: boolean
 	shouldPrintAfter: boolean
@@ -80,6 +81,7 @@ export class CliArgHandler
 
 		this.isThereCLIArgs = this.cliArgs.length !== 0
 		this.isThereOnlyOneCLIArgs = this.cliArgs.length === 1
+		this.isThereOnlyTwoCLIArgs = this.cliArgs.length === 2
 
 		this.isHelpNeeded = this.popLastFlag( Flag.HELP )
 		this.isVersion = this.popLastFlag( Flag.VERSION )

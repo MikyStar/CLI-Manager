@@ -29,16 +29,10 @@
             },
             {
                 "name": "improve doc for commands",
-                "state": "wip",
+                "state": "done",
                 "dependencies": [],
                 "description": "Bash like doc with optional arguments, examples ...",
                 "id": 4,
-                "timestamp": "25/07/2021"
-            },
-            {
-                "state": "todo",
-                "dependencies": [],
-                "id": 5,
                 "timestamp": "25/07/2021"
             },
             {
@@ -51,7 +45,7 @@
             },
             {
                 "name": "printing action documentation",
-                "state": "todo",
+                "state": "done",
                 "dependencies": [],
                 "id": 6,
                 "timestamp": "25/07/2021"

@@ -18,17 +18,6 @@ try
 
 	//////////
 
-
-
-
-	// ! REMOVE
-	controller.addFeedback( Help.fullMan() )
-	controller.exit({bypassPrintAfter: true})
-	// ! REMOVE
-
-
-
-
 	if( !argHandler.isThereCLIArgs )
 	{
 		controller.printAll()
@@ -48,6 +37,12 @@ try
 		else if( argHandler.isVersion )
 			controller.addFeedback( Help.version )
 
+		controller.exit({ bypassPrintAfter: true })
+	}
+
+	if( argHandler.isThereOnlyTwoCLIArgs && firstArg.isAction && argHandler.isHelpNeeded )
+	{
+		controller.addFeedback( Help.handleAction( firstArg.value as Action ) )
 		controller.exit({ bypassPrintAfter: true })
 	}
 
