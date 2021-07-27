@@ -114,9 +114,14 @@ export class Storage
 			this.retrieveNestedTask( id, task =>
 			{
 				for( const [k, v] of Object.entries( newAttributes ) )
-				{
 					task[ k ] = v
 
+				if( isRecurive )
+				{
+					const subtasksIDs = task.subtasks?.map( sub => sub.id ) || []
+
+					if( subtasksIDs.length !== 0 )
+						this.editTask( subtasksIDs, newAttributes, true )
 				}
 			});
 		});
