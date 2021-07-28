@@ -38,7 +38,7 @@
             },
             {
                 "name": "delete",
-                "state": "wip",
+                "state": "done",
                 "dependencies": [],
                 "id": 2,
                 "timestamp": "25/07/2021"
