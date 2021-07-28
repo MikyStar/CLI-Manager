@@ -81,12 +81,7 @@ export class Storage
 
 		if( boardName )
 		{
-			const boardIndex = this.boards.findIndex( board => board.name === boardName )
-
-			if( boardIndex !== -1 )
-				this.boards[ boardIndex ].tasks.push( finalTask )
-			else
-				throw new BoardNotFoundError( boardName )
+			this.retrieveBoard( boardName, board => board.tasks.push( finalTask ) )
 		}
 		else if( subTaskOf )
 		{
@@ -211,6 +206,86 @@ export class Storage
 		return tasksID
 	}
 
+	moveTask = ( tasksID: number | number [], { boardName, subTask } : { boardName ?: string, subTask ?: number } ) =>
+	{
+		if( ( !boardName && !subTask ) || ( boardName && subTask ) )
+			throw new Error('Should provide either a board or a subtask, not both')
+
+		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
+
+		if( boardName )
+		{
+			// const 
+		}
+	}
+
+	/**
+	 * Use recursion to return a single task  given id within any boards and any subtask
+	 * 
+	 * @throws {TaskNotFoundError}
+	 */
+	retrieveNestedTask = ( taskID: number, callback: ( task: ITask, board ?: IBoard, taskIndex ?: number, boardIndex ?: number ) => void ) =>
+	{
+		let wasTaskFound = false
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.boards.forEach( ( board, boardIndex ) =>
+		{
+			board.tasks.forEach( function iter( task, taskIndex )
+			{
+				if( task.id === taskID )
+				{
+					wasTaskFound = true
+
+					callback( task, board, taskIndex, boardIndex)
+				}
+				else if( !wasTaskFound )
+					Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+			});
+		});
+
+		if( !wasTaskFound )
+			throw new TaskNotFoundError( taskID )
+	}
+
+	/**
+	 * Use recursion to return any task within any boards and any subtask matching value
+	 */
+	searchAllNestedTask = <K extends keyof ITask>( taskAttribute: K, value: any ) =>
+	{
+		const tasks : ITask[] = []
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.boards.forEach( ( board ) =>
+		{
+			board.tasks.forEach( function iter( task )
+			{
+				if( task[ taskAttribute ] === value )
+				{
+					tasks.push( task )
+				}
+
+				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+			});
+		});
+
+		return tasks
+	}
+
+	////////////////////
+
+	addBoard = ( boardName: string, description ?: string ) =>
+	{
+		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0
+		if( nameAlreadyTaken )
+			throw new BoardAlreadyExistsError( boardName )
+
+		this.boards.push( { name: boardName, tasks: [], description } )
+		this.save()
+
+		return boardName
+	}
+
 	deleteBoard = ( boardNames: string | string[] ) =>
 	{
 		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
@@ -238,67 +313,25 @@ export class Storage
 		return boardNames
 	}
 
-	addBoard = ( boardName: string, description ?: string ) =>
-	{
-		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0
-		if( nameAlreadyTaken )
-			throw new BoardAlreadyExistsError( boardName )
-
-		this.boards.push( { name: boardName, tasks: [], description } )
-		this.save()
-
-		return boardName
-	}
-
 	/**
-	 * Use recursion to return a single task  given id within any boards and any subtask
+	 * @throws {BoardNotFoundError}
 	 */
-	retrieveNestedTask = ( taskID: number, callback: ( task: ITask, board ?: IBoard, taskIndex ?: number, boardIndex ?: number ) => void ) =>
+	retrieveBoard = ( boardName: string, callback: ( board: IBoard, boardIndex ?: number ) => void ) =>
 	{
-		let wasParentFound = false
+		let wasBoardFound = false
 
-		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		this.boards.forEach( ( board, boardIndex ) =>
+		this.boards.forEach( ( board, index ) =>
 		{
-			board.tasks.forEach( function iter( task, taskIndex )
+			if( board.name === boardName )
 			{
-				if( task.id === taskID )
-				{
-					wasParentFound = true
+				wasBoardFound = true
 
-					callback( task, board, taskIndex, boardIndex)
-				}
+				callback( board, index )
+			}
+		})
 
-				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
-			});
-		});
-
-		if( !wasParentFound )
-			throw new TaskNotFoundError( taskID )
-	}
-
-	/**
-	 * Use recursion to return any task within any boards and any subtask matching value
-	 */
-	searchAllNestedTask = <K extends keyof ITask>( taskAttribute: K, value: any ) =>
-	{
-		const tasks : ITask[] = []
-
-		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		this.boards.forEach( ( board ) =>
-		{
-			board.tasks.forEach( function iter( task )
-			{
-				if( task[ taskAttribute ] === value )
-				{
-					tasks.push( task )
-				}
-
-				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
-			});
-		});
-
-		return tasks
+		if( !wasBoardFound )
+			throw new BoardNotFoundError( boardName )
 	}
 
 	////////////////////////////////////////
