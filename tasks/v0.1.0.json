@@ -30,7 +30,7 @@
             },
             {
                 "name": "edit",
-                "state": "todo",
+                "state": "done",
                 "dependencies": [],
                 "id": 3,
                 "timestamp": "25/07/2021"
@@ -139,6 +139,13 @@
                 "description": "Might be a grep job ??",
                 "id": 16,
                 "timestamp": "27/07/2021"
+            },
+            {
+                "name": "increment",
+                "state": "done",
+                "dependencies": [],
+                "id": 18,
+                "timestamp": "28/07/2021"
             }
         ]
     }
