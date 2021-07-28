@@ -2,8 +2,9 @@ import moment from 'moment';
 
 import { IBoard, Board } from './Board';
 import { ITask, TIMESTAMP_FORMAT } from './Task';
-import { Printer } from './Printer';
 
+import { TaskNotFoundError, TaskStateUnknownError } from '../errors/TaskErrors';
+import { BoardNotFoundError, BoardAlreadyExistsError } from '../errors/BoardErrors';
 import { System } from './System'
 
 ////////////////////////////////////////
@@ -85,7 +86,7 @@ export class Storage
 			if( boardIndex !== -1 )
 				this.boards[ boardIndex ].tasks.push( finalTask )
 			else
-				throw new Error(`Board '${ boardName }' not found`)
+				throw new BoardNotFoundError( boardName )
 		}
 		else if( subTaskOf )
 		{
@@ -139,13 +140,13 @@ export class Storage
 		{
 			this.retrieveNestedTask( id, task =>
 			{
-				const currentTaskIndex = configStates.indexOf( task.state )
+				const currentStateIndex = configStates.indexOf( task.state )
 
-				if( currentTaskIndex === -1 )
-					throw new Error( 'State not defined in config file' )
+				if( currentStateIndex === -1 )
+					throw new TaskStateUnknownError( id, task.state )
 
-				if( currentTaskIndex !== configStates.length -1 )
-					task.state = configStates[ currentTaskIndex + 1 ]
+				if( currentStateIndex !== configStates.length -1 )
+					task.state = configStates[ currentStateIndex + 1 ]
 
 				if( isRecurive )
 				{
@@ -162,11 +163,86 @@ export class Storage
 		return tasksID
 	}
 
+	deleteTask = ( tasksID: number | number[] ) =>
+	{
+		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
+
+		tasksID.forEach( id =>
+		{
+			let wasTaskFound = false
+
+			// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+			this.boards.forEach( board =>
+			{
+				board.tasks.forEach( ( task, taskIndex ) =>
+				{
+					if( task.id === id )
+					{
+						wasTaskFound = true
+
+						board.tasks.splice( taskIndex, 1 )
+					}
+					else
+					{
+						if( Array.isArray( task.subtasks ) && ( task.subtasks.length !== 0 ) )
+						{
+							task.subtasks.forEach( function iter( sub, subIndex )
+							{
+								if( sub.id === id )
+								{
+									wasTaskFound = true
+
+									task.subtasks.splice( subIndex, 1 )
+								}
+								else if( Array.isArray( sub.subtasks ) &&  ( sub.subtasks.length !== 0 ) )
+									sub.subtasks.forEach( iter )
+							})
+						}
+					}
+				});
+			});
+
+			if( !wasTaskFound )
+				throw new TaskNotFoundError( id )
+		});
+
+		this.save()
+
+		return tasksID
+	}
+
+	deleteBoard = ( boardNames: string | string[] ) =>
+	{
+		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
+
+		let wasBoardFound = false
+
+		boardNames.forEach( name =>
+		{
+			this.boards.forEach( ( board, index ) =>
+			{
+				if( board.name === name )
+				{
+					wasBoardFound = true
+
+					this.boards.splice( index, 1 )
+				}
+			})
+
+			if( !wasBoardFound )
+				throw new BoardNotFoundError( name )
+		})
+
+		this.save()
+
+		return boardNames
+	}
+
 	addBoard = ( boardName: string, description ?: string ) =>
 	{
 		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0
 		if( nameAlreadyTaken )
-			throw new Error( `A board named '${ boardName }' already exists`)
+			throw new BoardAlreadyExistsError( boardName )
 
 		this.boards.push( { name: boardName, tasks: [], description } )
 		this.save()
@@ -198,7 +274,7 @@ export class Storage
 		});
 
 		if( !wasParentFound )
-			throw new Error(`Task '${ taskID }' not found`)
+			throw new TaskNotFoundError( taskID )
 	}
 
 	/**

@@ -66,7 +66,7 @@ export namespace Printer
 		message.forEach( line =>
 		{
 			let text = MARGIN + line
-			text = chalkColor ? chalk[ chalkColor ]( test ) : text
+			text = chalkColor ? chalk[ chalkColor ]( text ) : text
 			console.log( text )
 		})
 		console.log('')

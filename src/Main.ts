@@ -8,6 +8,9 @@ import Help from './utils/Help'
 
 import { MainController } from "./controller/MainController";
 
+import { CLISyntaxError, DeletingTaskSytaxError, EditingTaskSytaxError, CheckingTaskSytaxError, IncrementingTaskSytaxError } from './errors/CLISyntaxErrors';
+import { CatchableError } from "./errors/CatchableError";
+
 ////////////////////////////////////////
 
 try
@@ -103,7 +106,7 @@ try
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( !secondArg.isTask )
-					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+					throw new EditingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const name = argHandler.getFirstText()
 				const dependencies = linked
@@ -141,7 +144,7 @@ try
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( !secondArg.isTask )
-					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+					throw new CheckingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const ids = secondArg.value as number | number[]
 
@@ -161,7 +164,7 @@ try
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( !secondArg.isTask )
-					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+					throw new IncrementingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const ids = secondArg.value as number | number[]
 
@@ -171,8 +174,36 @@ try
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` )
+				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` )
 				controller.exit()
+				break;
+			}
+
+			////////////////////
+
+			case Action.DELETE:
+			{
+				const secondArg = argHandler.cliArgs[ 1 ]
+				if( secondArg.isTask )
+				{
+					const ids = secondArg.value as number | number[]
+					const tasksID = storage.deleteTask( ids )
+
+					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
+					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
+					controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
+				}
+				else if( secondArg.isBoard )
+				{
+					const board = secondArg.value as string
+					storage.deleteBoard( board )
+
+					controller.addFeedback( `Board '${ board }' deleted` )
+				}
+				else
+					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
+
+				controller.exit({ dontPrintBoardButPrintAll: true })
 				break;
 			}
 		}
@@ -180,6 +211,16 @@ try
 }
 catch( error )
 {
-	Printer.error( error )
+	if( !( error instanceof CatchableError ) )
+		Printer.error( error )
+	else
+	{
+		if( error instanceof CLISyntaxError )
+		{
+			Printer.error( error.message )
+			Printer.feedBack( Help.getMan( error.manEntry ) )
+		}
+	}
+
 	System.exit( -1 )
 }

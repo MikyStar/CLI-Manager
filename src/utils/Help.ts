@@ -19,7 +19,7 @@ interface ManPage
 	footer ?: boolean,
 }
 
-interface ManEntries
+export interface ManEntries
 {
 	init: ManPage
 	viewing: ManPage
@@ -38,8 +38,6 @@ interface ManEntries
 	deleting: ManPage
 
 }
-
-type Entries = keyof ManEntries
 
 ////////////////////////////////////////
 
@@ -79,7 +77,7 @@ class Help implements ManEntries
 			'-----',
 			`${ bold( pkg.name ) }: ${ pkg.description }`,
 			`Version: ${ bold( pkg.version ) }`,
-			`More informations at ${ bold( pkg.repository.url )}`
+			`More informations and examples at ${ bold( pkg.repository.url )}`
 		]
 
 		this.globalArgs =

@@ -11,7 +11,8 @@ import { FileNotFoundError } from '../errors/FileErrors'
 interface ExitArgs
 {
 	code ?: number,
-	bypassPrintAfter ?: boolean
+	bypassPrintAfter ?: boolean,
+	dontPrintBoardButPrintAll ?: boolean
 }
 
 ////////////////////////////////////////
@@ -123,11 +124,11 @@ export class MainController
 	exit = ( args ?: ExitArgs ) =>
 	{
 		args = args || {}
-		const { code, bypassPrintAfter } = args
+		const { code, bypassPrintAfter, dontPrintBoardButPrintAll } = args
 
 		if( this.printAfter && !bypassPrintAfter )
 		{
-			if( this.board )
+			if( this.board && !dontPrintBoardButPrintAll )
 				this.printBoards( this.board )
 			else
 				this.printAll()
