@@ -8,7 +8,7 @@ import Help from './utils/Help'
 
 import { MainController } from "./controller/MainController";
 
-import { DeletingTaskSytaxError, CLISyntaxError } from './errors/CLISyntaxErrors';
+import { CLISyntaxError, DeletingTaskSytaxError, EditingTaskSytaxError, CheckingTaskSytaxError, IncrementingTaskSytaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
 
 ////////////////////////////////////////
@@ -106,7 +106,7 @@ try
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( !secondArg.isTask )
-					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+					throw new EditingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const name = argHandler.getFirstText()
 				const dependencies = linked
@@ -144,7 +144,7 @@ try
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( !secondArg.isTask )
-					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+					throw new CheckingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const ids = secondArg.value as number | number[]
 
@@ -164,7 +164,7 @@ try
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( !secondArg.isTask )
-					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+					throw new IncrementingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const ids = secondArg.value as number | number[]
 
