@@ -131,6 +131,37 @@ export class Storage
 		return tasksID
 	}
 
+	incrementTask = ( tasksID: number | number[], configStates: string[], isRecurive ?: boolean ) =>
+	{
+		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
+
+		tasksID.forEach( id =>
+		{
+			this.retrieveNestedTask( id, task =>
+			{
+				const currentTaskIndex = configStates.indexOf( task.state )
+
+				if( currentTaskIndex === -1 )
+					throw new Error( 'State not defined in config file' )
+
+				if( currentTaskIndex !== configStates.length -1 )
+					task.state = configStates[ currentTaskIndex + 1 ]
+
+				if( isRecurive )
+				{
+					const subtasksIDs = task.subtasks?.map( sub => sub.id ) || []
+
+					if( subtasksIDs.length !== 0 )
+						this.incrementTask( subtasksIDs, configStates, true )
+				}
+			})
+		});
+
+		this.save()
+
+		return tasksID
+	}
+
 	addBoard = ( boardName: string, description ?: string ) =>
 	{
 		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0

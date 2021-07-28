@@ -154,6 +154,27 @@ try
 				controller.exit()
 				break;
 			}
+
+			////////////////////
+
+			case Action.INCREMENT:
+			{
+				const secondArg = argHandler.cliArgs[ 1 ]
+				if( !secondArg.isTask )
+					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+
+				const ids = secondArg.value as number | number[]
+
+				const statesNames = config.states.map( state => state.name )
+
+				const tasksID = storage.incrementTask( ids, statesNames, argHandler.isRecursive )
+
+				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
+				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
+				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` )
+				controller.exit()
+				break;
+			}
 		}
 	}
 }
