@@ -215,45 +215,6 @@
                 "timestamp": "28/07/2021"
             },
             {
-                "name": "to remove parent",
-                "state": "todo",
-                "dependencies": [],
-                "id": 24,
-                "timestamp": "28/07/2021",
-                "subtasks": [
-                    {
-                        "name": "to remove child 0",
-                        "state": "todo",
-                        "dependencies": [],
-                        "id": 25,
-                        "timestamp": "28/07/2021",
-                        "subtasks": [
-                            {
-                                "name": "to remove child 0.1",
-                                "state": "todo",
-                                "dependencies": [],
-                                "id": 27,
-                                "timestamp": "28/07/2021"
-                            },
-                            {
-                                "name": "to remove child 0.2",
-                                "state": "todo",
-                                "dependencies": [],
-                                "id": 28,
-                                "timestamp": "28/07/2021"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "to remove child 1",
-                        "state": "todo",
-                        "dependencies": [],
-                        "id": 26,
-                        "timestamp": "28/07/2021"
-                    }
-                ]
-            },
-            {
                 "name": "--sort flag",
                 "state": "todo",
                 "dependencies": [],

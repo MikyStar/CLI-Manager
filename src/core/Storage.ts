@@ -162,6 +162,63 @@ export class Storage
 		return tasksID
 	}
 
+	deleteTask = ( tasksID: number | number[] ) =>
+	{
+		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
+
+		tasksID.forEach( id =>
+		{
+			let wasParentFound = false
+
+			// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+			this.boards.forEach( board =>
+			{
+				board.tasks.forEach( ( task, taskIndex ) =>
+				{
+					if( task.id === id )
+					{
+						wasParentFound = true
+
+						board.tasks.splice( taskIndex, 1 )
+						// delete board.tasks[ taskIndex ]
+					}
+					else
+					{
+						if( Array.isArray( task.subtasks ) && ( task.subtasks.length !== 0 ) )
+						{
+							task.subtasks.forEach( function iter( sub, subIndex )
+							{
+								if( sub.id === id )
+								{
+									wasParentFound = true
+			
+									// delete task.subtasks[ subIndex ]
+									task.subtasks.splice( subIndex, 1 )
+								}
+								else if( Array.isArray( sub.subtasks ) &&  ( sub.subtasks.length !== 0 ) )
+									sub.subtasks.forEach( iter )
+							})
+						}
+					}
+
+				});
+			});
+
+			if( !wasParentFound )
+				throw new Error(`Task '${ id }' not found`)
+		});
+
+		this.save()
+
+		return tasksID
+	}
+
+	deleteBoard = ( boardNames: string | string[] ) =>
+	{
+		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
+		// TODO
+	}
+
 	addBoard = ( boardName: string, description ?: string ) =>
 	{
 		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0

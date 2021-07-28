@@ -171,7 +171,30 @@ try
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` )
+				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` )
+				controller.exit()
+				break;
+			}
+
+			////////////////////
+
+			case Action.DELETE:
+			{
+				const secondArg = argHandler.cliArgs[ 1 ]
+				if( secondArg.isTask )
+				{
+					const ids = secondArg.value as number | number[]
+					const tasksID = storage.deleteTask( ids )
+
+					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
+					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
+					controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
+				}
+				else if( secondArg.isBoard )
+				{
+					// TODO
+				}
+
 				controller.exit()
 				break;
 			}
