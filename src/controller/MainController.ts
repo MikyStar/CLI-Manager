@@ -11,7 +11,8 @@ import { FileNotFoundError } from '../errors/FileErrors'
 interface ExitArgs
 {
 	code ?: number,
-	bypassPrintAfter ?: boolean
+	bypassPrintAfter ?: boolean,
+	dontPrintBoardButPrintAll ?: boolean
 }
 
 ////////////////////////////////////////
@@ -119,15 +120,18 @@ export class MainController
 
 	/**
 	 * Handles feedback, print afer and stopping
+	 * Will also refresh the storage file if printa after
 	 */
 	exit = ( args ?: ExitArgs ) =>
 	{
 		args = args || {}
-		const { code, bypassPrintAfter } = args
+		const { code, bypassPrintAfter, dontPrintBoardButPrintAll } = args
 
 		if( this.printAfter && !bypassPrintAfter )
 		{
-			if( this.board )
+			// this.refreshStorage()
+
+			if( this.board && !dontPrintBoardButPrintAll )
 				this.printBoards( this.board )
 			else
 				this.printAll()
@@ -138,4 +142,14 @@ export class MainController
 
 		System.exit( code )
 	}
+
+	/*refreshStorage = () =>
+	{
+		this.storage = new Storage( this.storageLocation )
+
+		if( !this.storage )
+			throw new FileNotFoundError( this.storageLocation )
+
+		this.printOptions = { ...this.printOptions, datas: this.storage }
+	}*/
 }

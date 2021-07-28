@@ -169,7 +169,7 @@ export class Storage
 
 		tasksID.forEach( id =>
 		{
-			let wasParentFound = false
+			let wasTaskFound = false
 
 			// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
 			this.boards.forEach( board =>
@@ -178,7 +178,7 @@ export class Storage
 				{
 					if( task.id === id )
 					{
-						wasParentFound = true
+						wasTaskFound = true
 
 						board.tasks.splice( taskIndex, 1 )
 					}
@@ -190,7 +190,7 @@ export class Storage
 							{
 								if( sub.id === id )
 								{
-									wasParentFound = true
+									wasTaskFound = true
 
 									task.subtasks.splice( subIndex, 1 )
 								}
@@ -202,7 +202,7 @@ export class Storage
 				});
 			});
 
-			if( !wasParentFound )
+			if( !wasTaskFound )
 				throw new TaskNotFoundError( id )
 		});
 
@@ -214,7 +214,28 @@ export class Storage
 	deleteBoard = ( boardNames: string | string[] ) =>
 	{
 		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
-		// TODO
+
+		let wasBoardFound = false
+
+		boardNames.forEach( name =>
+		{
+			this.boards.forEach( ( board, index ) =>
+			{
+				if( board.name === name )
+				{
+					wasBoardFound = true
+
+					this.boards.splice( index, 1 )
+				}
+			})
+
+			if( !wasBoardFound )
+				throw new BoardNotFoundError( name )
+		})
+
+		this.save()
+
+		return boardNames
 	}
 
 	addBoard = ( boardName: string, description ?: string ) =>

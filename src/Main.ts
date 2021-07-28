@@ -203,7 +203,7 @@ try
 				else
 					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
 
-				controller.exit()
+				controller.exit({ dontPrintBoardButPrintAll: true })
 				break;
 			}
 		}
