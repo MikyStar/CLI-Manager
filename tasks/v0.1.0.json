@@ -23,7 +23,7 @@
             },
             {
                 "name": "delete",
-                "state": "todo",
+                "state": "wip",
                 "dependencies": [],
                 "id": 2,
                 "timestamp": "25/07/2021"
@@ -92,6 +92,13 @@
                         "dependencies": [],
                         "id": 17,
                         "timestamp": "27/07/2021"
+                    },
+                    {
+                        "name": "hide in config file",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 33,
+                        "timestamp": "28/07/2021"
                     }
                 ]
             },
@@ -146,6 +153,113 @@
                 "dependencies": [],
                 "id": 18,
                 "timestamp": "28/07/2021"
+            },
+            {
+                "name": "--group flag",
+                "state": "todo",
+                "dependencies": [],
+                "description": "to display with grouped state recursively",
+                "id": 19,
+                "timestamp": "28/07/2021",
+                "subtasks": [
+                    {
+                        "name": "can be combined with --sort asc desc",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 20,
+                        "timestamp": "28/07/2021"
+                    },
+                    {
+                        "name": "can be added in config file",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 29,
+                        "timestamp": "28/07/2021"
+                    }
+                ]
+            },
+            {
+                "name": "clean board",
+                "state": "todo",
+                "dependencies": [],
+                "id": 21,
+                "timestamp": "28/07/2021"
+            },
+            {
+                "name": "check",
+                "state": "done",
+                "dependencies": [],
+                "id": 22,
+                "timestamp": "28/07/2021"
+            },
+            {
+                "name": "Action only <state | deadline | deadline range> to view only specifics",
+                "state": "todo",
+                "dependencies": [],
+                "id": 23,
+                "timestamp": "28/07/2021"
+            },
+            {
+                "name": "to remove parent",
+                "state": "todo",
+                "dependencies": [],
+                "id": 24,
+                "timestamp": "28/07/2021",
+                "subtasks": [
+                    {
+                        "name": "to remove child 0",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 25,
+                        "timestamp": "28/07/2021",
+                        "subtasks": [
+                            {
+                                "name": "to remove child 0.1",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 27,
+                                "timestamp": "28/07/2021"
+                            },
+                            {
+                                "name": "to remove child 0.2",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 28,
+                                "timestamp": "28/07/2021"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "to remove child 1",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 26,
+                        "timestamp": "28/07/2021"
+                    }
+                ]
+            },
+            {
+                "name": "--sort flag",
+                "state": "todo",
+                "dependencies": [],
+                "id": 30,
+                "timestamp": "28/07/2021",
+                "subtasks": [
+                    {
+                        "name": "in config file too",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 31,
+                        "timestamp": "28/07/2021"
+                    },
+                    {
+                        "name": "can be state(s), time range, deadline(s), tag(s)",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 32,
+                        "timestamp": "28/07/2021"
+                    }
+                ]
             }
         ]
     }

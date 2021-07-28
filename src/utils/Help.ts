@@ -79,7 +79,7 @@ class Help implements ManEntries
 			'-----',
 			`${ bold( pkg.name ) }: ${ pkg.description }`,
 			`Version: ${ bold( pkg.version ) }`,
-			`More informations at ${ bold( pkg.repository.url )}`
+			`More informations and examples at ${ bold( pkg.repository.url )}`
 		]
 
 		this.globalArgs =
