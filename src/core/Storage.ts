@@ -180,7 +180,6 @@ export class Storage
 						wasParentFound = true
 
 						board.tasks.splice( taskIndex, 1 )
-						// delete board.tasks[ taskIndex ]
 					}
 					else
 					{
@@ -191,8 +190,7 @@ export class Storage
 								if( sub.id === id )
 								{
 									wasParentFound = true
-			
-									// delete task.subtasks[ subIndex ]
+
 									task.subtasks.splice( subIndex, 1 )
 								}
 								else if( Array.isArray( sub.subtasks ) &&  ( sub.subtasks.length !== 0 ) )
@@ -200,7 +198,6 @@ export class Storage
 							})
 						}
 					}
-
 				});
 			});
 
