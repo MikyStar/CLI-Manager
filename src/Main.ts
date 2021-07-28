@@ -97,7 +97,6 @@ try
 				break;
 			}
 
-
 			////////////////////
 
 			case Action.EDIT:
@@ -132,6 +131,26 @@ try
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
 				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
+				controller.exit()
+				break;
+			}
+
+			////////////////////
+
+			case Action.CHECK:
+			{
+				const secondArg = argHandler.cliArgs[ 1 ]
+				if( !secondArg.isTask )
+					throw new Error( "Your second arguments should be a number or numbers join by ','" )
+
+				const ids = secondArg.value as number | number[]
+
+				const lastState = config.states[ config.states.length - 1 ].name
+				const tasksID = storage.editTask( ids, { state: lastState }, argHandler.isRecursive )
+
+				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
+				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
+				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` )
 				controller.exit()
 				break;
 			}
