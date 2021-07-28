@@ -107,13 +107,6 @@
                         "dependencies": [],
                         "id": 17,
                         "timestamp": "27/07/2021"
-                    },
-                    {
-                        "name": "hide in config file",
-                        "state": "todo",
-                        "dependencies": [],
-                        "id": 33,
-                        "timestamp": "28/07/2021"
                     }
                 ]
             },
@@ -190,6 +183,13 @@
                         "dependencies": [],
                         "id": 29,
                         "timestamp": "28/07/2021"
+                    },
+                    {
+                        "name": "the function should return a IBoard",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 25,
+                        "timestamp": "29/07/2021"
                     }
                 ]
             },
@@ -234,6 +234,13 @@
                         "dependencies": [],
                         "id": 32,
                         "timestamp": "28/07/2021"
+                    },
+                    {
+                        "name": "the function should return a IBoard",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 26,
+                        "timestamp": "29/07/2021"
                     }
                 ]
             },
@@ -243,6 +250,56 @@
                 "dependencies": [],
                 "id": 24,
                 "timestamp": "29/07/2021"
+            },
+            {
+                "name": "stats for the total of all the boards in file and printed even in only print board view",
+                "state": "todo",
+                "dependencies": [],
+                "id": 27,
+                "timestamp": "29/07/2021",
+                "description": "so we cant forget that theres more",
+                "subtasks": [
+                    {
+                        "name": "refactor actual stats to return on exploitable object so I can simply add the values",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 36,
+                        "timestamp": "29/07/2021"
+                    },
+                    {
+                        "name": "maybe the full file printing stats should be preceeded by its location",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 37,
+                        "timestamp": "29/07/2021",
+                        "subtasks": [
+                            {
+                                "name": "maybe the small sperator just before",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 38,
+                                "timestamp": "29/07/2021"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "if depth hide some tasks there should be an indicator",
+                "state": "todo",
+                "dependencies": [],
+                "id": 28,
+                "timestamp": "29/07/2021",
+                "description": "like .../...",
+                "subtasks": [
+                    {
+                        "name": "or the actual full recurive subtasks lenght",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 39,
+                        "timestamp": "29/07/2021"
+                    }
+                ]
             }
         ]
     }

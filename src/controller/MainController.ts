@@ -8,7 +8,7 @@ import { FileNotFoundError } from '../errors/FileErrors'
 
 ////////////////////////////////////////
 
-interface ExitArgs
+export interface ExitArgs
 {
 	code ?: number,
 	bypassPrintAfter ?: boolean,

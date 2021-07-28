@@ -6,7 +6,7 @@ import { System } from './core/System'
 
 import Help from './utils/Help'
 
-import { MainController } from "./controller/MainController";
+import { MainController, ExitArgs } from "./controller/MainController";
 
 import { CLISyntaxError, DeletingTaskSytaxError, EditingTaskSytaxError, CheckingTaskSytaxError, IncrementingTaskSytaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
@@ -183,6 +183,8 @@ try
 
 			case Action.DELETE:
 			{
+				let exitOptions: ExitArgs = {}
+
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( secondArg.isTask )
 				{
@@ -199,11 +201,12 @@ try
 					storage.deleteBoard( board )
 
 					controller.addFeedback( `Board '${ board }' deleted` )
+					exitOptions = { dontPrintBoardButPrintAll: true }
 				}
 				else
 					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
 
-				controller.exit({ dontPrintBoardButPrintAll: true })
+				controller.exit( exitOptions )
 				break;
 			}
 		}
