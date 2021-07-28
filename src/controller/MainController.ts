@@ -120,7 +120,6 @@ export class MainController
 
 	/**
 	 * Handles feedback, print afer and stopping
-	 * Will also refresh the storage file if printa after
 	 */
 	exit = ( args ?: ExitArgs ) =>
 	{
@@ -129,8 +128,6 @@ export class MainController
 
 		if( this.printAfter && !bypassPrintAfter )
 		{
-			// this.refreshStorage()
-
 			if( this.board && !dontPrintBoardButPrintAll )
 				this.printBoards( this.board )
 			else
@@ -142,14 +139,4 @@ export class MainController
 
 		System.exit( code )
 	}
-
-	/*refreshStorage = () =>
-	{
-		this.storage = new Storage( this.storageLocation )
-
-		if( !this.storage )
-			throw new FileNotFoundError( this.storageLocation )
-
-		this.printOptions = { ...this.printOptions, datas: this.storage }
-	}*/
 }
