@@ -2,8 +2,9 @@ import moment from 'moment';
 
 import { IBoard, Board } from './Board';
 import { ITask, TIMESTAMP_FORMAT } from './Task';
-import { Printer } from './Printer';
 
+import { TaskNotFoundError, TaskStateUnknownError } from '../errors/TaskErrors';
+import { BoardNotFoundError, BoardAlreadyExistsError } from '../errors/BoardErrors';
 import { System } from './System'
 
 ////////////////////////////////////////
@@ -85,7 +86,7 @@ export class Storage
 			if( boardIndex !== -1 )
 				this.boards[ boardIndex ].tasks.push( finalTask )
 			else
-				throw new Error(`Board '${ boardName }' not found`)
+				throw new BoardNotFoundError( boardName )
 		}
 		else if( subTaskOf )
 		{
@@ -139,13 +140,13 @@ export class Storage
 		{
 			this.retrieveNestedTask( id, task =>
 			{
-				const currentTaskIndex = configStates.indexOf( task.state )
+				const currentStateIndex = configStates.indexOf( task.state )
 
-				if( currentTaskIndex === -1 )
-					throw new Error( 'State not defined in config file' )
+				if( currentStateIndex === -1 )
+					throw new TaskStateUnknownError( id, task.state )
 
-				if( currentTaskIndex !== configStates.length -1 )
-					task.state = configStates[ currentTaskIndex + 1 ]
+				if( currentStateIndex !== configStates.length -1 )
+					task.state = configStates[ currentStateIndex + 1 ]
 
 				if( isRecurive )
 				{
@@ -202,7 +203,7 @@ export class Storage
 			});
 
 			if( !wasParentFound )
-				throw new Error(`Task '${ id }' not found`)
+				throw new TaskNotFoundError( id )
 		});
 
 		this.save()
@@ -220,7 +221,7 @@ export class Storage
 	{
 		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0
 		if( nameAlreadyTaken )
-			throw new Error( `A board named '${ boardName }' already exists`)
+			throw new BoardAlreadyExistsError( boardName )
 
 		this.boards.push( { name: boardName, tasks: [], description } )
 		this.save()
@@ -252,7 +253,7 @@ export class Storage
 		});
 
 		if( !wasParentFound )
-			throw new Error(`Task '${ taskID }' not found`)
+			throw new TaskNotFoundError( taskID )
 	}
 
 	/**

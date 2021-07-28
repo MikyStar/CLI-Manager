@@ -218,7 +218,7 @@ catch( error )
 		if( error instanceof CLISyntaxError )
 		{
 			Printer.error( error.message )
-			Printer.feedBack( [ ...Help.getMan(error.manEntry ) ] )
+			Printer.feedBack( Help.getMan( error.manEntry ) )
 		}
 	}
 
