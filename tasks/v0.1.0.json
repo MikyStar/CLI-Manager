@@ -8,6 +8,21 @@
                 "dependencies": [],
                 "id": 5,
                 "timestamp": "28/07/2021"
+            },
+            {
+                "name": "if no board provided for add task, neither task id, use the default board name from the default config datas",
+                "state": "todo",
+                "dependencies": [],
+                "id": 34,
+                "timestamp": "28/07/2021"
+            },
+            {
+                "name": "change the print flag to no print so by default it always prints",
+                "state": "todo",
+                "dependencies": [],
+                "description": "More appropriate way",
+                "id": 35,
+                "timestamp": "28/07/2021"
             }
         ]
     },
