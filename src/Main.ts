@@ -8,6 +8,9 @@ import Help from './utils/Help'
 
 import { MainController } from "./controller/MainController";
 
+import { DeletingTaskSytaxError, CLISyntaxError } from './errors/CLISyntaxErrors';
+import { CatchableError } from "./errors/CatchableError";
+
 ////////////////////////////////////////
 
 try
@@ -192,8 +195,13 @@ try
 				}
 				else if( secondArg.isBoard )
 				{
-					// TODO
+					const board = secondArg.value as string
+					storage.deleteBoard( board )
+
+					controller.addFeedback( `Board '${ board }' deleted` )
 				}
+				else
+					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
 
 				controller.exit()
 				break;
@@ -203,6 +211,16 @@ try
 }
 catch( error )
 {
-	Printer.error( error )
+	if( !( error instanceof CatchableError ) )
+		Printer.error( error )
+	else
+	{
+		if( error instanceof CLISyntaxError )
+		{
+			Printer.error( error.message )
+			Printer.feedBack( [ ...Help.getMan(error.manEntry ) ] )
+		}
+	}
+
 	System.exit( -1 )
 }

@@ -19,7 +19,7 @@ interface ManPage
 	footer ?: boolean,
 }
 
-interface ManEntries
+export interface ManEntries
 {
 	init: ManPage
 	viewing: ManPage
@@ -38,8 +38,6 @@ interface ManEntries
 	deleting: ManPage
 
 }
-
-type Entries = keyof ManEntries
 
 ////////////////////////////////////////
 
