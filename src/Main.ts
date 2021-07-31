@@ -234,6 +234,46 @@ try
 				controller.exit( exitOptions )
 				break;
 			}
+
+			////////////////////
+
+			case Action.MOVE:
+			{
+				const secondArg = argHandler.cliArgs[ 1 ]
+				const thirdArg = argHandler.cliArgs[ 2 ]
+
+				if( !secondArg.isTask )
+					throw new MovingTaskSytaxError( `Second arg '${ secondArg.value }' should be one or more task id` )
+
+				if( !thirdArg.isTask || !thirdArg.isBoard )
+					throw new MovingTaskSytaxError( `Third arg '${ thirdArg.value }' should be one task id or a board name` )
+
+				const targetIDs = secondArg.value as number | number[]
+
+				let destination = {}
+				let destFeedback = ''
+				if( thirdArg.isTask )
+				{
+					if( Array.isArray( thirdArg.value ) )
+						throw new MovingTaskSytaxError( `Please provide only one destination task id` )
+
+					const destTaskID = thirdArg.value as number
+					destination = { subTask: destTaskID }
+					destFeedback = `task n°${ destTaskID }`
+				}
+				else if( thirdArg.isBoard )
+				{
+					const destBoardName = thirdArg.value as string
+					destination = { boardName: destBoardName }
+					destFeedback = `board '${ destBoardName }'`
+				}
+
+				// TODO if no dest provided make new board with parent task name and check only one task to move
+
+				storage.moveTask( targetIDs, destination )
+
+				controller.addFeedback( `Tasks '${ targetIDs }' moved to ${ destFeedback }` )
+			}
 		}
 	}
 }

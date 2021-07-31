@@ -54,3 +54,13 @@ export class DeletingTaskSytaxError extends CLISyntaxError
 		super( message, 'deleting', details )
 	}
 }
+
+////////////////////////////////////////
+
+export class MovingTaskSytaxError extends CLISyntaxError
+{
+	constructor( message: string, details ?: any )
+	{
+		super( message, 'movingTask', details )
+	}
+}

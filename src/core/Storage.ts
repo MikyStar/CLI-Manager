@@ -213,14 +213,26 @@ export class Storage
 
 		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
 
-		if( boardName )
+		tasksID.forEach( id => this.retrieveNestedTask( id, task =>
 		{
-			// const 
-		}
+			this.deleteTask( id )
+
+			let dest = {}
+			if( boardName )
+				dest = { boardName }
+			else if( subTask )
+				dest = { subTaskOf: subTask }
+
+			this.addTask( task, dest )
+		}));
+
+		this.save()
+
+		return tasksID
 	}
 
 	/**
-	 * Use recursion to return a single task  given id within any boards and any subtask
+	 * Use recursion to return a single task given id within any boards and any subtask
 	 * 
 	 * @throws {TaskNotFoundError}
 	 */

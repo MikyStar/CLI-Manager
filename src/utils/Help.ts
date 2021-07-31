@@ -201,13 +201,12 @@ class Help implements ManEntries
 		this.movingTask =
 		{
 			title: 'Moving task',
-			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [-d <new board description>] [global args]',
+			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [global args]',
 			argDef:
 			[
 				"<target task(s)> : The id of the task you want to move, you can pass multiple by separating the ids by ',' without space",
 				"@<existing board name dest> : The target board preceded by '@'",
 				"<task id dest> : The id of the target task",
-				'-d <new board description> : The description of the new board made out from the target task',
 			],
 			furtherDescription:
 			[
