@@ -107,38 +107,38 @@ try
 			case Action.EDIT:
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
-				if( !secondArg.isTask && !secondArg.isBoard )
+				if( !secondArg.isTask || !secondArg.isBoard )
 					throw new EditingSytaxError( "Your second arguments should be one or more tasks id join by ',' or a board name" )
 
 				const name = argHandler.getFirstText()
 
 				if( secondArg.isTask )
 				{
-				const dependencies = linked
+					const dependencies = linked
 
-				const newAttributes: ITask =
-				{
-					name,
-					dependencies,
-					state,
-					description,
-				}
+					const newAttributes: ITask =
+					{
+						name,
+						dependencies,
+						state,
+						description,
+					}
 
-				if( !name )
-					delete newAttributes.name
-				if( !dependencies )
-					delete newAttributes.dependencies
-				if( !state )
-					delete newAttributes.state
-				if( !description )
-					delete newAttributes.description
+					if( !name )
+						delete newAttributes.name
+					if( !dependencies )
+						delete newAttributes.dependencies
+					if( !state )
+						delete newAttributes.state
+					if( !description )
+						delete newAttributes.description
 
-				const ids = secondArg.value as number | number[]
-				const tasksID = storage.editTask( ids, newAttributes, argHandler.isRecursive )
+					const ids = secondArg.value as number | number[]
+					const tasksID = storage.editTask( ids, newAttributes, argHandler.isRecursive )
 
-				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
-				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
+					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
+					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
+					controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
 				}
 				else if( secondArg.isBoard )
 				{
