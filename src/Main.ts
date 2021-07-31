@@ -8,8 +8,10 @@ import Help from './utils/Help'
 
 import { MainController, ExitArgs } from "./controller/MainController";
 
-import { CLISyntaxError, DeletingTaskSytaxError, EditingTaskSytaxError, CheckingTaskSytaxError, IncrementingTaskSytaxError } from './errors/CLISyntaxErrors';
+import { CLISyntaxError, DeletingTaskSytaxError, EditingSytaxError, CheckingTaskSytaxError
+	, IncrementingTaskSytaxError, MovingTaskSytaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
+import { IBoard } from "./core/Board";
 
 ////////////////////////////////////////
 
@@ -105,10 +107,13 @@ try
 			case Action.EDIT:
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
-				if( !secondArg.isTask )
-					throw new EditingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
+				if( !secondArg.isTask && !secondArg.isBoard )
+					throw new EditingSytaxError( "Your second arguments should be one or more tasks id join by ',' or a board name" )
 
 				const name = argHandler.getFirstText()
+
+				if( secondArg.isTask )
+				{
 				const dependencies = linked
 
 				const newAttributes: ITask =
@@ -134,6 +139,26 @@ try
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
 				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
+				}
+				else if( secondArg.isBoard )
+				{
+					const newAttributes: IBoard =
+					{
+						name,
+						description,
+					}
+
+					if( !name )
+						delete newAttributes.name
+					if( !description )
+						delete newAttributes.description
+
+					const boardName = secondArg.value as string
+					storage.editBoard( boardName, newAttributes )
+
+					controller.addFeedback( `Board '${ boardName }' edited` )
+				}
+
 				controller.exit()
 				break;
 			}

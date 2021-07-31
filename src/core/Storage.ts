@@ -313,6 +313,24 @@ export class Storage
 		return boardNames
 	}
 
+	editBoard = ( boardNames: string | string[], newAttributes: IBoard ) =>
+	{
+		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
+
+		boardNames.forEach( name =>
+		{
+			this.retrieveBoard( name, board =>
+			{
+				for( const [k, v] of Object.entries( newAttributes ) )
+					board[ k ] = v
+			});
+		});
+
+		this.save()
+
+		return boardNames
+	}
+
 	/**
 	 * @throws {BoardNotFoundError}
 	 */

@@ -37,11 +37,11 @@ export class IncrementingTaskSytaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class EditingTaskSytaxError extends CLISyntaxError
+export class EditingSytaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
-		super( message, 'editingTask', details )
+		super( message, 'editing', details )
 	}
 }
 

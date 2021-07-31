@@ -180,8 +180,8 @@ task	# Print every tasks accross all local boards
 task @mBoard	# Print all tasks of a board
 
 # Editing a board
-task @mBoard -d 'Our board'	# Change board description
-task rn @previousName newName	# Renaming
+task e @mBoard -d 'Our board'	# Change board description
+task e @previousName newName	# Renaming
 task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 task clean @mBoard	# Remove all task in board @mBoard which are at final state
 
