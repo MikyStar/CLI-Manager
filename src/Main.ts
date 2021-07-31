@@ -6,10 +6,12 @@ import { System } from './core/System'
 
 import Help from './utils/Help'
 
-import { MainController } from "./controller/MainController";
+import { MainController, ExitArgs } from "./controller/MainController";
 
-import { CLISyntaxError, DeletingTaskSytaxError, EditingTaskSytaxError, CheckingTaskSytaxError, IncrementingTaskSytaxError } from './errors/CLISyntaxErrors';
+import { CLISyntaxError, DeletingTaskSytaxError, EditingSytaxError, CheckingTaskSytaxError
+	, IncrementingTaskSytaxError, MovingTaskSytaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
+import { IBoard } from "./core/Board";
 
 ////////////////////////////////////////
 
@@ -105,35 +107,58 @@ try
 			case Action.EDIT:
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
-				if( !secondArg.isTask )
-					throw new EditingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
+				if( !secondArg.isTask && !secondArg.isBoard )
+					throw new EditingSytaxError( "Your second arguments should be one or more tasks id join by ',' or a board name" )
 
 				const name = argHandler.getFirstText()
-				const dependencies = linked
 
-				const newAttributes: ITask =
+				if( secondArg.isTask )
 				{
-					name,
-					dependencies,
-					state,
-					description,
+					const dependencies = linked
+
+					const newAttributes: ITask =
+					{
+						name,
+						dependencies,
+						state,
+						description,
+					}
+
+					if( !name )
+						delete newAttributes.name
+					if( !dependencies )
+						delete newAttributes.dependencies
+					if( !state )
+						delete newAttributes.state
+					if( !description )
+						delete newAttributes.description
+
+					const ids = secondArg.value as number | number[]
+					const tasksID = storage.editTask( ids, newAttributes, argHandler.isRecursive )
+
+					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
+					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
+					controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
+				}
+				else if( secondArg.isBoard )
+				{
+					const newAttributes: IBoard =
+					{
+						name,
+						description,
+					}
+
+					if( !name )
+						delete newAttributes.name
+					if( !description )
+						delete newAttributes.description
+
+					const boardName = secondArg.value as string
+					storage.editBoard( boardName, newAttributes )
+
+					controller.addFeedback( `Board '${ boardName }' edited` )
 				}
 
-				if( !name )
-					delete newAttributes.name
-				if( !dependencies )
-					delete newAttributes.dependencies
-				if( !state )
-					delete newAttributes.state
-				if( !description )
-					delete newAttributes.description
-
-				const ids = secondArg.value as number | number[]
-				const tasksID = storage.editTask( ids, newAttributes, argHandler.isRecursive )
-
-				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
-				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
 				controller.exit()
 				break;
 			}
@@ -183,6 +208,8 @@ try
 
 			case Action.DELETE:
 			{
+				let exitOptions: ExitArgs = {}
+
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( secondArg.isTask )
 				{
@@ -199,12 +226,54 @@ try
 					storage.deleteBoard( board )
 
 					controller.addFeedback( `Board '${ board }' deleted` )
+					exitOptions = { dontPrintBoardButPrintAll: true }
 				}
 				else
 					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
 
-				controller.exit({ dontPrintBoardButPrintAll: true })
+				controller.exit( exitOptions )
 				break;
+			}
+
+			////////////////////
+
+			case Action.MOVE:
+			{
+				const secondArg = argHandler.cliArgs[ 1 ]
+				const thirdArg = argHandler.cliArgs[ 2 ]
+
+				if( !secondArg.isTask )
+					throw new MovingTaskSytaxError( `Second arg '${ secondArg.value }' should be one or more task id` )
+
+				if( !thirdArg.isTask && !thirdArg.isBoard )
+					throw new MovingTaskSytaxError( `Third arg '${ thirdArg.value }' should be one task id or a board name` )
+
+				const targetIDs = secondArg.value as number | number[]
+
+				let destination = {}
+				let destFeedback = ''
+				if( thirdArg.isTask )
+				{
+					if( Array.isArray( thirdArg.value ) )
+						throw new MovingTaskSytaxError( `Please provide only one destination task id` )
+
+					const destTaskID = thirdArg.value as number
+					destination = { subTask: destTaskID }
+					destFeedback = `task n°${ destTaskID }`
+				}
+				else if( thirdArg.isBoard )
+				{
+					const destBoardName = thirdArg.value as string
+					destination = { boardName: destBoardName }
+					destFeedback = `board '${ destBoardName }'`
+				}
+
+				// TODO if no dest provided make new board with parent task name and check only one task to move
+
+				storage.moveTask( targetIDs, destination )
+
+				controller.addFeedback( `Tasks '${ targetIDs }' moved to ${ destFeedback }` )
+				controller.exit()
 			}
 		}
 	}

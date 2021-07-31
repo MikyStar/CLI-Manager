@@ -22,21 +22,19 @@ interface ManPage
 export interface ManEntries
 {
 	init: ManPage
+
 	viewing: ManPage
+	editing: ManPage
+	deleting: ManPage
 
 	creatingTask: ManPage
-	editingTask: ManPage
 	checkingTask: ManPage
 	incrementingTask: ManPage
 	movingTask: ManPage
 
 	creatingBoard: ManPage
-	renamingBoard: ManPage
 	cleaningBoard: ManPage
 	extractingBoards: ManPage
-
-	deleting: ManPage
-
 }
 
 ////////////////////////////////////////
@@ -55,13 +53,12 @@ class Help implements ManEntries
 	viewing: ManPage
 
 	creatingTask: ManPage
-	editingTask: ManPage
+	editing: ManPage
 	checkingTask: ManPage
 	incrementingTask: ManPage
 	movingTask: ManPage
 
 	creatingBoard: ManPage
-	renamingBoard: ManPage
 	cleaningBoard: ManPage
 	extractingBoards: ManPage
 
@@ -149,15 +146,16 @@ class Help implements ManEntries
 			globalArgs: true,
 		}
 
-		this.editingTask =
+		this.editing =
 		{
-			title: 'Editing task',
-			prototype: 'task e <task(s)> [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
+			title: 'Editing',
+			prototype: 'task e [<task(s)>] [<board name>] [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to edit, you can pass multiple by separating the ids by ',' without space",
-				'<new name> : Edit task name',
-				'-d <description> : Edit task description',
+				"<board name> : The name of the board you want to edit",
+				'<new name> : Edit task or board name',
+				'-d <description> : Edit task or board description',
 				'-s <state> : Edit task state defined by the config file',
 				"-l <task(s)> : Edit task dependencies, you can pass multiple by separating the ids by ',' without space",
 			],
@@ -203,13 +201,12 @@ class Help implements ManEntries
 		this.movingTask =
 		{
 			title: 'Moving task',
-			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [-d <new board description>] [global args]',
+			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [global args]',
 			argDef:
 			[
 				"<target task(s)> : The id of the task you want to move, you can pass multiple by separating the ids by ',' without space",
 				"@<existing board name dest> : The target board preceded by '@'",
 				"<task id dest> : The id of the target task",
-				'-d <new board description> : The description of the new board made out from the target task',
 			],
 			furtherDescription:
 			[
@@ -242,18 +239,6 @@ class Help implements ManEntries
 			[
 				'<board name> : Board name',
 				'-d <description> : Board description',
-			],
-			globalArgs: true,
-		}
-
-		this.renamingBoard =
-		{
-			title: 'Renaming board',
-			prototype: 'task rn @<previous board name> <new board name>',
-			argDef:
-			[
-				"@<previous board name> : The target board preceded by '@'",
-				"<new board name> : The new board name",
 			],
 			globalArgs: true,
 		}
@@ -332,16 +317,13 @@ class Help implements ManEntries
 				toReturn = this.getMan( 'incrementingTask' )
 				break;
 			case Action.EDIT:
-				toReturn = this.getMan( 'editingTask' )
+				toReturn = this.getMan( 'editing' )
 				break;
 			case Action.EXTRACT:
 				toReturn = this.getMan( 'extractingBoards' )
 				break;
 			case Action.MOVE:
 				toReturn = this.getMan( 'movingTask' )
-				break;
-			case Action.RENAME:
-				toReturn = this.getMan( 'renamingBoard' )
 				break;
 		}
 

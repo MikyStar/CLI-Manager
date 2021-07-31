@@ -55,7 +55,7 @@ After an _init_, will be created two files:
 
 By default named `task.config.json` in your working directory, he defines your custom states and default argument to provide for the CLI.
 
-> If your config file is different than the default `task.config.json` under your current working directory, you will have to pass the _config_ argument for every CLI commands 
+> If your config file is different than the default `task.config.json` under your current working directory, you will have to pass the _config_ argument for every CLI commands
 
 ```sh
 --config <relative path> # Use or create a specific config file
@@ -118,7 +118,7 @@ _Example:_
 
 By default named `tasks.json` in your working directory, he stores your tasks and boards
 
-> If your storage file is different than the default `tasks.json`, you either have to pass the _storage_ argument for every CLI commands 
+> If your storage file is different than the default `tasks.json`, you either have to pass the _storage_ argument for every CLI commands
 > or use the _storageFile_ attribute in the _defaultArgs_ of the [config file](#the-config-file)
 
 ```sh
@@ -171,17 +171,17 @@ Can either be passed as CLI arguments or stored in the `defaultArgs` object in t
 ### Board
 
 ```sh
-# Creating a board 
+# Creating a board
 task b mBoard	# Create a board '@mBoard'
-task b mBoard -d 'My board'	# Create with description 
+task b mBoard -d 'My board'	# Create with description
 
 # Viewing
-task	# Print every tasks accross all local boards
+task	# Print every tasks from the storage file
 task @mBoard	# Print all tasks of a board
 
 # Editing a board
-task @mBoard -d 'Our board'	# Change board description
-task rn @previousName newName	# Renaming
+task e @mBoard -d 'Our board'	# Change board description
+task e @previousName newName	# Renaming
 task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 task clean @mBoard	# Remove all task in board @mBoard which are at final state
 
@@ -214,7 +214,6 @@ task i 11,14	# Pass tasks 11 and 14 to next state, "Increment"
 task i 11,14 -r	# Pass tasks 11 and 14 and their subtasks to next state, "Increment"
 
 # Moving tasks
-task mv 9 -d 'A brand new board'	# Make a new board out of a task subtasks and give a description
 task mv 9 @otherBoard	# Move task and subtasks to board
 task mv 9,7,11 @otherBoard	# Move multiple tasks and subtasks to board
 task mv 9,7,11 3	# Move multiple tasks and subtasks to task as subtasks (maintining tree structure)

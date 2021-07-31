@@ -9,7 +9,7 @@ export interface IBoard
 {
 	name: string,
 	description ?: string,
-	tasks : ITask[],
+	tasks ?: ITask[],
 }
 
 ////////////////////////////////////////
@@ -21,7 +21,7 @@ export namespace Board
 		let toReturn : string[] = []
 
 		const boardNameStyled = ' ' + chalk.bold.underline( '@' + board.name )
-		toReturn.push( boardNameStyled + '\n' )	
+		toReturn.push( boardNameStyled + '\n' )
 
 		const descriptionStyled = chalk.dim( board.description )
 		if( !options.hideDescription && board.description )
@@ -47,7 +47,7 @@ export namespace Board
 
 	/**
 	 * Transform the tree of tasks and subtasks to an array of tasks
-	 */ 
+	 */
 	export const straightBoard = ( board : IBoard ) =>
 	{
 		let toReturn : ITask[] = []

@@ -37,11 +37,11 @@ export class IncrementingTaskSytaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class EditingTaskSytaxError extends CLISyntaxError
+export class EditingSytaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
-		super( message, 'editingTask', details )
+		super( message, 'editing', details )
 	}
 }
 
@@ -52,5 +52,15 @@ export class DeletingTaskSytaxError extends CLISyntaxError
 	constructor( message: string, details ?: any )
 	{
 		super( message, 'deleting', details )
+	}
+}
+
+////////////////////////////////////////
+
+export class MovingTaskSytaxError extends CLISyntaxError
+{
+	constructor( message: string, details ?: any )
+	{
+		super( message, 'movingTask', details )
 	}
 }
