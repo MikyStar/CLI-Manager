@@ -107,7 +107,7 @@ try
 			case Action.EDIT:
 			{
 				const secondArg = argHandler.cliArgs[ 1 ]
-				if( !secondArg.isTask || !secondArg.isBoard )
+				if( !secondArg.isTask && !secondArg.isBoard )
 					throw new EditingSytaxError( "Your second arguments should be one or more tasks id join by ',' or a board name" )
 
 				const name = argHandler.getFirstText()
@@ -245,7 +245,7 @@ try
 				if( !secondArg.isTask )
 					throw new MovingTaskSytaxError( `Second arg '${ secondArg.value }' should be one or more task id` )
 
-				if( !thirdArg.isTask || !thirdArg.isBoard )
+				if( !thirdArg.isTask && !thirdArg.isBoard )
 					throw new MovingTaskSytaxError( `Third arg '${ thirdArg.value }' should be one task id or a board name` )
 
 				const targetIDs = secondArg.value as number | number[]
@@ -273,6 +273,7 @@ try
 				storage.moveTask( targetIDs, destination )
 
 				controller.addFeedback( `Tasks '${ targetIDs }' moved to ${ destFeedback }` )
+				controller.exit()
 			}
 		}
 	}

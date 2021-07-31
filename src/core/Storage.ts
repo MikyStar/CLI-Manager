@@ -66,11 +66,11 @@ export class Storage
 
 				while( allTasksId.includes( id ) )
 					id++
-				
+
 				return id
 			}
 		}
-		const taskID = createUniqueId()
+		const taskID = task.id || createUniqueId()
 
 		const finalTask : ITask =
 		{
@@ -233,7 +233,7 @@ export class Storage
 
 	/**
 	 * Use recursion to return a single task given id within any boards and any subtask
-	 * 
+	 *
 	 * @throws {TaskNotFoundError}
 	 */
 	retrieveNestedTask = ( taskID: number, callback: ( task: ITask, board ?: IBoard, taskIndex ?: number, boardIndex ?: number ) => void ) =>
