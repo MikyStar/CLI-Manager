@@ -290,7 +290,7 @@
                 "dependencies": [],
                 "id": 28,
                 "timestamp": "29/07/2021",
-                "description": "like .../...",
+                "description": "like ...x",
                 "subtasks": [
                     {
                         "name": "or the actual full recurive subtasks lenght",
@@ -300,6 +300,155 @@
                         "timestamp": "29/07/2021"
                     }
                 ]
+            },
+            {
+                "name": "refactor controller printer to be able to handle every kind of print",
+                "state": "todo",
+                "dependencies": [],
+                "id": 33,
+                "timestamp": "29/07/2021",
+                "subtasks": [
+                    {
+                        "name": "it should handle the separators, datas and the stats",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 40,
+                        "timestamp": "29/07/2021"
+                    }
+                ]
+            },
+            {
+                "name": "Calendar view Jira like",
+                "state": "todo",
+                "dependencies": [],
+                "id": 41,
+                "timestamp": "29/07/2021",
+                "subtasks": [
+                    {
+                        "name": "By default sort by start date according to today",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 42,
+                        "timestamp": "29/07/2021",
+                        "subtasks": [
+                            {
+                                "name": "Can change whats displayed with group sort board secific tasks",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 43,
+                                "timestamp": "29/07/2021"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "only for tasks with dates",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 44,
+                        "timestamp": "29/07/2021",
+                        "subtasks": [
+                            {
+                                "name": "Have to think about the best way to store date",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 45,
+                                "timestamp": "29/07/2021",
+                                "subtasks": [
+                                    {
+                                        "name": "A task could have nothing, or a date or a date range",
+                                        "state": "todo",
+                                        "dependencies": [],
+                                        "id": 46,
+                                        "timestamp": "29/07/2021"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Refactor default args",
+                "state": "todo",
+                "dependencies": [],
+                "id": 47,
+                "timestamp": "29/07/2021",
+                "subtasks": [
+                    {
+                        "name": "change parent attribute name",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 48,
+                        "timestamp": "29/07/2021"
+                    },
+                    {
+                        "name": "separate printing args from others",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 49,
+                        "timestamp": "29/07/2021"
+                    },
+                    {
+                        "name": "have separated args for task view and agenda view",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 50,
+                        "timestamp": "29/07/2021"
+                    }
+                ]
+            },
+            {
+                "name": "Printer should be a class",
+                "state": "todo",
+                "dependencies": [],
+                "id": 51,
+                "timestamp": "29/07/2021",
+                "subtasks": [
+                    {
+                        "name": "I can append one or more line with params",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 52,
+                        "timestamp": "29/07/2021",
+                        "subtasks": [
+                            {
+                                "name": "maybe an other object with align, print at end, wrap, shorten with \"...\", indent level",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 53,
+                                "timestamp": "29/07/2021"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "no tree indicator if description but no subtask",
+                "state": "todo",
+                "dependencies": [],
+                "id": 54,
+                "timestamp": "30/07/2021"
+            },
+            {
+                "name": "flag --no-completed to hide tasks at final state",
+                "state": "todo",
+                "dependencies": [],
+                "id": 55,
+                "timestamp": "31/07/2021"
+            },
+            {
+                "name": "in stats: print the state icon too",
+                "state": "todo",
+                "dependencies": [],
+                "id": 56,
+                "timestamp": "31/07/2021"
+            },
+            {
+                "name": "edition with prompt",
+                "state": "todo",
+                "dependencies": [],
+                "id": 57,
+                "timestamp": "31/07/2021"
             }
         ]
     }
