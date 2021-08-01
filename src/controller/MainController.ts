@@ -1,5 +1,5 @@
 import { CliArgHandler, RawArg, Action, TaskFlags } from "../core/CliArgHandler";
-import { PrintArgs, Printer } from "../core/Printer";
+import { Printer, PrinterConfig } from "../core/Printer";
 import { Storage, DEFAULT_STORAGE_FILE_NAME, DEFAULT_STORAGE_DATAS } from "../core/Storage";
 import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "../core/Config";
 import { System } from "../core/System";
@@ -20,11 +20,11 @@ export interface ExitArgs
 export class MainController
 {
 	argHandler: CliArgHandler
-	userFeedback: string[]
-	printOptions ?: PrintArgs
 	firstArg ?: RawArg
 	isHelpNeeded: boolean
+
 	printAfter: boolean
+	printer: Printer
 
 	configLocation : string
 	config ?: Config
@@ -42,7 +42,7 @@ export class MainController
 	constructor()
 	{
 		this.argHandler = new CliArgHandler()
-		this.userFeedback = []
+		this.printer = new Printer()
 
 		this.firstArg = this.argHandler.getFirstArg()
 		this.isHelpNeeded = this.argHandler.isHelpNeeded
@@ -74,13 +74,12 @@ export class MainController
 		if( !this.storage )
 			throw new FileNotFoundError( this.storageLocation )
 
-		this.printOptions =
+		const printConfig: PrinterConfig =
 		{
-			datas: this.storage,
-			states: this.config.states,
-			...this.argHandler.stringifyArgs,
+			...this.argHandler.printerConfig,
 			...this.config.defaultArgs
 		}
+		this.printer = new Printer( this.storage, this.config.states, printConfig )
 
 		this.taskFlags = this.argHandler.taskFlags
 		this.board = this.argHandler.board || this.config.defaultArgs.board
@@ -89,26 +88,18 @@ export class MainController
 
 	////////////////////
 
-	addFeedback = ( message: string | string[] ) =>
-	{
-		const lines = Array.isArray( message ) ? message : [ message ]
-		this.userFeedback = [ ...this.userFeedback, ...lines ]
-	}
-
-	printFeedback = () => Printer.feedBack( this.userFeedback )
-
 	handleInit = () =>
 	{
 		if( !this.config )
 		{
 			System.writeJSONFile( this.configLocation, DEFAULT_CONFIG_DATAS )
-			this.addFeedback( `Config file '${ this.configLocation }' created` )
+			this.printer.add( `Config file '${ this.configLocation }' created` )
 		}
 
 		if( !this.storage )
 		{
 			System.writeJSONFile( this.storageLocation, DEFAULT_STORAGE_DATAS )
-			this.addFeedback( `Storage file '${ this.storageLocation }' created` )
+			this.printer.add( `Storage file '${ this.storageLocation }' created` )
 		}
 
 		this.exit()
