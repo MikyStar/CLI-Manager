@@ -68,6 +68,8 @@ export class Printer
 			})
 		});
 
+		this.addToView( this.getFileStats() )
+
 		return this
 	}
 
@@ -85,6 +87,8 @@ export class Printer
 					this.addToView( [ this.separator( '-' ), '' ] )
 			})
 		});
+
+		this.addToView( this.getFileStats() )
 
 		return this
 	}
@@ -126,6 +130,7 @@ export class Printer
 				...fullBuffer,
 				...this.view,
 				this.charAccrossScreen( '-' ),
+				'',
 				...this.feedback
 			]
 		}
@@ -146,7 +151,9 @@ export class Printer
 		const fullBuffer =
 		[
 			this.charAccrossScreen( '-' ),
+			'',
 			...this.view,
+			'',
 			this.charAccrossScreen( '-' ),
 		]
 
@@ -171,6 +178,17 @@ export class Printer
 		this.view = [ ...this.view, ...lines ]
 
 		return this
+	}
+
+	private getFileStats = () =>
+	{
+		let allTasks = []
+		this.storage.boards.forEach( board => allTasks = [ ...allTasks, ...Board.straightBoard( board ) ] )
+
+		const fileName = chalk.bold.underline( this.storage.relativePath )
+		const stats = Task.getStats( allTasks, this.states )
+
+		return [ this.separator( '-' ) , '', ' ' + fileName, '', stats, '' ]
 	}
 
 	////////////////////
