@@ -135,7 +135,7 @@ export class Printer
 			]
 		}
 
-		this.printStringified( fullBuffer )
+		printMessage( fullBuffer )
 	}
 
 	addFeedback = ( message: string | string[] ) =>
@@ -157,20 +157,10 @@ export class Printer
 			this.charAccrossScreen( '-' ),
 		]
 
-		this.printStringified( fullBuffer )
+		printMessage( fullBuffer )
 	}
 
-	printFeedback = () =>
-	{
-		const fullBuffer =
-		[
-			this.charAccrossScreen( '-' ),
-			...this.feedback,
-			this.charAccrossScreen( '-' ),
-		]
-
-		this.printStringified( fullBuffer )
-	}
+	printFeedback = () => printMessage( [ '', ...this.feedback ] )
 
 	private addToView = ( message: string | string[] ) =>
 	{
@@ -193,11 +183,9 @@ export class Printer
 
 	////////////////////
 
-	private printStringified = ( array : string[] ) => array.forEach( str => console.log( str ) )
-
 	private charAccrossScreen = ( char : string ) =>
 	{
-		let toReturn = ' '
+		let toReturn = ''
 
 		for( let i = 0; i < ( process.stdout.columns - 2 ); i++ ) // -2 to do the margin of one space of begin and end
 			toReturn += char
@@ -207,7 +195,7 @@ export class Printer
 
 	private separator = ( char: string ) =>
 	{
-		let toReturn = ' '
+		let toReturn = ''
 
 		for( let i = 0; i < ( process.stdout.columns / 10 ); i++ )
 			toReturn += char
