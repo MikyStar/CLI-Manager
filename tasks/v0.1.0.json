@@ -324,7 +324,7 @@
             },
             {
                 "name": "stats for the total of all the boards in file and printed even in only print board view",
-                "state": "wip",
+                "state": "done",
                 "dependencies": [],
                 "id": 27,
                 "timestamp": "29/07/2021",
@@ -332,33 +332,26 @@
                 "subtasks": [
                     {
                         "name": "refactor actual stats to return on exploitable object so I can simply add the values",
-                        "state": "todo",
+                        "state": "done",
                         "dependencies": [],
                         "id": 36,
                         "timestamp": "29/07/2021"
                     },
                     {
                         "name": "maybe the full file printing stats should be preceeded by its location",
-                        "state": "todo",
+                        "state": "done",
                         "dependencies": [],
                         "id": 37,
                         "timestamp": "29/07/2021",
                         "subtasks": [
                             {
                                 "name": "maybe the small sperator just before",
-                                "state": "todo",
+                                "state": "done",
                                 "dependencies": [],
                                 "id": 38,
                                 "timestamp": "29/07/2021"
                             }
                         ]
-                    },
-                    {
-                        "name": "in stats: print the state icon too",
-                        "state": "todo",
-                        "dependencies": [],
-                        "id": 56,
-                        "timestamp": "01/08/2021"
                     }
                 ]
             },
