@@ -142,7 +142,7 @@ try
 
 					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
+					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` ).loadTaskView( ids )
 				}
 				else if( secondArg.isBoard )
 				{
@@ -160,10 +160,10 @@ try
 					const boardName = secondArg.value as string
 					storage.editBoard( boardName, newAttributes )
 
-					printer.addFeedback( `Board '${ boardName }' edited` )
+					printer.addFeedback( `Board '${ boardName }' edited` ).loadBoardView( board )
 				}
 
-				printer.loadBoardView( board ).print()
+				printer.print()
 				break;
 			}
 
@@ -182,7 +182,7 @@ try
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` ).loadBoardView( board ).print()
+				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` ).loadTaskView( ids ).print()
 				break;
 			}
 
@@ -202,7 +202,7 @@ try
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` ).loadBoardView( board ).print()
+				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` ).loadTaskView( ids ).print()
 				break;
 			}
 
