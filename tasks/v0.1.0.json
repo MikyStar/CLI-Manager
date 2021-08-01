@@ -18,7 +18,7 @@
             },
             {
                 "name": "change the print flag to no print so by default it always prints",
-                "state": "todo",
+                "state": "wip",
                 "dependencies": [],
                 "description": "More appropriate way",
                 "id": 35,

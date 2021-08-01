@@ -27,7 +27,7 @@ export enum Flag
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
 	DEPTH = '--depth',
-	PRINT_AFTER = '--print',
+	DONT_PRINT_AFTER = '--no-print',
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
@@ -64,7 +64,6 @@ export class CliArgHandler
 	isHelpNeeded: boolean
 	isRecursive: boolean
 	isVersion: boolean
-	shouldPrintAfter: boolean
 	configLocation: string
 	storageLocation: string
 
@@ -87,7 +86,6 @@ export class CliArgHandler
 
 		this.isHelpNeeded = this.popLastFlag( Flag.HELP )
 		this.isVersion = this.popLastFlag( Flag.VERSION )
-		this.shouldPrintAfter = this.popLastFlag( Flag.PRINT_AFTER )
 
 		this.storageLocation = this.popLastFlagAndValue( Flag.STORAGE_FILE ) as string
 		this.configLocation = this.popLastFlagAndValue( Flag.CONFIG_FILE ) as string
@@ -138,6 +136,7 @@ export class CliArgHandler
 		const hideTree = this.popLastFlag( Flag.HIDE_TREE )
 		const hideSubCounter = this.popLastFlag( Flag.HIDE_SUB_COUNTER )
 		const depth = this.popLastFlagAndValue( Flag.DEPTH ) as number
+		const shouldNotPrintAfter = this.popLastFlag( Flag.DONT_PRINT_AFTER )
 
 		return	{
 					hideDescription,
@@ -145,6 +144,7 @@ export class CliArgHandler
 					hideSubCounter,
 					hideTree,
 					depth,
+					shouldNotPrintAfter
 				}
 	}
 

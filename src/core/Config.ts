@@ -13,7 +13,6 @@ export interface ConfigState
 export interface DefaultArgs extends PrinterConfig
 {
 	board ?: string,
-	printAfter ?: boolean
 
 	storageFile ?: string,
 	configFile ?: string,

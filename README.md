@@ -73,7 +73,7 @@ _Example:_
 		"hideTimestamp": true,
 		"hideSubCounter": true,
 		"hideTree": true,
-		"printAfter": true,
+		"shouldNotPrintAfter": false,
 
 		"depth" : 3,
 
@@ -165,7 +165,7 @@ Can either be passed as CLI arguments or stored in the `defaultArgs` object in t
 --hide-tree		# No tree branches
 --hide-timestamp	# No timestamp
 --hide-sub-counter	# No subtask counter in parent task
---print	# Print your tasks or boards after having ran your command
+--no-print	# Don't print tasks after an action
 ```
 
 ### Board
