@@ -40,25 +40,22 @@ class Printer
 		else
 			theTasksID = [ taskID ]
 
-		console.log( this.charAccrossScreen( '-' ), '\n' )
-
 		theTasksID.forEach( ( id, index ) =>
 		{
 			this.storage.retrieveNestedTask( id, task =>
 			{
 				tasks.push( task )
 
-				this.printStringified( Task.stringify( task, this.states, this.config ) )
-				console.log('')
+				this.add( [ ...Task.stringify( task, this.states, this.config ), '' ] )
 
 				if( index !== ( theTasksID.length - 1 ) )
-					console.log( this.separator('-'), '\n' )
+					this.add( [ this.separator('-'), '' ] )
 				else
-					console.log( Task.getStats( tasks, this.states ), '\n' )
+					this.add( [ ...Task.getStats( tasks, this.states ), '' ] )
 			})
 		});
 
-		console.log( this.charAccrossScreen( '-' ), '\n' )
+		return this
 	}
 
 	boardView = ( boardName: string | string[] ) =>
@@ -70,39 +67,44 @@ class Printer
 		else
 			theBoards = [ boardName ]
 
-		console.log( this.charAccrossScreen( '-' ), '\n' )
-
 		theBoards.forEach( ( name, index ) =>
 		{
-			const matchingBoard = this.storage.boards.find( board => board.name === name )
-
-			if( !matchingBoard )
-				console.error(`Can't find board ${ name }`)
-			else
+			this.storage.retrieveBoard( name, board =>
 			{
-				this.printStringified( Board.stringify( matchingBoard, this.states, this.config ) )
-				console.log('')
+				this.add( [ ...Board.stringify( board, this.states, this.config ), '' ] )
 
 				if( index !== ( theBoards.length - 1 ) )
-					console.log( this.separator('-'), '\n' )
-			}
+					this.add( [ this.separator( '-' ), '' ] )
+			})
 		});
 
-		console.log( this.charAccrossScreen( '-' ) )
-
-		return this // ! So i can chain a view creation with a print afterwards
+		return this
 	}
 
-	fileView = () => this.boardView( this.storage.boards.map( board => board.name ) )
+	fileView = () =>
+	{
+		this.boardView( this.storage.boards.map( board => board.name ) )
+
+		return this
+	}
 
 	print = () =>
 	{
-		this.lines.push( this.charAccrossScreen( '-' ), '\n' )
+		this.add( [ this.charAccrossScreen( '-' ), '' ] )
 
-		this.lines.push( this.charAccrossScreen( '-' ) )
+		this.add( this.charAccrossScreen( '-' ) )
 		this.printStringified( this.lines )
 	}
 
+	add = ( line: string | string[] ) =>
+	{
+		if( Array.isArray( line ))
+			this.lines = [ ...this.lines, ...line ]
+		else
+			this.lines.push( line )
+
+		return this
+	}
 
 	////////////////////
 
