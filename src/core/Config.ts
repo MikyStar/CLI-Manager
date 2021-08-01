@@ -26,7 +26,7 @@ export const DEFAULT_CONFIG_DATAS =
 {
 	"defaultArgs":
 	{
-		"printAfter": true,
+		"shouldNotPrintAfter": false,
 		"board": "backlog",
 		"storageFile": "tasks.json"
 	},

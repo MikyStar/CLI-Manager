@@ -9,6 +9,7 @@ import { Storage } from './Storage';
 
 export interface PrinterConfig
 {
+	shouldNotPrintAfter ?: boolean,
 	hideDescription ?: boolean,
 	hideTimestamp ?: boolean,
 	hideSubCounter ?: boolean,
@@ -21,36 +22,36 @@ export interface PrinterConfig
 
 /**
  * Handles stdout like a buffer with multiple lines, you append lines to it then print
+ *
+ *
  */
 export class Printer
 {
-	lines: string[]
+	private feedback: string[]
+	private view: string[]
+
 	storage: Storage
 	states: ConfigState[]
-	config ?: StringifyArgs
+	config ?: PrinterConfig
 
 	////////////////////
 
-	constructor( storage ?: Storage, states ?: ConfigState[], stringifyArgs ?: StringifyArgs )
+	constructor( storage ?: Storage, states ?: ConfigState[], config ?: PrinterConfig )
 	{
-		this.lines = []
+		this.feedback = []
+		this.view = []
+
 		this.storage = storage
 		this.states = states
-		this.config = stringifyArgs
+		this.config = config
 	}
 
 	////////////////////
 
-	taskView = ( taskID: number | number[] ) =>
+	loadTaskView = ( taskID: number | number[] ) =>
 	{
-		let theTasksID = []
-
+		const theTasksID = Array.isArray( taskID ) ? taskID : [ taskID ]
 		const tasks = []
-
-		if( Array.isArray( taskID ) )
-			theTasksID = taskID
-		else
-			theTasksID = [ taskID ]
 
 		theTasksID.forEach( ( id, index ) =>
 		{
@@ -58,60 +59,116 @@ export class Printer
 			{
 				tasks.push( task )
 
-				this.add( [ ...Task.stringify( task, this.states, this.config ), '' ] )
+				this.addToView( [ ...Task.stringify( task, this.states, this.config ), '' ] )
 
 				if( index !== ( theTasksID.length - 1 ) )
-					this.add( [ this.separator('-'), '' ] )
+					this.addToView( [ this.separator('-'), '' ] )
 				else
-					this.add( [ ...Task.getStats( tasks, this.states ), '' ] )
+					this.addToView( [ ...Task.getStats( tasks, this.states ), '' ] )
 			})
 		});
 
 		return this
 	}
 
-	boardView = ( boardName: string | string[] ) =>
+	loadBoardView = ( boardName: string | string[] ) =>
 	{
-		let theBoards = []
-
-		if( Array.isArray( boardName ) )
-			theBoards = boardName
-		else
-			theBoards = [ boardName ]
+		const theBoards = Array.isArray( boardName ) ? boardName : [ boardName ]
 
 		theBoards.forEach( ( name, index ) =>
 		{
 			this.storage.retrieveBoard( name, board =>
 			{
-				this.add( [ ...Board.stringify( board, this.states, this.config ), '' ] )
+				this.addToView( [ ...Board.stringify( board, this.states, this.config ), '' ] )
 
 				if( index !== ( theBoards.length - 1 ) )
-					this.add( [ this.separator( '-' ), '' ] )
+					this.addToView( [ this.separator( '-' ), '' ] )
 			})
 		});
 
 		return this
 	}
 
-	fileView = () =>
+	loadFileView = () =>
 	{
-		this.boardView( this.storage.boards.map( board => board.name ) )
+		this.loadBoardView( this.storage.boards.map( board => board.name ) )
 
 		return this
 	}
 
+	/**
+	 * Handle both view buffer and feedback buffer given arg should not print after
+	 */
 	print = () =>
 	{
-		this.add( [ this.charAccrossScreen( '-' ), '' ] )
+		let fullBuffer = []
+		fullBuffer.push( this.charAccrossScreen( '-' ), '' )
 
-		this.add( this.charAccrossScreen( '-' ) )
-		this.printStringified( this.lines )
+		if( this.config.shouldNotPrintAfter )
+		{
+			if( this.feedback.length === 0 )
+				return
+
+			fullBuffer =
+			[
+				...fullBuffer,
+				...this.feedback,
+				this.charAccrossScreen( '-' )
+			]
+		}
+		else
+		{
+			if( ( this.feedback.length === 0 ) && ( this.view.length === 0 ) )
+				return
+
+			fullBuffer =
+			[
+				...fullBuffer,
+				...this.view,
+				this.charAccrossScreen( '-' ),
+				...this.feedback
+			]
+		}
+
+		this.printStringified( fullBuffer )
 	}
 
-	add = ( message: string | string[] ) =>
+	addFeedback = ( message: string | string[] ) =>
 	{
 		const lines = Array.isArray( message ) ? message : [ message ]
-		this.lines = [ ...this.lines, ...lines ]
+		this.feedback = [ ...this.feedback, ...lines ]
+
+		return this
+	}
+
+	printView = () =>
+	{
+		const fullBuffer =
+		[
+			this.charAccrossScreen( '-' ),
+			...this.view,
+			this.charAccrossScreen( '-' ),
+		]
+
+		this.printStringified( fullBuffer )
+	}
+
+	printFeedback = () =>
+	{
+		const fullBuffer =
+		[
+			this.charAccrossScreen( '-' ),
+			...this.feedback,
+			this.charAccrossScreen( '-' ),
+		]
+
+		this.printStringified( fullBuffer )
+	}
+
+	private addToView = ( message: string | string[] ) =>
+	{
+		const lines = Array.isArray( message ) ? message : [ message ]
+		this.view = [ ...this.view, ...lines ]
 
 		return this
 	}
@@ -158,7 +215,7 @@ export class Printer
 
 ////////////////////////////////////////
 
-export const feedBack = ( message : string | string[], chalkColor ?: string ) =>
+export const printMessage = ( message : string | string[], chalkColor ?: string ) =>
 {
 	if( ( message === '' ) || ( message === [] ) )
 		return
@@ -176,4 +233,4 @@ export const feedBack = ( message : string | string[], chalkColor ?: string ) =>
 	console.log('')
 }
 
-export const error = ( message: string | string[] ) => feedBack( message, 'red' )
+export const printError = ( message: string | string[] ) => printMessage( message, 'red' )
