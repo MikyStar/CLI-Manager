@@ -37,6 +37,12 @@ try
 
 			printer.loadTaskView( tasksId ).printView()
 		}
+		else if( firstArg.isBoard )
+		{
+			const boardName = firstArg.value as string
+
+			printer.loadBoardView( boardName ).printView()
+		}
 		else if( argHandler.isHelpNeeded )
 			printer.addFeedback( Help.fullMan() ).printFeedback()
 		else if( argHandler.isVersion )
