@@ -64,7 +64,7 @@ export class Printer
 				if( index !== ( theTasksID.length - 1 ) )
 					this.addToView( [ this.separator('-'), '' ] )
 				else
-					this.addToView( [ ...Task.getStats( tasks, this.states ), '' ] )
+					this.addToView( [ Task.getStats( tasks, this.states ), '' ] )
 			})
 		});
 
