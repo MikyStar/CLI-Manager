@@ -1,4 +1,5 @@
 import { System } from './System'
+import { PrinterConfig } from './Printer'
 
 ////////////////////////////////////////
 
@@ -9,14 +10,8 @@ export interface ConfigState
 	icon: string
 }
 
-export interface DefaultArgs // TODO Maybe some should be refactor in Printer file
+export interface DefaultArgs extends PrinterConfig
 {
-	hideDescription ?: boolean,
-	hideTimestamp ?: boolean,
-	hideSubCounter ?: boolean,
-	hideTree ?: boolean,
-
-	depth ?: number,
 	board ?: string,
 	printAfter ?: boolean
 

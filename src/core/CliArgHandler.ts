@@ -1,4 +1,4 @@
-import { StringifyArgs } from './Task'
+import { PrinterConfig } from './Printer'
 
 ////////////////////////////////////////
 
@@ -68,7 +68,7 @@ export class CliArgHandler
 	configLocation: string
 	storageLocation: string
 
-	stringifyArgs ?: StringifyArgs
+	printerConfig ?: PrinterConfig
 	taskFlags ?: TaskFlags
 	board ?: string
 
@@ -88,14 +88,14 @@ export class CliArgHandler
 		this.isHelpNeeded = this.popLastFlag( Flag.HELP )
 		this.isVersion = this.popLastFlag( Flag.VERSION )
 		this.shouldPrintAfter = this.popLastFlag( Flag.PRINT_AFTER )
-		
+
 		this.storageLocation = this.popLastFlagAndValue( Flag.STORAGE_FILE ) as string
 		this.configLocation = this.popLastFlagAndValue( Flag.CONFIG_FILE ) as string
-		
-		this.stringifyArgs = this.getStringifyArgs()
+
+		this.printerConfig = this.getPrinterConfig()
 		this.taskFlags = this.getTaskFlags()
 		this.board = this.getBoard()
-	
+
 		this.isRecursive = this.popLastFlag( Flag.RECURSIVE )
 	}
 
@@ -131,7 +131,7 @@ export class CliArgHandler
 
 	////////////////////
 
-	private getStringifyArgs = () : StringifyArgs =>
+	private getPrinterConfig = () : PrinterConfig =>
 	{
 		const hideDescription = this.popLastFlag( Flag.HIDE_DESCRIPTION )
 		const hideTimestamp = this.popLastFlag( Flag.HIDE_TIMESTAMP )

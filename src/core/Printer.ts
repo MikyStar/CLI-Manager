@@ -7,10 +7,22 @@ import { Storage } from './Storage';
 
 ////////////////////////////////////////
 
+export interface PrinterConfig
+{
+	hideDescription ?: boolean,
+	hideTimestamp ?: boolean,
+	hideSubCounter ?: boolean,
+	hideTree ?: boolean,
+
+	depth ?: number,
+}
+
+////////////////////////////////////////
+
 /**
  * Handles stdout like a buffer with multiple lines, you append lines to it then print
  */
-class Printer
+export class Printer
 {
 	lines: string[]
 	storage: Storage
@@ -19,9 +31,9 @@ class Printer
 
 	////////////////////
 
-	constructor( storage: Storage, states: ConfigState[], stringifyArgs ?: StringifyArgs, lines ?: string[] )
+	constructor( storage ?: Storage, states ?: ConfigState[], stringifyArgs ?: StringifyArgs )
 	{
-		this.lines = lines || []
+		this.lines = []
 		this.storage = storage
 		this.states = states
 		this.config = stringifyArgs
@@ -96,12 +108,10 @@ class Printer
 		this.printStringified( this.lines )
 	}
 
-	add = ( line: string | string[] ) =>
+	add = ( message: string | string[] ) =>
 	{
-		if( Array.isArray( line ))
-			this.lines = [ ...this.lines, ...line ]
-		else
-			this.lines.push( line )
+		const lines = Array.isArray( message ) ? message : [ message ]
+		this.lines = [ ...this.lines, ...lines ]
 
 		return this
 	}
