@@ -9,7 +9,7 @@ export interface ConfigState
 	icon: string
 }
 
-export interface DefaultArgs
+export interface DefaultArgs // TODO Maybe some should be refactor in Printer file
 {
 	hideDescription ?: boolean,
 	hideTimestamp ?: boolean,
