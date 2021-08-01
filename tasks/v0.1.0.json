@@ -18,7 +18,7 @@
             },
             {
                 "name": "change the print flag to no print so by default it always prints",
-                "state": "todo",
+                "state": "done",
                 "dependencies": [],
                 "description": "More appropriate way",
                 "id": 35,
@@ -26,14 +26,14 @@
             },
             {
                 "name": "refactor controller printer to be able to handle every kind of print",
-                "state": "todo",
+                "state": "done",
                 "dependencies": [],
                 "id": 33,
                 "timestamp": "01/08/2021",
                 "subtasks": [
                     {
                         "name": "it should handle the separators, datas and the stats",
-                        "state": "todo",
+                        "state": "done",
                         "dependencies": [],
                         "id": 40,
                         "timestamp": "29/07/2021"
@@ -42,21 +42,21 @@
             },
             {
                 "name": "Printer should be a class",
-                "state": "todo",
+                "state": "done",
                 "dependencies": [],
                 "id": 51,
                 "timestamp": "01/08/2021",
                 "subtasks": [
                     {
                         "name": "I can append one or more line with params",
-                        "state": "todo",
+                        "state": "done",
                         "dependencies": [],
                         "id": 52,
                         "timestamp": "29/07/2021",
                         "subtasks": [
                             {
                                 "name": "maybe an other object with align, print at end, wrap, shorten with \"...\", indent level",
-                                "state": "todo",
+                                "state": "done",
                                 "dependencies": [],
                                 "id": 53,
                                 "timestamp": "29/07/2021"
@@ -324,7 +324,7 @@
             },
             {
                 "name": "stats for the total of all the boards in file and printed even in only print board view",
-                "state": "todo",
+                "state": "wip",
                 "dependencies": [],
                 "id": 27,
                 "timestamp": "29/07/2021",

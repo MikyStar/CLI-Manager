@@ -7,19 +7,177 @@ import { Storage } from './Storage';
 
 ////////////////////////////////////////
 
-export interface PrintArgs extends StringifyArgs
+export interface PrinterConfig
 {
-	datas: Storage,
-	states: ConfigState[]
+	shouldNotPrintAfter ?: boolean,
+	hideDescription ?: boolean,
+	hideTimestamp ?: boolean,
+	hideSubCounter ?: boolean,
+	hideTree ?: boolean,
+
+	depth ?: number,
 }
 
 ////////////////////////////////////////
 
-export namespace Printer
+/**
+ * Handles stdout like a buffer with multiple lines, you append lines to it then print
+ *
+ *
+ */
+export class Printer
 {
-	export const printStringified = ( array : string[] ) => array.forEach( str => console.log( str ) )
+	private feedback: string[]
+	private view: string[]
 
-	export const charAccrossScreen = ( char : string ) =>
+	storage: Storage
+	states: ConfigState[]
+	config ?: PrinterConfig
+
+	////////////////////
+
+	constructor( storage ?: Storage, states ?: ConfigState[], config ?: PrinterConfig )
+	{
+		this.feedback = []
+		this.view = []
+
+		this.storage = storage
+		this.states = states
+		this.config = config
+	}
+
+	////////////////////
+
+	loadTaskView = ( taskID: number | number[] ) =>
+	{
+		const theTasksID = Array.isArray( taskID ) ? taskID : [ taskID ]
+		const tasks = []
+
+		theTasksID.forEach( ( id, index ) =>
+		{
+			this.storage.retrieveNestedTask( id, task =>
+			{
+				tasks.push( task )
+
+				this.addToView( [ ...Task.stringify( task, this.states, this.config ), '' ] )
+
+				if( index !== ( theTasksID.length - 1 ) )
+					this.addToView( [ this.separator('-'), '' ] )
+				else
+					this.addToView( [ ...Task.getStats( tasks, this.states ), '' ] )
+			})
+		});
+
+		return this
+	}
+
+	loadBoardView = ( boardName: string | string[] ) =>
+	{
+		const theBoards = Array.isArray( boardName ) ? boardName : [ boardName ]
+
+		theBoards.forEach( ( name, index ) =>
+		{
+			this.storage.retrieveBoard( name, board =>
+			{
+				this.addToView( [ ...Board.stringify( board, this.states, this.config ), '' ] )
+
+				if( index !== ( theBoards.length - 1 ) )
+					this.addToView( [ this.separator( '-' ), '' ] )
+			})
+		});
+
+		return this
+	}
+
+	loadFileView = () =>
+	{
+		this.loadBoardView( this.storage.boards.map( board => board.name ) )
+
+		return this
+	}
+
+	/**
+	 * Handle both view buffer and feedback buffer given arg should not print after
+	 */
+	print = () =>
+	{
+		let fullBuffer = []
+		fullBuffer.push( this.charAccrossScreen( '-' ), '' )
+
+		if( this.config.shouldNotPrintAfter )
+		{
+			if( this.feedback.length === 0 )
+				return
+
+			fullBuffer =
+			[
+				...fullBuffer,
+				...this.feedback,
+				this.charAccrossScreen( '-' )
+			]
+		}
+		else
+		{
+			if( ( this.feedback.length === 0 ) && ( this.view.length === 0 ) )
+				return
+
+			fullBuffer =
+			[
+				...fullBuffer,
+				...this.view,
+				this.charAccrossScreen( '-' ),
+				...this.feedback
+			]
+		}
+
+		this.printStringified( fullBuffer )
+	}
+
+	addFeedback = ( message: string | string[] ) =>
+	{
+		const lines = Array.isArray( message ) ? message : [ message ]
+		this.feedback = [ ...this.feedback, ...lines ]
+
+		return this
+	}
+
+	printView = () =>
+	{
+		const fullBuffer =
+		[
+			this.charAccrossScreen( '-' ),
+			...this.view,
+			this.charAccrossScreen( '-' ),
+		]
+
+		this.printStringified( fullBuffer )
+	}
+
+	printFeedback = () =>
+	{
+		const fullBuffer =
+		[
+			this.charAccrossScreen( '-' ),
+			...this.feedback,
+			this.charAccrossScreen( '-' ),
+		]
+
+		this.printStringified( fullBuffer )
+	}
+
+	private addToView = ( message: string | string[] ) =>
+	{
+		const lines = Array.isArray( message ) ? message : [ message ]
+		this.view = [ ...this.view, ...lines ]
+
+		return this
+	}
+
+	////////////////////
+
+	private printStringified = ( array : string[] ) => array.forEach( str => console.log( str ) )
+
+	private charAccrossScreen = ( char : string ) =>
 	{
 		let toReturn = ' '
 
@@ -29,7 +187,7 @@ export namespace Printer
 		return toReturn + ' '
 	}
 
-	export const separator = ( char: string ) =>
+	private separator = ( char: string ) =>
 	{
 		let toReturn = ' '
 
@@ -39,7 +197,7 @@ export namespace Printer
 		return toReturn
 	}
 
-	export const wrapText = ( text : string, indentLevel : number = 0, marginLeft : number = 0 ) =>
+	private wrapText = ( text : string, indentLevel : number = 0, marginLeft : number = 0 ) =>
 	{
 		let toReturn : string[] = []
 
@@ -53,97 +211,26 @@ export namespace Printer
 
 		// TODO
 	}
-
-	export const feedBack = ( message : string | string[], chalkColor ?: string ) =>
-	{
-		if( ( message === '' ) || ( message === [] ) )
-			return
-
-		const MARGIN = ' '
-		message = Array.isArray( message ) ? message : [ message ]
-
-		console.log('')
-		message.forEach( line =>
-		{
-			let text = MARGIN + line
-			text = chalkColor ? chalk[ chalkColor ]( text ) : text
-			console.log( text )
-		})
-		console.log('')
-	}
-
-	export const error = ( message: string | string[] ) => feedBack( message, 'red' )
-
-	//////////
-
-	export const printTasks = ( tasksID: number | number[], printArgs: PrintArgs ) =>
-	{
-		let theTasksID = []
-		const { datas, states } = printArgs
-
-		const tasks = []
-
-		if( Array.isArray( tasksID) )
-			theTasksID = tasksID
-		else
-			theTasksID = [ tasksID ]
-
-		console.log( charAccrossScreen( '-' ), '\n' )
-
-		theTasksID.forEach( ( id, index ) =>
-		{
-			datas.retrieveNestedTask( id, task =>
-			{
-				tasks.push( task )
-
-				Printer.printStringified( Task.stringify( task, states, printArgs ) )
-				console.log('')
-
-				if( index !== ( theTasksID.length - 1 ) )
-					console.log( Printer.separator('-'), '\n' )
-				else
-					console.log( Task.getStats( tasks, states, ), '\n' )
-			})
-		});
-
-		console.log( charAccrossScreen( '-' ), '\n' )
-	}
-
-	export const printBoards = ( boardNames: string | string[], printArgs: PrintArgs ) =>
-	{
-		let theBoards = []
-		const { datas, states } = printArgs
-
-		if( Array.isArray( boardNames) )
-			theBoards = boardNames
-		else
-			theBoards = [ boardNames ]
-
-		console.log( charAccrossScreen( '-' ), '\n' )
-
-		theBoards.forEach( ( name, index ) =>
-		{
-			const matchingBoard = datas.boards.find( board => board.name === name )
-
-			if( !matchingBoard )
-				console.error(`Can't find board ${ name }`)
-			else
-			{
-				printStringified( Board.stringify( matchingBoard, states, printArgs ) )
-				console.log('')
-
-				if( index !== ( theBoards.length - 1 ) )
-					console.log( separator('-'), '\n' )
-			}
-		});
-
-		console.log( charAccrossScreen( '-' ) )
-	}
-
-	export const printAll = ( printArgs : PrintArgs ) =>
-	{
-		const { datas } = printArgs
-
-		printBoards( datas.boards.map( board => board.name ), printArgs )
-	}
 }
+
+////////////////////////////////////////
+
+export const printMessage = ( message : string | string[], chalkColor ?: string ) =>
+{
+	if( ( message === '' ) || ( message === [] ) )
+		return
+
+	const MARGIN = ' '
+	message = Array.isArray( message ) ? message : [ message ]
+
+	console.log('')
+	message.forEach( line =>
+	{
+		let text = MARGIN + line
+		text = chalkColor ? chalk[ chalkColor ]( text ) : text
+		console.log( text )
+	})
+	console.log('')
+}
+
+export const printError = ( message: string | string[] ) => printMessage( message, 'red' )

@@ -1,4 +1,5 @@
 import { System } from './System'
+import { PrinterConfig } from './Printer'
 
 ////////////////////////////////////////
 
@@ -9,16 +10,9 @@ export interface ConfigState
 	icon: string
 }
 
-export interface DefaultArgs
+export interface DefaultArgs extends PrinterConfig
 {
-	hideDescription ?: boolean,
-	hideTimestamp ?: boolean,
-	hideSubCounter ?: boolean,
-	hideTree ?: boolean,
-
-	depth ?: number,
 	board ?: string,
-	printAfter ?: boolean
 
 	storageFile ?: string,
 	configFile ?: string,
@@ -32,7 +26,7 @@ export const DEFAULT_CONFIG_DATAS =
 {
 	"defaultArgs":
 	{
-		"printAfter": true,
+		"shouldNotPrintAfter": false,
 		"board": "backlog",
 		"storageFile": "tasks.json"
 	},

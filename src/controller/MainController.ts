@@ -1,30 +1,21 @@
 import { CliArgHandler, RawArg, Action, TaskFlags } from "../core/CliArgHandler";
-import { PrintArgs, Printer } from "../core/Printer";
+import { Printer, PrinterConfig } from "../core/Printer";
 import { Storage, DEFAULT_STORAGE_FILE_NAME, DEFAULT_STORAGE_DATAS } from "../core/Storage";
 import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "../core/Config";
 import { System } from "../core/System";
 
 import { FileNotFoundError } from '../errors/FileErrors'
 
-////////////////////////////////////////
-
-export interface ExitArgs
-{
-	code ?: number,
-	bypassPrintAfter ?: boolean,
-	dontPrintBoardButPrintAll ?: boolean
-}
 
 ////////////////////////////////////////
 
 export class MainController
 {
 	argHandler: CliArgHandler
-	userFeedback: string[]
-	printOptions ?: PrintArgs
 	firstArg ?: RawArg
 	isHelpNeeded: boolean
-	printAfter: boolean
+
+	printer: Printer
 
 	configLocation : string
 	config ?: Config
@@ -42,7 +33,7 @@ export class MainController
 	constructor()
 	{
 		this.argHandler = new CliArgHandler()
-		this.userFeedback = []
+		this.printer = new Printer()
 
 		this.firstArg = this.argHandler.getFirstArg()
 		this.isHelpNeeded = this.argHandler.isHelpNeeded
@@ -63,7 +54,7 @@ export class MainController
 		if( System.doesFileExists( this.storageLocation ) )
 			this.storage = new Storage( this.storageLocation )
 
-		const isInit = this.argHandler.isThereCLIArgs && ( this.firstArg.isAction ) && ( this.firstArg.value === Action.INIT )  
+		const isInit = this.argHandler.isThereCLIArgs && ( this.firstArg.isAction ) && ( this.firstArg.value === Action.INIT )
 		if( isInit )
 			this.handleInit()
 
@@ -74,69 +65,34 @@ export class MainController
 		if( !this.storage )
 			throw new FileNotFoundError( this.storageLocation )
 
-		this.printOptions =
+		const printConfig: PrinterConfig =
 		{
-			datas: this.storage,
-			states: this.config.states,
-			...this.argHandler.stringifyArgs,
+			...this.argHandler.printerConfig,
 			...this.config.defaultArgs
 		}
+		this.printer = new Printer( this.storage, this.config.states, printConfig )
 
 		this.taskFlags = this.argHandler.taskFlags
 		this.board = this.argHandler.board || this.config.defaultArgs.board
-		this.printAfter = this.argHandler.shouldPrintAfter || this.config.defaultArgs.printAfter
 	}
 
 	////////////////////
-
-	addFeedback = ( message: string | string[] ) =>
-	{
-		const lines = Array.isArray( message ) ? message : [ message ]
-		this.userFeedback = [ ...this.userFeedback, ...lines ]
-	}
-
-	printFeedback = () => Printer.feedBack( this.userFeedback )
 
 	handleInit = () =>
 	{
 		if( !this.config )
 		{
 			System.writeJSONFile( this.configLocation, DEFAULT_CONFIG_DATAS )
-			this.addFeedback( `Config file '${ this.configLocation }' created` )
+			this.printer.addFeedback( `Config file '${ this.configLocation }' created` )
 		}
 
 		if( !this.storage )
 		{
 			System.writeJSONFile( this.storageLocation, DEFAULT_STORAGE_DATAS )
-			this.addFeedback( `Storage file '${ this.storageLocation }' created` )
+			this.printer.addFeedback( `Storage file '${ this.storageLocation }' created` )
 		}
 
-		this.exit()
-	}
-
-	printAll = () => Printer.printAll( this.printOptions )
-	printTasks = ( tasksID: number | number[] ) => Printer.printTasks( tasksID, this.printOptions )
-	printBoards = ( boardNames: string | string[] ) => Printer.printBoards( boardNames, this.printOptions )
-
-	/**
-	 * Handles feedback, print afer and stopping
-	 */
-	exit = ( args ?: ExitArgs ) =>
-	{
-		args = args || {}
-		const { code, bypassPrintAfter, dontPrintBoardButPrintAll } = args
-
-		if( this.printAfter && !bypassPrintAfter )
-		{
-			if( this.board && !dontPrintBoardButPrintAll )
-				this.printBoards( this.board )
-			else
-				this.printAll()
-		}
-
-		if( this.userFeedback.length !== 0 )
-			this.printFeedback()
-
-		System.exit( code )
+		this.printer.printFeedback()
+		System.exit()
 	}
 }

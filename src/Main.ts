@@ -1,12 +1,12 @@
 import { Action } from "./core/CliArgHandler";
 import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
-import { Printer } from "./core/Printer";
+import { printError, printMessage } from "./core/Printer";
 import { System } from './core/System'
 
 import Help from './utils/Help'
 
-import { MainController, ExitArgs } from "./controller/MainController";
+import { MainController } from "./controller/MainController";
 
 import { CLISyntaxError, DeletingTaskSytaxError, EditingSytaxError, CheckingTaskSytaxError
 	, IncrementingTaskSytaxError, MovingTaskSytaxError } from './errors/CLISyntaxErrors';
@@ -18,15 +18,15 @@ import { IBoard } from "./core/Board";
 try
 {
 	const controller = new MainController()
-	const { argHandler, firstArg, storage, config, taskFlags, board } = controller
+	const { argHandler, firstArg, storage, config, taskFlags, board, printer } = controller
 	const { state, description, linked } = taskFlags
 
 	//////////
 
 	if( !argHandler.isThereCLIArgs )
 	{
-		controller.printAll()
-		controller.exit({ bypassPrintAfter: true })
+		printer.loadFileView().printView()
+		System.exit()
 	}
 
 	if( argHandler.isThereOnlyOneCLIArgs )
@@ -35,20 +35,26 @@ try
 		{
 			const tasksId = firstArg.value as number[]
 
-			controller.printTasks( tasksId )
+			printer.loadTaskView( tasksId ).printView()
+		}
+		else if( firstArg.isBoard )
+		{
+			const boardName = firstArg.value as string
+
+			printer.loadBoardView( boardName ).printView()
 		}
 		else if( argHandler.isHelpNeeded )
-			controller.addFeedback( Help.fullMan() )
+			printer.addFeedback( Help.fullMan() ).printFeedback()
 		else if( argHandler.isVersion )
-			controller.addFeedback( Help.version )
+			printer.addFeedback( Help.version ).printFeedback()
 
-		controller.exit({ bypassPrintAfter: true })
+		System.exit()
 	}
 
 	if( argHandler.isThereOnlyTwoCLIArgs && firstArg.isAction && argHandler.isHelpNeeded )
 	{
-		controller.addFeedback( Help.handleAction( firstArg.value as Action ) )
-		controller.exit({ bypassPrintAfter: true })
+		printer.addFeedback( Help.handleAction( firstArg.value as Action ) ).printFeedback()
+		System.exit()
 	}
 
 	//////////
@@ -86,8 +92,7 @@ try
 					id = storage.addTask( task, parentItem )
 				}
 
-				controller.addFeedback( `Task n°${ id } added` )
-				controller.exit()
+				printer.addFeedback( `Task n°${ id } added` ).loadBoardView( board ).print()
 				break;
 			}
 
@@ -97,8 +102,7 @@ try
 			{
 				const boardName = storage.addBoard( argHandler.getFirstText(), description )
 
-				controller.addFeedback( `Board '${ boardName }' added` )
-				controller.exit()
+				printer.addFeedback( `Board '${ boardName }' added` ).loadBoardView( boardName ).print()
 				break;
 			}
 
@@ -138,7 +142,7 @@ try
 
 					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-					controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` )
+					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` ).loadTaskView( ids )
 				}
 				else if( secondArg.isBoard )
 				{
@@ -156,10 +160,10 @@ try
 					const boardName = secondArg.value as string
 					storage.editBoard( boardName, newAttributes )
 
-					controller.addFeedback( `Board '${ boardName }' edited` )
+					printer.addFeedback( `Board '${ boardName }' edited` ).loadBoardView( board )
 				}
 
-				controller.exit()
+				printer.print()
 				break;
 			}
 
@@ -178,8 +182,7 @@ try
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` )
-				controller.exit()
+				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` ).loadTaskView( ids ).print()
 				break;
 			}
 
@@ -199,8 +202,7 @@ try
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` )
-				controller.exit()
+				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` ).loadTaskView( ids ).print()
 				break;
 			}
 
@@ -208,30 +210,28 @@ try
 
 			case Action.DELETE:
 			{
-				let exitOptions: ExitArgs = {}
-
 				const secondArg = argHandler.cliArgs[ 1 ]
 				if( secondArg.isTask )
 				{
 					const ids = secondArg.value as number | number[]
+
 					const tasksID = storage.deleteTask( ids )
 
 					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-					controller.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
+					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
 				}
 				else if( secondArg.isBoard )
 				{
 					const board = secondArg.value as string
 					storage.deleteBoard( board )
 
-					controller.addFeedback( `Board '${ board }' deleted` )
-					exitOptions = { dontPrintBoardButPrintAll: true }
+					printer.addFeedback( `Board '${ board }' deleted` )
 				}
 				else
 					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
 
-				controller.exit( exitOptions )
+				printer.loadFileView().print()
 				break;
 			}
 
@@ -260,34 +260,37 @@ try
 					const destTaskID = thirdArg.value as number
 					destination = { subTask: destTaskID }
 					destFeedback = `task n°${ destTaskID }`
+					printer.loadTaskView( destTaskID )
 				}
 				else if( thirdArg.isBoard )
 				{
 					const destBoardName = thirdArg.value as string
 					destination = { boardName: destBoardName }
 					destFeedback = `board '${ destBoardName }'`
+					printer.loadBoardView( destBoardName )
 				}
 
 				// TODO if no dest provided make new board with parent task name and check only one task to move
 
 				storage.moveTask( targetIDs, destination )
 
-				controller.addFeedback( `Tasks '${ targetIDs }' moved to ${ destFeedback }` )
-				controller.exit()
+				printer.addFeedback( `Tasks '${ targetIDs }' moved to ${ destFeedback }` ).print()
 			}
 		}
+
+		System.exit()
 	}
 }
 catch( error )
 {
 	if( !( error instanceof CatchableError ) )
-		Printer.error( error )
+		printError( error )
 	else
 	{
 		if( error instanceof CLISyntaxError )
 		{
-			Printer.error( error.message )
-			Printer.feedBack( Help.getMan( error.manEntry ) )
+			printError( error.message )
+			printMessage( Help.getMan( error.manEntry ) )
 		}
 	}
 
