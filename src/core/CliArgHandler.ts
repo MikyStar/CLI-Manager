@@ -1,4 +1,5 @@
 import { PrinterConfig } from './Printer'
+import { MultipleValuesMismatchError } from '../errors'
 
 ////////////////////////////////////////
 
@@ -16,96 +17,94 @@ export enum Action
 	EXTRACT = 'x'
 }
 
-export enum Flag
+export enum BooleanFlag
 {
 	HELP = '--help',
 	VERSION = '--version',
-	STORAGE_FILE = '--storage',
-	CONFIG_FILE = '--config',
+
 	HIDE_DESCRIPTION = '--hide-description',
 	HIDE_TREE = '--hide-tree',
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
-	DEPTH = '--depth',
 	DONT_PRINT_AFTER = '--no-print',
+
+	RECURSIVE = '-r'
+}
+
+export enum ValueFlag
+{
+	STORAGE_FILE = '--storage',
+	CONFIG_FILE = '--config',
+	DEPTH = '--depth',
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
-	RECURSIVE = '-r'
 }
 
 export interface RawArg
 {
-	value: string | number | number[],
-	isAction ?: boolean,
-	isTask ?: boolean,
-	isBoard ?: boolean,
-	isText ?: boolean,
-	isFlag ?: boolean
+	value: string | string[] | number | number[] | true
+	type: ArgType
+	flagType ?: ValueFlag | BooleanFlag
 }
 
-export interface TaskFlags
+type ArgType = 'action' | 'task' | 'board' | 'text' | 'flag'
+
+export interface DataAttributes
 {
 	description ?: string
 	state ?: string
 	linked ?: number[]
 }
 
+export interface HandledFlags
+{
+	printing ?: PrinterConfig
+	dataAttributes ?: DataAttributes
+	files ?:
+	{
+		configLocation: string
+		storageLocation: string
+	}
+	isRecursive ?: boolean
+	isHelpNeeded ?: boolean
+	isVersion ?: boolean
+}
 ////////////////////////////////////////
 
 export class CliArgHandler
 {
-	cliArgs: RawArg[]
-	untreatedArgs: RawArg[]
+	private untreatedArgs: RawArg[]
 
-	isThereCLIArgs: boolean
-	isThereOnlyOneCLIArgs: boolean
-	isThereOnlyTwoCLIArgs: boolean
-	isHelpNeeded: boolean
-	isRecursive: boolean
-	isVersion: boolean
-	configLocation: string
-	storageLocation: string
-
-	printerConfig ?: PrinterConfig
-	taskFlags ?: TaskFlags
-	board ?: string
+	flags: HandledFlags
+	words: RawArg[]
 
 	////////////////////
 
 	constructor()
 	{
-		this.cliArgs = this.rawParse( process.argv.slice( 2 ) )
-		this.untreatedArgs = [ ...this.cliArgs ]
+		this.untreatedArgs = this.rawParse( process.argv.slice( 2 ) )
 
 		//////////
 
-		this.isThereCLIArgs = this.cliArgs.length !== 0
-		this.isThereOnlyOneCLIArgs = this.cliArgs.length === 1
-		this.isThereOnlyTwoCLIArgs = this.cliArgs.length === 2
+		this.flags =
+		{
+			printing: this.getPrinterConfig(),
+			dataAttributes: this.getDataAttributes(),
+			files:
+			{
+				configLocation: this.getValueFlag( ValueFlag.CONFIG_FILE ) as string,
+				storageLocation: this.getValueFlag( ValueFlag.STORAGE_FILE ) as string,
+			},
+			isRecursive: this.getBoolFlag( BooleanFlag.RECURSIVE ),
+			isHelpNeeded: this.getBoolFlag( BooleanFlag.HELP ),
+			isVersion: this.getBoolFlag( BooleanFlag.VERSION )
+		}
 
-		this.isHelpNeeded = this.popLastFlag( Flag.HELP )
-		this.isVersion = this.popLastFlag( Flag.VERSION )
-
-		this.storageLocation = this.popLastFlagAndValue( Flag.STORAGE_FILE ) as string
-		this.configLocation = this.popLastFlagAndValue( Flag.CONFIG_FILE ) as string
-
-		this.printerConfig = this.getPrinterConfig()
-		this.taskFlags = this.getTaskFlags()
-		this.board = this.getBoard()
-
-		this.isRecursive = this.popLastFlag( Flag.RECURSIVE )
+		this.words = [ ...this.untreatedArgs ]
 	}
 
 	////////////////////
-
-	getFirstArg = () =>
-	{
-		const firstArg = this.cliArgs[ 0 ]
-		this.untreatedArgs.splice( 0, 1 )
-
-		return firstArg
-	}
 
 	/**
 	 * Uses untreatedArgs and remove them from list
@@ -117,7 +116,7 @@ export class CliArgHandler
 
 		this.untreatedArgs.forEach( ( arg, index ) =>
 		{
-			if( arg.isText && ( toReturn === undefined ) )
+			if( ( arg.type === 'text' ) && ( toReturn === undefined ) )
 			{
 				toReturn = arg.value
 				this.untreatedArgs.splice( index, 1 )
@@ -131,47 +130,38 @@ export class CliArgHandler
 
 	private getPrinterConfig = () : PrinterConfig =>
 	{
-		const hideDescription = this.popLastFlag( Flag.HIDE_DESCRIPTION )
-		const hideTimestamp = this.popLastFlag( Flag.HIDE_TIMESTAMP )
-		const hideTree = this.popLastFlag( Flag.HIDE_TREE )
-		const hideSubCounter = this.popLastFlag( Flag.HIDE_SUB_COUNTER )
-		const depth = this.popLastFlagAndValue( Flag.DEPTH ) as number
-		const shouldNotPrintAfter = this.popLastFlag( Flag.DONT_PRINT_AFTER )
+		const hideDescription = this.getBoolFlag( BooleanFlag.HIDE_DESCRIPTION )
+		const hideTimestamp = this.getBoolFlag( BooleanFlag.HIDE_TIMESTAMP )
+		const hideTree = this.getBoolFlag( BooleanFlag.HIDE_TREE )
+		const hideSubCounter = this.getBoolFlag( BooleanFlag.HIDE_SUB_COUNTER )
+		const shouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
+
+		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
 
 		return	{
 					hideDescription,
 					hideTimestamp,
 					hideSubCounter,
 					hideTree,
+					shouldNotPrintAfter,
+
 					depth,
-					shouldNotPrintAfter
 				}
 	}
 
-	private getTaskFlags = () : TaskFlags =>
+	private getDataAttributes = () : DataAttributes =>
 	{
-		const state = this.popLastFlagAndValue( Flag.STATE ) as string
-		const description = this.popLastFlagAndValue( Flag.DESCRIPTION ) as string
+		const state = this.getValueFlag( ValueFlag.STATE ) as string
+		const description = this.getValueFlag( ValueFlag.DESCRIPTION ) as string
+
+		const unparsedLinked = this.getValueFlag( ValueFlag.LINK ) as number | number[]
+		const linked = Array.isArray( unparsedLinked ) ? unparsedLinked : [ unparsedLinked ]
 
 		return	{
 					state,
 					description,
-					linked: this.getLinks()
+					linked
 				}
-	}
-
-	private getLinks = () : number[] =>
-	{
-		const linked = this.popLastFlagAndValue( Flag.LINK )
-
-		let toReturn = []
-
-		if( Array.isArray( linked ))
-			toReturn = [ ...linked ]
-		else if( linked )
-			toReturn = [ linked ]
-
-		return toReturn
 	}
 
 	private getBoard = () =>
@@ -180,7 +170,7 @@ export class CliArgHandler
 
 		this.untreatedArgs.forEach( ( arg, index ) =>
 		{
-			if( arg.isBoard )
+			if( arg.type === 'board' )
 			{
 				toReturn = arg.value
 				this.untreatedArgs.splice( index, 1 )
@@ -194,85 +184,86 @@ export class CliArgHandler
 	{
 		let parsedArgs : RawArg[] = []
 
+		const isNumber = ( str: string ) => !isNaN( parseInt( str ) ) && !isNaN( parseFloat( str ) )
+
 		for( let i = 0; i < args.length; i++ )
 		{
 			const theArg = args[ i ]
 
+			const containsSpace = /\s/.test( theArg )
+			if( theArg.includes( ',' ) && !containsSpace )
+			{
+				const splitted = theArg.split( ',' )
+				const subParsed = this.rawParse( splitted )
+
+				let argType : ArgType | undefined = undefined
+				subParsed.forEach( arg =>
+				{
+					if( argType === undefined )
+						argType = arg.type
+					else if( arg.type !== argType )
+						throw new MultipleValuesMismatchError( argType, arg.type )
+				});
+
+				const values = subParsed.map( sub => sub.value ) as string[] | number[]
+				parsedArgs.push({ value: values, type: argType })
+			}
+
 			const isBoard = theArg[0] === '@'
-			const isTask = !isNaN( +theArg[0] )
+			const isTask = isNumber( theArg )
+			const isAction = Object.values( Action ).includes( theArg as Action )
+			const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
+			const isValueVlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
 
 			if( isBoard )
-				parsedArgs.push( { value: theArg.slice(1), isBoard: true } )
-			else if( Object.values( Action ).includes( theArg as Action ) )
-				parsedArgs.push( { value: theArg, isAction: true } )
-			else if( Object.values( Flag ).includes( theArg as Flag ) )
-				parsedArgs.push({ value: theArg, isFlag: true })
+				parsedArgs.push( { value: theArg.slice( 1 ), type: 'board' } )
 			else if( isTask )
+				parsedArgs.push( { value: Number.parseInt( theArg ), type: 'task' } )
+			else if( isAction )
+				parsedArgs.push( { value: theArg, type: 'action' } )
+			else if( isBooleanFlag )
+				parsedArgs.push( { value: true, type: 'flag', flagType: theArg as BooleanFlag } )
+			else if( isValueVlag )
 			{
-				if( theArg.includes( ',' ) )
-				{
-					const tasksNb = theArg.split(',').map( task => Number.parseInt( task ) )
+				let followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
+				if( isNumber( followingValue ) )
+					followingValue = Number.parseInt( followingValue )
 
-					parsedArgs.push( { value: tasksNb, isTask: true } )
-				}
-				else if( theArg.match( /^\d+$/ ) )
-					parsedArgs.push( { value: Number.parseInt( theArg ), isTask: true } )
+				parsedArgs.push({ value: followingValue, type: 'flag', flagType: theArg as ValueFlag })
+
+				i++ // Because we used the next value
 			}
 			else
-				parsedArgs.push( { value: theArg, isText: true } )
+				parsedArgs.push( { value: theArg, type: 'text' } )
 		}
 
 		return parsedArgs
 	}
 
-	/**
-	 * Uses untreatedArgs and remove them from list
-	 * @returns boolean
-	 */
-	private popLastFlag = ( flag: Flag ) =>
+	private getBoolFlag = ( flag: BooleanFlag ) =>
 	{
-		let lastFlagIndex = -1
+		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value === true ) )
 
-		for( let i = 0; i < this.untreatedArgs.length; i++ )
-		{
-			const theArg = this.untreatedArgs[ i ]
-
-			if( theArg.isFlag && ( theArg.value === flag ) )
-				lastFlagIndex = i
-		}
-
-		if( lastFlagIndex === -1 )
+		if( index === -1 )
 			return false
 		else
 		{
-			this.untreatedArgs.splice( lastFlagIndex, 1 )
+			this.untreatedArgs.splice( index, 1 )
 
 			return true
 		}
 	}
 
-	/**
-	 * Uses untreatedArgs and remove both the flag and its following value from list
-	 * @returns last value for flag or undefined
-	 */
-	private popLastFlagAndValue = ( flag: Flag ) =>
+	private getValueFlag = ( flag: ValueFlag ) =>
 	{
-		let lastFlagIndex = -1
+		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value !== undefined ) )
 
-		for( let i = 0; i < this.untreatedArgs.length; i++ )
-		{
-			const theArg = this.untreatedArgs[ i ]
-
-			if( theArg.isFlag && ( theArg.value === flag ) )
-				lastFlagIndex = i
-		}
-
-		if( lastFlagIndex === -1 )
+		if( index === -1 )
 			return undefined
 		else
 		{
-			const value = this.untreatedArgs[ lastFlagIndex + 1 ].value
-			this.untreatedArgs.splice( lastFlagIndex, 2 )
+			const value = this.untreatedArgs[ index ].value
+			this.untreatedArgs.splice( index, 1 )
 
 			return value
 		}
