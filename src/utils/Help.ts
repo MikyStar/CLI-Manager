@@ -257,10 +257,10 @@ class Help implements ManEntries
 		this.extractingBoards =
 		{
 			title: 'Extracting board',
-			prototype: 'task x @<board name 1>  @<board name x> <relative path>',
+			prototype: 'task x @<board name 1>,@<board name x> <relative path>',
 			argDef:
 			[
-				"@<board name 1...x> : Target board names preceded by '@'",
+				"@<board name 1...x> : Target board names preceded by '@' separated by ',' without space",
 				"relative path : The path where you want to make a new storage file"
 			],
 			globalArgs: true

@@ -20,7 +20,7 @@ export namespace Board
 	{
 		let toReturn : string[] = []
 
-		const boardNameStyled = ' ' + chalk.bold.underline( '@' + board.name )
+		const boardNameStyled = chalk.bold.underline( '@' + board.name )
 		toReturn.push( boardNameStyled + '\n' )
 
 		const descriptionStyled = chalk.dim( board.description )

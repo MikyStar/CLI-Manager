@@ -4,7 +4,7 @@
         "tasks": [
             {
                 "name": "refactor argcli, i really should make a phrase out of args, being able to access second arg like first arg ...",
-                "state": "todo",
+                "state": "done",
                 "dependencies": [],
                 "id": 5,
                 "timestamp": "28/07/2021"
@@ -94,6 +94,51 @@
                         "timestamp": "29/07/2021"
                     }
                 ]
+            },
+            {
+                "name": "when moved to subtask, the newly added task(s) is not printed, only the previous value",
+                "state": "todo",
+                "dependencies": [],
+                "id": 70,
+                "timestamp": "04/08/2021"
+            },
+            {
+                "name": "print problem for description of last subtask child",
+                "state": "todo",
+                "dependencies": [
+                    null
+                ],
+                "id": 77,
+                "timestamp": "05/08/2021",
+                "subtasks": [
+                    {
+                        "name": "maybe no | for description if no subtasks",
+                        "state": "todo",
+                        "dependencies": [
+                            null
+                        ],
+                        "id": 79,
+                        "timestamp": "05/08/2021"
+                    }
+                ]
+            },
+            {
+                "name": "a description flag as empty string should remove the description",
+                "state": "todo",
+                "dependencies": [
+                    null
+                ],
+                "id": 78,
+                "timestamp": "05/08/2021"
+            },
+            {
+                "name": "duplicated task index -> N°72",
+                "state": "todo",
+                "dependencies": [
+                    null
+                ],
+                "id": 80,
+                "timestamp": "05/08/2021"
             }
         ]
     },
@@ -102,7 +147,7 @@
         "tasks": [
             {
                 "name": "extraction",
-                "state": "todo",
+                "state": "wip",
                 "dependencies": [],
                 "id": 1,
                 "timestamp": "25/07/2021"
@@ -127,14 +172,6 @@
                 "dependencies": [],
                 "description": "Bash like doc with optional arguments, examples ...",
                 "id": 4,
-                "timestamp": "25/07/2021"
-            },
-            {
-                "name": "printing user if update available",
-                "state": "todo",
-                "dependencies": [],
-                "description": "fetch at begining from github and compare to current pkg version",
-                "id": 0,
                 "timestamp": "25/07/2021"
             },
             {
@@ -217,14 +254,6 @@
                         "timestamp": "27/07/2021"
                     }
                 ]
-            },
-            {
-                "name": "searching task",
-                "state": "todo",
-                "dependencies": [],
-                "description": "Might be a grep job ??",
-                "id": 16,
-                "timestamp": "27/07/2021"
             },
             {
                 "name": "increment",
@@ -373,56 +402,6 @@
                 ]
             },
             {
-                "name": "Calendar view Jira like",
-                "state": "todo",
-                "dependencies": [],
-                "id": 41,
-                "timestamp": "29/07/2021",
-                "subtasks": [
-                    {
-                        "name": "By default sort by start date according to today",
-                        "state": "todo",
-                        "dependencies": [],
-                        "id": 42,
-                        "timestamp": "29/07/2021",
-                        "subtasks": [
-                            {
-                                "name": "Can change whats displayed with group sort board secific tasks",
-                                "state": "todo",
-                                "dependencies": [],
-                                "id": 43,
-                                "timestamp": "29/07/2021"
-                            }
-                        ]
-                    },
-                    {
-                        "name": "only for tasks with dates",
-                        "state": "todo",
-                        "dependencies": [],
-                        "id": 44,
-                        "timestamp": "29/07/2021",
-                        "subtasks": [
-                            {
-                                "name": "Have to think about the best way to store date",
-                                "state": "todo",
-                                "dependencies": [],
-                                "id": 45,
-                                "timestamp": "29/07/2021",
-                                "subtasks": [
-                                    {
-                                        "name": "A task could have nothing, or a date or a date range",
-                                        "state": "todo",
-                                        "dependencies": [],
-                                        "id": 46,
-                                        "timestamp": "29/07/2021"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
                 "name": "no tree indicator if description but no subtask",
                 "state": "todo",
                 "dependencies": [],
@@ -437,11 +416,58 @@
                 "timestamp": "31/07/2021"
             },
             {
-                "name": "edition with prompt",
+                "name": "add priority",
                 "state": "todo",
                 "dependencies": [],
-                "id": 57,
-                "timestamp": "31/07/2021"
+                "id": 63,
+                "timestamp": "03/08/2021",
+                "subtasks": [
+                    {
+                        "name": "can sort by it",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 64,
+                        "timestamp": "03/08/2021"
+                    },
+                    {
+                        "name": "with !!!",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 65,
+                        "timestamp": "04/08/2021"
+                    },
+                    {
+                        "name": "can de undefined",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 66,
+                        "timestamp": "04/08/2021",
+                        "subtasks": [
+                            {
+                                "name": "if undefined dont add it in storage",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 67,
+                                "timestamp": "04/08/2021"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "in the retrieve nested task, i might want to access the parent board id from the callback",
+                "state": "done",
+                "dependencies": [],
+                "id": 71,
+                "timestamp": "04/08/2021",
+                "subtasks": []
+            },
+            {
+                "name": "if only text arg, make a task",
+                "state": "todo",
+                "dependencies": [],
+                "id": 74,
+                "timestamp": "04/08/2021"
             }
         ]
     }

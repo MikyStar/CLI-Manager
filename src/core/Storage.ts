@@ -6,6 +6,7 @@ import { ITask, TIMESTAMP_FORMAT } from './Task';
 import { TaskNotFoundError, TaskStateUnknownError } from '../errors/TaskErrors';
 import { BoardNotFoundError, BoardAlreadyExistsError } from '../errors/BoardErrors';
 import { System } from './System'
+import { FileAlreadyExistsError } from '../errors/FileErrors';
 
 ////////////////////////////////////////
 
@@ -18,6 +19,15 @@ export const DEFAULT_STORAGE_DATAS =
         "tasks": []
     }
 ]
+
+interface RetrieveTaskCallback
+{
+	task: ITask,
+	board: IBoard,
+	taskIndex: number,
+	boardIndex: number,
+	parentTaskID ?: number
+}
 
 ////////////////////////////////////////
 
@@ -33,8 +43,16 @@ export class Storage
 
 	////////////////////////////////////////
 
-	constructor( relativePath : string )
+	constructor( relativePath : string, isCreation ?: boolean )
 	{
+		if( isCreation )
+		{
+			if( System.doesFileExists( relativePath ) )
+				throw new FileAlreadyExistsError( relativePath )
+			else
+				System.writeJSONFile( relativePath, DEFAULT_STORAGE_DATAS )
+		}
+
 		this.relativePath = relativePath
 		const storageDatas = System.readJSONFile( this.relativePath )
 
@@ -46,6 +64,10 @@ export class Storage
 
 		// TODO : search for dusplicates and gracefully print error
 	}
+
+	////////////////////////////////////////
+
+	private setBoards = ( boards: IBoard[] ) => this.boards = boards
 
 	////////////////////////////////////////
 
@@ -85,7 +107,7 @@ export class Storage
 		}
 		else if( subTaskOf )
 		{
-			this.retrieveNestedTask( subTaskOf, task =>
+			this.retrieveTask( subTaskOf, ({ task }) =>
 			{
 				if( task.subtasks === undefined )
 					task.subtasks = [ finalTask ]
@@ -107,7 +129,7 @@ export class Storage
 
 		tasksID.forEach( id =>
 		{
-			this.retrieveNestedTask( id, task =>
+			this.retrieveTask( id, ({ task }) =>
 			{
 				for( const [k, v] of Object.entries( newAttributes ) )
 					task[ k ] = v
@@ -133,7 +155,7 @@ export class Storage
 
 		tasksID.forEach( id =>
 		{
-			this.retrieveNestedTask( id, task =>
+			this.retrieveTask( id, ({ task }) =>
 			{
 				const currentStateIndex = configStates.indexOf( task.state )
 
@@ -213,7 +235,7 @@ export class Storage
 
 		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
 
-		tasksID.forEach( id => this.retrieveNestedTask( id, task =>
+		tasksID.forEach( id => this.retrieveTask( id, ({ task }) =>
 		{
 			this.deleteTask( id )
 
@@ -236,9 +258,10 @@ export class Storage
 	 *
 	 * @throws {TaskNotFoundError}
 	 */
-	retrieveNestedTask = ( taskID: number, callback: ( task: ITask, board ?: IBoard, taskIndex ?: number, boardIndex ?: number ) => void ) =>
+	retrieveTask = ( taskID: number, callback: ( cbParams : RetrieveTaskCallback ) => void ) =>
 	{
 		let wasTaskFound = false
+		let lastParentTaskId = undefined
 
 		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
 		this.boards.forEach( ( board, boardIndex ) =>
@@ -249,10 +272,13 @@ export class Storage
 				{
 					wasTaskFound = true
 
-					callback( task, board, taskIndex, boardIndex)
+					callback( { task, board, taskIndex, boardIndex, parentTaskID: lastParentTaskId })
 				}
 				else if( !wasTaskFound )
+				{
+					lastParentTaskId = task.id
 					Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+				}
 			});
 		});
 
@@ -282,6 +308,24 @@ export class Storage
 		});
 
 		return tasks
+	}
+
+	haveTasksSameParentBoard = ( tasksID: number[] ) =>
+	{
+		const parentBoards = []
+		tasksID.forEach( id => this.retrieveTask( id, ({ board }) => parentBoards.push( board.name ) ) )
+
+		let sameParentBoard = true
+		let nameToMatch : string | undefined = undefined
+		parentBoards.forEach( boardName =>
+		{
+			if( nameToMatch === undefined )
+				nameToMatch = boardName
+			else if( boardName !== nameToMatch )
+				sameParentBoard = false
+		});
+
+		return { sameParentBoard, boardName: nameToMatch }
 	}
 
 	////////////////////
@@ -341,6 +385,23 @@ export class Storage
 		this.save()
 
 		return boardNames
+	}
+
+	extractBoard = ( boardNames: string | string[], relativePath: string ) =>
+	{
+		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
+
+		const boards : IBoard[] = []
+
+		boardNames.forEach( name => this.retrieveBoard( name, board => boards.push( board ) ) )
+		this.deleteBoard( boardNames )
+		this.save()
+
+		const newStorage = new Storage( relativePath, true )
+		newStorage.setBoards( boards )
+		newStorage.save()
+
+		return newStorage
 	}
 
 	/**

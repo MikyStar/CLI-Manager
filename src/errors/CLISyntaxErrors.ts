@@ -17,6 +17,16 @@ export class CLISyntaxError extends CatchableError
 
 ////////////////////////////////////////
 
+export class AddingTaskSytaxError extends CLISyntaxError
+{
+	constructor( message: string, details ?: any )
+	{
+		super( message, 'creatingTask', details )
+	}
+}
+
+////////////////////////////////////////
+
 export class CheckingTaskSytaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
@@ -62,5 +72,15 @@ export class MovingTaskSytaxError extends CLISyntaxError
 	constructor( message: string, details ?: any )
 	{
 		super( message, 'movingTask', details )
+	}
+}
+
+////////////////////////////////////////
+
+export class ExtractingBoardSytaxError extends CLISyntaxError
+{
+	constructor( message: string, details ?: any )
+	{
+		super( message, 'extractingBoards', details )
 	}
 }

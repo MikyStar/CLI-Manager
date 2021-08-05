@@ -35,7 +35,7 @@ export namespace Task
 {
 	/**
 	 * Transform the tree of tasks and subtasks to an array of tasks
-	 */ 
+	 */
 	export const straightTask = ( task: ITask ) =>
 	{
 		let toReturn : ITask[] = []
@@ -125,7 +125,7 @@ export namespace Task
 		const coloredIcon = chalk.hex( taskState.hexColor )( taskState.icon )
 		const coloredName = isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
 
-		const fullLine = ` ${ coloredID }${ MARGIN }${ indentation }${ coloredIcon } ${ coloredName }`
+		const fullLine = `${ coloredID }${ MARGIN }${ indentation }${ coloredIcon } ${ coloredName }`
 		toReturn.push( fullLine )
 
 		////////////////////
@@ -161,7 +161,7 @@ export namespace Task
 						return toReturn
 					}
 
-					const text = ` ${ MARGIN }${ handleChangeNodeIconToBranch() }${ separation }${ INDENT_DESCRIPTION }${ line }`
+					const text = `${ MARGIN }${ handleChangeNodeIconToBranch() }${ separation }${ INDENT_DESCRIPTION }${ line }`
 
 					toReturn.push( text )
 				});
@@ -184,7 +184,7 @@ export namespace Task
 				{
 					const willBeLastChild = index === ( task.subtasks.length - 1 )
 					const childOptions: StringifyArgs =
-					{ 
+					{
 						...options,
 						subTaskLevel: subTaskLevel + 1,
 						parentIndent: indentation,
@@ -243,9 +243,9 @@ export namespace Task
 
 	export const getStats = ( tasks : ITask[], availableStates : ConfigState[] ) : string =>
 	{
-		let toReturn = ' '
+		let toReturn = ''
 		const totalCount = countTaskAndSub( tasks )
-	
+
 		availableStates.forEach( ( state, index ) =>
 		{
 			const count = search( tasks, 'state', state.name ).length

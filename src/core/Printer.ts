@@ -2,7 +2,7 @@ import chalk from "chalk"
 
 import { Board } from "./Board";
 import { ConfigState } from "./Config";
-import { Task, StringifyArgs } from './Task';
+import { Task } from './Task';
 import { Storage } from './Storage';
 
 ////////////////////////////////////////
@@ -18,17 +18,24 @@ export interface PrinterConfig
 	depth ?: number,
 }
 
+export interface ViewParams
+{
+	view: ViewType,
+	target ?: ViewTargetType
+}
+
+type ViewType = 'file' | 'board' | 'task'
+type ViewTargetType = string | string[] | number | number[]
+
 ////////////////////////////////////////
 
 /**
  * Handles stdout like a buffer with multiple lines, you append lines to it then print
- *
- *
  */
 export class Printer
 {
 	private feedback: string[]
-	private view: string[]
+	private viewParams: ViewParams
 
 	storage: Storage
 	states: ConfigState[]
@@ -39,7 +46,6 @@ export class Printer
 	constructor( storage ?: Storage, states ?: ConfigState[], config ?: PrinterConfig )
 	{
 		this.feedback = []
-		this.view = []
 
 		this.storage = storage
 		this.states = states
@@ -48,56 +54,87 @@ export class Printer
 
 	////////////////////
 
-	loadTaskView = ( taskID: number | number[] ) =>
+	setView = ( type: ViewType, target ?: ViewTargetType ) =>
 	{
+		this.viewParams = { view: type, target }
+
+		return this
+	}
+
+	addFeedback = ( message: string | string[] ) =>
+	{
+		const lines = Array.isArray( message ) ? message : [ message ]
+		this.feedback = [ ...this.feedback, ...lines ]
+
+		return this
+	}
+
+	////////////////////
+
+	private getTaskView = ( taskID: number | number[] ) =>
+	{
+		let toReturn : string[] = []
+
 		const theTasksID = Array.isArray( taskID ) ? taskID : [ taskID ]
 		const tasks = []
 
 		theTasksID.forEach( ( id, index ) =>
 		{
-			this.storage.retrieveNestedTask( id, task =>
+			this.storage.retrieveTask( id, ({ task }) =>
 			{
 				tasks.push( task )
 
-				this.addToView( [ ...Task.stringify( task, this.states, this.config ), '' ] )
+				toReturn = [ ...toReturn, ...Task.stringify( task, this.states, this.config ), '' ]
 
 				if( index !== ( theTasksID.length - 1 ) )
-					this.addToView( [ this.separator('-'), '' ] )
+					toReturn.push( this.separator('-'), '' )
 				else
-					this.addToView( [ Task.getStats( tasks, this.states ), '' ] )
+					toReturn.push( Task.getStats( tasks, this.states ), '' )
 			})
 		});
 
-		this.addToView( this.getFileStats() )
+		toReturn = [ ...toReturn, ...this.getFileStats() ]
 
-		return this
+		return toReturn
 	}
 
-	loadBoardView = ( boardName: string | string[] ) =>
+	private getBoardView = ( boardName: string | string[] ) =>
 	{
+		let toReturn : string[] = []
 		const theBoards = Array.isArray( boardName ) ? boardName : [ boardName ]
 
 		theBoards.forEach( ( name, index ) =>
 		{
 			this.storage.retrieveBoard( name, board =>
 			{
-				this.addToView( [ ...Board.stringify( board, this.states, this.config ), '' ] )
+				toReturn = [ ...toReturn, ...Board.stringify( board, this.states, this.config ), '' ]
 
 				if( index !== ( theBoards.length - 1 ) )
-					this.addToView( [ this.separator( '-' ), '' ] )
+					toReturn.push( this.separator('-'), '' )
 			})
 		});
 
-		this.addToView( this.getFileStats() )
+		toReturn = [ ...toReturn, ...this.getFileStats() ]
 
-		return this
+		return toReturn
 	}
 
-	loadFileView = () =>
-	{
-		this.loadBoardView( this.storage.boards.map( board => board.name ) )
+	private getFileView = () => this.getBoardView( this.storage.boards.map( board => board.name ) )
 
-		return this
+	private getView = () =>
+	{
+		if( !this.viewParams )
+			return []
+
+		switch( this.viewParams.view )
+		{
+			case 'file':
+				return this.getFileView()
+			case 'board':
+				return this.getBoardView( this.viewParams.target as string | string[] )
+			case 'task':
+				return this.getTaskView( this.viewParams.target as number | number[] )
+		}
 	}
 
 	/**
@@ -122,28 +159,20 @@ export class Printer
 		}
 		else
 		{
-			if( ( this.feedback.length === 0 ) && ( this.view.length === 0 ) )
+			if( ( this.feedback.length === 0 ) && ( this.viewParams ) )
 				return
 
 			fullBuffer =
 			[
 				...fullBuffer,
-				...this.view,
+				...this.getView(),
 				this.charAccrossScreen( '-' ),
 				'',
 				...this.feedback
 			]
 		}
 
-		this.printStringified( fullBuffer )
-	}
-
-	addFeedback = ( message: string | string[] ) =>
-	{
-		const lines = Array.isArray( message ) ? message : [ message ]
-		this.feedback = [ ...this.feedback, ...lines ]
-
-		return this
+		printMessage( fullBuffer )
 	}
 
 	printView = () =>
@@ -152,33 +181,15 @@ export class Printer
 		[
 			this.charAccrossScreen( '-' ),
 			'',
-			...this.view,
+			...this.getView(),
 			'',
 			this.charAccrossScreen( '-' ),
 		]
 
-		this.printStringified( fullBuffer )
+		printMessage( fullBuffer )
 	}
 
-	printFeedback = () =>
-	{
-		const fullBuffer =
-		[
-			this.charAccrossScreen( '-' ),
-			...this.feedback,
-			this.charAccrossScreen( '-' ),
-		]
-
-		this.printStringified( fullBuffer )
-	}
-
-	private addToView = ( message: string | string[] ) =>
-	{
-		const lines = Array.isArray( message ) ? message : [ message ]
-		this.view = [ ...this.view, ...lines ]
-
-		return this
-	}
+	printFeedback = () => printMessage( [ '', ...this.feedback ] )
 
 	private getFileStats = () =>
 	{
@@ -193,11 +204,9 @@ export class Printer
 
 	////////////////////
 
-	private printStringified = ( array : string[] ) => array.forEach( str => console.log( str ) )
-
 	private charAccrossScreen = ( char : string ) =>
 	{
-		let toReturn = ' '
+		let toReturn = ''
 
 		for( let i = 0; i < ( process.stdout.columns - 2 ); i++ ) // -2 to do the margin of one space of begin and end
 			toReturn += char
@@ -207,7 +216,7 @@ export class Printer
 
 	private separator = ( char: string ) =>
 	{
-		let toReturn = ' '
+		let toReturn = ''
 
 		for( let i = 0; i < ( process.stdout.columns / 10 ); i++ )
 			toReturn += char

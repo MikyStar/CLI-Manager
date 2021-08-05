@@ -1,7 +1,7 @@
-import { Action } from "./core/CliArgHandler";
+import { Action, isBoard, isTask, isAction, isText } from "./core/CliArgHandler";
 import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
-import { printError, printMessage } from "./core/Printer";
+import { Printer, printError, printMessage } from "./core/Printer";
 import { System } from './core/System'
 
 import Help from './utils/Help'
@@ -9,7 +9,7 @@ import Help from './utils/Help'
 import { MainController } from "./controller/MainController";
 
 import { CLISyntaxError, DeletingTaskSytaxError, EditingSytaxError, CheckingTaskSytaxError
-	, IncrementingTaskSytaxError, MovingTaskSytaxError } from './errors/CLISyntaxErrors';
+	, IncrementingTaskSytaxError, MovingTaskSytaxError, AddingTaskSytaxError, ExtractingBoardSytaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
 import { IBoard } from "./core/Board";
 
@@ -18,40 +18,48 @@ import { IBoard } from "./core/Board";
 try
 {
 	const controller = new MainController()
-	const { argHandler, firstArg, storage, config, taskFlags, board, printer } = controller
-	const { state, description, linked } = taskFlags
+	const { argHandler, storage, config, printer } = controller
+
+	const { flags, words } = argHandler
+	const [ firstArg, secondArg, thirdArg, ...restSentence ] = words
+	const { dataAttributes, isHelpNeeded, isVersion, isRecursive, printing } = flags
+	const { state, description, linked } = dataAttributes
+
+	const isThereCLIArgs = words.length > 0
+	const isThereOnlyOneCLIArgs = words.length === 1
+	const isThereOnlyTwoCLIArgs = words.length === 2
 
 	//////////
 
-	if( !argHandler.isThereCLIArgs )
+	if( !isThereCLIArgs )
 	{
-		printer.loadFileView().printView()
+		printer.setView( 'file' ).printView()
 		System.exit()
 	}
 
-	if( argHandler.isThereOnlyOneCLIArgs )
+	if( isThereOnlyOneCLIArgs )
 	{
-		if( firstArg.isTask )
+		if( isTask( firstArg ) )
 		{
 			const tasksId = firstArg.value as number[]
 
-			printer.loadTaskView( tasksId ).printView()
+			printer.setView( 'task', tasksId ).printView()
 		}
-		else if( firstArg.isBoard )
+		else if( isBoard( firstArg ) )
 		{
 			const boardName = firstArg.value as string
 
-			printer.loadBoardView( boardName ).printView()
+			printer.setView( 'board', boardName ).printView()
 		}
-		else if( argHandler.isHelpNeeded )
+		else if( isHelpNeeded )
 			printer.addFeedback( Help.fullMan() ).printFeedback()
-		else if( argHandler.isVersion )
+		else if( isVersion )
 			printer.addFeedback( Help.version ).printFeedback()
 
 		System.exit()
 	}
 
-	if( argHandler.isThereOnlyTwoCLIArgs && firstArg.isAction && argHandler.isHelpNeeded )
+	if( isThereOnlyTwoCLIArgs && isAction( firstArg ) && isHelpNeeded )
 	{
 		printer.addFeedback( Help.handleAction( firstArg.value as Action ) ).printFeedback()
 		System.exit()
@@ -59,7 +67,7 @@ try
 
 	//////////
 
-	if( firstArg.isAction )
+	if( isAction( firstArg ) )
 	{
 		switch( firstArg.value )
 		{
@@ -67,7 +75,7 @@ try
 			{
 				let id
 
-				if( argHandler.isThereOnlyOneCLIArgs )
+				if( isThereOnlyOneCLIArgs )
 					id = Prompt.addTask( storage, config )
 				else
 				{
@@ -79,20 +87,34 @@ try
 						description,
 					}
 
-					let parentItem = {}
-					const isRemainingOnlyATask = ( argHandler.untreatedArgs.length === 1 ) && ( argHandler.untreatedArgs[ 0 ].isTask )
-					if( isRemainingOnlyATask )
+					let parentItem
+					if( isTask( secondArg ) )
 					{
-						parentItem = { subTaskOf: argHandler.untreatedArgs[ 0 ].value }
-						argHandler.untreatedArgs.splice( 0, 1 )
+						const id = secondArg.value as number
+						parentItem = { subTaskOf: id }
+						printer.setView( 'task', id )
 					}
 					else
-						parentItem = { boardName: board }
+					{
+						let boardName
+						if( isBoard( secondArg ) )
+							boardName = secondArg.value as string
+						else if( config.defaultArgs.board )
+							boardName = config.defaultArgs.board
+						else
+							throw new AddingTaskSytaxError( 'You must provide either a board (through cli or config file) or a task id' )
+
+						printer.setView( 'board', boardName )
+						parentItem = { boardName }
+					}
 
 					id = storage.addTask( task, parentItem )
 				}
 
-				printer.addFeedback( `Task n°${ id } added` ).loadBoardView( board ).print()
+				let boardName
+				storage.retrieveTask( id, ({ board }) => boardName = board.name )
+
+				printer.addFeedback( `Task n°${ id } added` ).print()
 				break;
 			}
 
@@ -102,7 +124,7 @@ try
 			{
 				const boardName = storage.addBoard( argHandler.getFirstText(), description )
 
-				printer.addFeedback( `Board '${ boardName }' added` ).loadBoardView( boardName ).print()
+				printer.addFeedback( `Board '${ boardName }' added` ).setView( 'board', boardName ).print()
 				break;
 			}
 
@@ -110,13 +132,12 @@ try
 
 			case Action.EDIT:
 			{
-				const secondArg = argHandler.cliArgs[ 1 ]
-				if( !secondArg.isTask && !secondArg.isBoard )
+				if( !isTask( secondArg ) && !isBoard( secondArg ) )
 					throw new EditingSytaxError( "Your second arguments should be one or more tasks id join by ',' or a board name" )
 
 				const name = argHandler.getFirstText()
 
-				if( secondArg.isTask )
+				if( isTask( secondArg ) )
 				{
 					const dependencies = linked
 
@@ -138,13 +159,13 @@ try
 						delete newAttributes.description
 
 					const ids = secondArg.value as number | number[]
-					const tasksID = storage.editTask( ids, newAttributes, argHandler.isRecursive )
+					const tasksID = storage.editTask( ids, newAttributes, isRecursive )
 
 					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` ).loadTaskView( ids )
+					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` ).setView( 'task', ids )
 				}
-				else if( secondArg.isBoard )
+				else if( isBoard( secondArg ) )
 				{
 					const newAttributes: IBoard =
 					{
@@ -160,7 +181,8 @@ try
 					const boardName = secondArg.value as string
 					storage.editBoard( boardName, newAttributes )
 
-					printer.addFeedback( `Board '${ boardName }' edited` ).loadBoardView( board )
+					const finalBoardName = name ? name : secondArg.value as string
+					printer.addFeedback( `Board '${ boardName }' edited` ).setView( 'board', finalBoardName )
 				}
 
 				printer.print()
@@ -171,18 +193,17 @@ try
 
 			case Action.CHECK:
 			{
-				const secondArg = argHandler.cliArgs[ 1 ]
-				if( !secondArg.isTask )
+				if( !isTask( secondArg ) )
 					throw new CheckingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const ids = secondArg.value as number | number[]
 
 				const lastState = config.states[ config.states.length - 1 ].name
-				const tasksID = storage.editTask( ids, { state: lastState }, argHandler.isRecursive )
+				const tasksID = storage.editTask( ids, { state: lastState }, isRecursive )
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` ).loadTaskView( ids ).print()
+				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` ).setView( 'task', ids ).print()
 				break;
 			}
 
@@ -190,19 +211,18 @@ try
 
 			case Action.INCREMENT:
 			{
-				const secondArg = argHandler.cliArgs[ 1 ]
-				if( !secondArg.isTask )
+				if( !isTask( secondArg ) )
 					throw new IncrementingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const ids = secondArg.value as number | number[]
 
 				const statesNames = config.states.map( state => state.name )
 
-				const tasksID = storage.incrementTask( ids, statesNames, argHandler.isRecursive )
+				const tasksID = storage.incrementTask( ids, statesNames, isRecursive )
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` ).loadTaskView( ids ).print()
+				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` ).setView( 'task', ids ).print()
 				break;
 			}
 
@@ -210,28 +230,49 @@ try
 
 			case Action.DELETE:
 			{
-				const secondArg = argHandler.cliArgs[ 1 ]
-				if( secondArg.isTask )
+				if( isTask( secondArg ) )
 				{
 					const ids = secondArg.value as number | number[]
 
-					const tasksID = storage.deleteTask( ids )
+					let taskPluralHandled, stringifyiedIDS
 
-					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
-					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
+					if( Array.isArray( ids ) && ids.length > 1 )
+					{
+						taskPluralHandled = 'Tasks'
+						stringifyiedIDS = ids.join(',')
+
+						const { sameParentBoard, boardName } = storage.haveTasksSameParentBoard( ids )
+
+						if( sameParentBoard )
+							printer.setView( 'board', boardName )
+						else
+							printer.setView( 'file' )
+					}
+					else
+					{
+						taskPluralHandled = 'Task'
+						stringifyiedIDS = ids
+
+						let parentBoardName
+						storage.retrieveTask( ids as number, ({ board }) => parentBoardName = board.name )
+						printer.setView( 'board', parentBoardName )
+					}
+
+					storage.deleteTask( ids )
+
 					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
 				}
-				else if( secondArg.isBoard )
+				else if( isBoard( secondArg ) )
 				{
 					const board = secondArg.value as string
 					storage.deleteBoard( board )
 
-					printer.addFeedback( `Board '${ board }' deleted` )
+					printer.addFeedback( `Board '${ board }' deleted` ).setView( 'file' )
 				}
 				else
 					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
 
-				printer.loadFileView().print()
+				printer.print()
 				break;
 			}
 
@@ -239,20 +280,17 @@ try
 
 			case Action.MOVE:
 			{
-				const secondArg = argHandler.cliArgs[ 1 ]
-				const thirdArg = argHandler.cliArgs[ 2 ]
-
-				if( !secondArg.isTask )
+				if( !isTask( secondArg ) )
 					throw new MovingTaskSytaxError( `Second arg '${ secondArg.value }' should be one or more task id` )
 
-				if( !thirdArg.isTask && !thirdArg.isBoard )
+				if( !isTask( thirdArg ) && !isBoard( thirdArg ) )
 					throw new MovingTaskSytaxError( `Third arg '${ thirdArg.value }' should be one task id or a board name` )
 
 				const targetIDs = secondArg.value as number | number[]
 
 				let destination = {}
 				let destFeedback = ''
-				if( thirdArg.isTask )
+				if( isTask( thirdArg ) )
 				{
 					if( Array.isArray( thirdArg.value ) )
 						throw new MovingTaskSytaxError( `Please provide only one destination task id` )
@@ -260,14 +298,14 @@ try
 					const destTaskID = thirdArg.value as number
 					destination = { subTask: destTaskID }
 					destFeedback = `task n°${ destTaskID }`
-					printer.loadTaskView( destTaskID )
+					printer.setView( 'task', destTaskID )
 				}
-				else if( thirdArg.isBoard )
+				else if( isBoard( thirdArg ) )
 				{
 					const destBoardName = thirdArg.value as string
 					destination = { boardName: destBoardName }
 					destFeedback = `board '${ destBoardName }'`
-					printer.loadBoardView( destBoardName )
+					printer.setView( 'board', destBoardName )
 				}
 
 				// TODO if no dest provided make new board with parent task name and check only one task to move
@@ -275,6 +313,27 @@ try
 				storage.moveTask( targetIDs, destination )
 
 				printer.addFeedback( `Tasks '${ targetIDs }' moved to ${ destFeedback }` ).print()
+				break;
+			}
+
+			////////////////////
+
+			case Action.EXTRACT:
+			{
+				if( !isBoard( secondArg ) )
+					throw new ExtractingBoardSytaxError( `Second arg '${ secondArg.value }' should be one or more board` )
+
+				if( !isText( thirdArg ) )
+					throw new ExtractingBoardSytaxError( `Third arg '${ thirdArg.value }' should be text` )
+
+				const startText = Array.isArray( secondArg.value ) ? 'Boards' : 'Board'
+				const names = Array.isArray( secondArg.value ) ? secondArg.value.join( ',' ) : secondArg.value
+
+				const newStorage = storage.extractBoard( secondArg.value as string[] | string, thirdArg.value as string )
+				const newPrinter = new Printer( newStorage, config.states, { ...printing, ...config.defaultArgs } )
+
+				newPrinter.addFeedback( `${ startText } '${ names }' extracted to '${ thirdArg.value }'` ).setView( 'file' ).print()
+				break;
 			}
 		}
 
@@ -284,7 +343,7 @@ try
 catch( error )
 {
 	if( !( error instanceof CatchableError ) )
-		printError( error )
+		console.error( error )
 	else
 	{
 		if( error instanceof CLISyntaxError )
@@ -292,6 +351,8 @@ catch( error )
 			printError( error.message )
 			printMessage( Help.getMan( error.manEntry ) )
 		}
+
+		printError( error.message )
 	}
 
 	System.exit( -1 )
