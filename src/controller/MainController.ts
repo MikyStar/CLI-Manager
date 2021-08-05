@@ -1,4 +1,4 @@
-import { CliArgHandler, RawArg, Action, TaskFlags } from "../core/CliArgHandler";
+import { CliArgHandler, Action, isAction } from "../core/CliArgHandler";
 import { Printer, PrinterConfig } from "../core/Printer";
 import { Storage, DEFAULT_STORAGE_FILE_NAME, DEFAULT_STORAGE_DATAS } from "../core/Storage";
 import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "../core/Config";
@@ -12,8 +12,6 @@ import { FileNotFoundError } from '../errors/FileErrors'
 export class MainController
 {
 	argHandler: CliArgHandler
-	firstArg ?: RawArg
-	isHelpNeeded: boolean
 
 	printer: Printer
 
@@ -22,9 +20,6 @@ export class MainController
 	storageLocation: string
 	storage ?: Storage
 
-	board: string
-	taskFlags: TaskFlags
-
 	////////////////////
 
 	/**
@@ -32,15 +27,15 @@ export class MainController
 	 */
 	constructor()
 	{
-		this.argHandler = new CliArgHandler()
 		this.printer = new Printer()
 
-		this.firstArg = this.argHandler.getFirstArg()
-		this.isHelpNeeded = this.argHandler.isHelpNeeded
+		this.argHandler = new CliArgHandler()
+		const { flags, words } = this.argHandler
+		const { files, printing } = flags
+		const [ firstArg ] = words
 
-
-		this.configLocation = this.argHandler.configLocation || DEFAULT_CONFIG_FILE_NAME
-		this.storageLocation = this.argHandler.storageLocation
+		this.configLocation = files.configLocation || DEFAULT_CONFIG_FILE_NAME
+		this.storageLocation = files.storageLocation
 
 		if( System.doesFileExists( this.configLocation ) )
 		{
@@ -54,7 +49,7 @@ export class MainController
 		if( System.doesFileExists( this.storageLocation ) )
 			this.storage = new Storage( this.storageLocation )
 
-		const isInit = this.argHandler.isThereCLIArgs && ( this.firstArg.isAction ) && ( this.firstArg.value === Action.INIT )
+		const isInit = ( words.length > 0 ) && isAction( firstArg ) && ( firstArg.value === Action.INIT )
 		if( isInit )
 			this.handleInit()
 
@@ -67,13 +62,10 @@ export class MainController
 
 		const printConfig: PrinterConfig =
 		{
-			...this.argHandler.printerConfig,
+			...printing,
 			...this.config.defaultArgs
 		}
 		this.printer = new Printer( this.storage, this.config.states, printConfig )
-
-		this.taskFlags = this.argHandler.taskFlags
-		this.board = this.argHandler.board || this.config.defaultArgs.board
 	}
 
 	////////////////////

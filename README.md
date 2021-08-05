@@ -186,7 +186,7 @@ task d @mBoard	# Delete a board, will ask confirmation for all the tasks inside
 task clean @mBoard	# Remove all task in board @mBoard which are at final state
 
 # Extracting
-task x @board1 @board2 relativePath	# Create a new storage file from one or multiple boards, "Extract"
+task x @board1,@board2 relativePath	# Create a new storage file from one or multiple boards, "Extract"
 ```
 
 ### Task

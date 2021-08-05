@@ -4,7 +4,7 @@
         "tasks": [
             {
                 "name": "refactor argcli, i really should make a phrase out of args, being able to access second arg like first arg ...",
-                "state": "todo",
+                "state": "done",
                 "dependencies": [],
                 "id": 5,
                 "timestamp": "28/07/2021"
@@ -94,6 +94,22 @@
                         "timestamp": "29/07/2021"
                     }
                 ]
+            },
+            {
+                "name": "when moved to subtask, the newly added task(s) is not printed, only the previous value",
+                "state": "todo",
+                "dependencies": [],
+                "id": 70,
+                "timestamp": "04/08/2021"
+            },
+            {
+                "name": "print problem for description of last subtask child",
+                "state": "todo",
+                "dependencies": [
+                    null
+                ],
+                "id": 77,
+                "timestamp": "05/08/2021"
             }
         ]
     },
@@ -102,7 +118,7 @@
         "tasks": [
             {
                 "name": "extraction",
-                "state": "todo",
+                "state": "wip",
                 "dependencies": [],
                 "id": 1,
                 "timestamp": "25/07/2021"
@@ -442,6 +458,159 @@
                 "dependencies": [],
                 "id": 57,
                 "timestamp": "31/07/2021"
+            },
+            {
+                "name": "Interactive shell",
+                "state": "todo",
+                "dependencies": [],
+                "id": 56,
+                "timestamp": "02/08/2021",
+                "subtasks": [
+                    {
+                        "name": "To launch the very same commands without having to preceed by \"task\"",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 58,
+                        "timestamp": "02/08/2021"
+                    },
+                    {
+                        "name": "Ability to press ? to get help",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 59,
+                        "timestamp": "02/08/2021"
+                    },
+                    {
+                        "name": "if one or more file flag, will charge the target file for whole shell",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 60,
+                        "timestamp": "02/08/2021"
+                    }
+                ]
+            },
+            {
+                "name": "Dependencies",
+                "state": "todo",
+                "dependencies": [],
+                "id": 61,
+                "timestamp": "02/08/2021",
+                "subtasks": [
+                    {
+                        "name": "Like if they are at a lower state than actual, prompt if sure to just update one, update all, cancel",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 62,
+                        "timestamp": "02/08/2021"
+                    },
+                    {
+                        "name": "subtasks and dependencies can be undefined",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 68,
+                        "timestamp": "04/08/2021",
+                        "subtasks": [
+                            {
+                                "name": "if undefined dont add it in storage",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 69,
+                                "timestamp": "04/08/2021"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "add priority",
+                "state": "todo",
+                "dependencies": [],
+                "id": 63,
+                "timestamp": "03/08/2021",
+                "subtasks": [
+                    {
+                        "name": "can sort by it",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 64,
+                        "timestamp": "03/08/2021"
+                    },
+                    {
+                        "name": "with !!!",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 65,
+                        "timestamp": "04/08/2021"
+                    },
+                    {
+                        "name": "can de undefined",
+                        "state": "todo",
+                        "dependencies": [],
+                        "id": 66,
+                        "timestamp": "04/08/2021",
+                        "subtasks": [
+                            {
+                                "name": "if undefined dont add it in storage",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 67,
+                                "timestamp": "04/08/2021"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "in the retrieve nested task, i might want to access the parent board id from the callback",
+                "state": "done",
+                "dependencies": [],
+                "id": 71,
+                "timestamp": "04/08/2021",
+                "subtasks": [
+                    {
+                        "name": "this way if I update a nested task and the parent is at a previous state, promt for possible update",
+                        "state": "todo",
+                        "dependencies": [
+                            null
+                        ],
+                        "id": 72,
+                        "timestamp": "04/08/2021",
+                        "subtasks": [
+                            {
+                                "name": "update parent y/N",
+                                "state": "todo",
+                                "dependencies": [],
+                                "id": 73,
+                                "timestamp": "04/08/2021"
+                            }
+                        ],
+                        "description": "REALLY NEED TO BE IMPLEMENTED"
+                    }
+                ]
+            },
+            {
+                "name": "if only text arg, make a task",
+                "state": "todo",
+                "dependencies": [],
+                "id": 74,
+                "timestamp": "04/08/2021"
+            },
+            {
+                "name": "usefull script for export",
+                "state": "todo",
+                "dependencies": [],
+                "id": 75,
+                "timestamp": "04/08/2021",
+                "subtasks": [
+                    {
+                        "name": "like what woulb be the command to have what will happen next -> tasks without final state",
+                        "state": "todo",
+                        "dependencies": [],
+                        "description": "for instance",
+                        "id": 76,
+                        "timestamp": "04/08/2021"
+                    }
+                ]
             }
         ]
     }
