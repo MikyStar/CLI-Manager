@@ -1,6 +1,6 @@
 import { CatchableError } from './CatchableError';
 
-import { ManEntries } from '../utils/Help';
+import { ManEntries } from '../core/Help';
 
 ////////////////////////////////////////
 

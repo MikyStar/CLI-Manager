@@ -2,10 +2,10 @@ import { bold, underline } from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
-import { Action } from "../core/CliArgHandler"
+import { Action } from "./CliArgHandler"
 
-import { DEFAULT_CONFIG_FILE_NAME } from '../core/Config'
-import { DEFAULT_STORAGE_FILE_NAME } from '../core/Storage'
+import { DEFAULT_CONFIG_FILE_NAME } from './Config'
+import { DEFAULT_STORAGE_FILE_NAME } from './Storage'
 
 ////////////////////////////////////////
 

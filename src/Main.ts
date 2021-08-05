@@ -4,7 +4,7 @@ import { ITask } from "./core/Task";
 import { Printer, printError, printMessage } from "./core/Printer";
 import { System } from './core/System'
 
-import Help from './utils/Help'
+import Help from './core/Help'
 
 import { MainController } from "./controller/MainController";
 
