@@ -192,33 +192,35 @@ export class CliArgHandler
 				const values = subParsed.map( sub => sub.value ) as string[] | number[]
 				parsedArgs.push({ value: values, type: argType })
 			}
-
-			const isBoard = theArg[0] === '@'
-			const isTask = isNumber( theArg )
-			const isAction = Object.values( Action ).includes( theArg as Action )
-			const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
-			const isValueVlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
-
-			if( isBoard )
-				parsedArgs.push( { value: theArg.slice( 1 ), type: 'board' } )
-			else if( isTask )
-				parsedArgs.push( { value: Number.parseInt( theArg ), type: 'task' } )
-			else if( isAction )
-				parsedArgs.push( { value: theArg, type: 'action' } )
-			else if( isBooleanFlag )
-				parsedArgs.push( { value: true, type: 'flag', flagType: theArg as BooleanFlag } )
-			else if( isValueVlag )
-			{
-				let followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
-				if( isNumber( followingValue ) )
-					followingValue = Number.parseInt( followingValue )
-
-				parsedArgs.push({ value: followingValue, type: 'flag', flagType: theArg as ValueFlag })
-
-				i++ // Because we used the next value
-			}
 			else
-				parsedArgs.push( { value: theArg, type: 'text' } )
+			{
+				const isBoard = theArg[0] === '@'
+				const isTask = isNumber( theArg )
+				const isAction = Object.values( Action ).includes( theArg as Action )
+				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
+				const isValueVlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
+
+				if( isBoard )
+					parsedArgs.push( { value: theArg.slice( 1 ), type: 'board' } )
+				else if( isTask )
+					parsedArgs.push( { value: Number.parseInt( theArg ), type: 'task' } )
+				else if( isAction )
+					parsedArgs.push( { value: theArg, type: 'action' } )
+				else if( isBooleanFlag )
+					parsedArgs.push( { value: true, type: 'flag', flagType: theArg as BooleanFlag } )
+				else if( isValueVlag )
+				{
+					let followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
+					if( isNumber( followingValue ) )
+						followingValue = Number.parseInt( followingValue )
+
+					parsedArgs.push({ value: followingValue, type: 'flag', flagType: theArg as ValueFlag })
+
+					i++ // Because we used the next value
+				}
+				else
+					parsedArgs.push( { value: theArg, type: 'text' } )
+			}
 		}
 
 		return parsedArgs
@@ -259,3 +261,4 @@ export class CliArgHandler
 export const isTask = ( arg: RawArg ) => arg.type === 'task'
 export const isBoard = ( arg: RawArg ) => arg.type === 'board'
 export const isAction = ( arg: RawArg ) => arg.type === 'action'
+export const isText = ( arg: RawArg ) => arg.type === 'text'

@@ -1,7 +1,7 @@
-import { Action, isBoard, isTask, isAction } from "./core/CliArgHandler";
+import { Action, isBoard, isTask, isAction, isText } from "./core/CliArgHandler";
 import { Prompt } from "./core/Prompt";
 import { ITask } from "./core/Task";
-import { printError, printMessage } from "./core/Printer";
+import { Printer, printError, printMessage } from "./core/Printer";
 import { System } from './core/System'
 
 import Help from './utils/Help'
@@ -9,7 +9,7 @@ import Help from './utils/Help'
 import { MainController } from "./controller/MainController";
 
 import { CLISyntaxError, DeletingTaskSytaxError, EditingSytaxError, CheckingTaskSytaxError
-	, IncrementingTaskSytaxError, MovingTaskSytaxError, AddingTaskSytaxError } from './errors/CLISyntaxErrors';
+	, IncrementingTaskSytaxError, MovingTaskSytaxError, AddingTaskSytaxError, ExtractingBoardSytaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
 import { IBoard } from "./core/Board";
 
@@ -22,7 +22,7 @@ try
 
 	const { flags, words } = argHandler
 	const [ firstArg, secondArg, thirdArg, ...restSentence ] = words
-	const { dataAttributes, isHelpNeeded, isVersion, isRecursive } = flags
+	const { dataAttributes, isHelpNeeded, isVersion, isRecursive, printing } = flags
 	const { state, description, linked } = dataAttributes
 
 	const isThereCLIArgs = words.length > 0
@@ -312,6 +312,27 @@ try
 				storage.moveTask( targetIDs, destination )
 
 				printer.addFeedback( `Tasks '${ targetIDs }' moved to ${ destFeedback }` ).print()
+				break;
+			}
+
+			////////////////////
+
+			case Action.EXTRACT:
+			{
+				if( !isBoard( secondArg ) )
+					throw new ExtractingBoardSytaxError( `Second arg '${ secondArg.value }' should be one or more board` )
+
+				if( !isText( thirdArg ) )
+					throw new ExtractingBoardSytaxError( `Third arg '${ thirdArg.value }' should be text` )
+
+				const startText = Array.isArray( secondArg.value ) ? 'Boards' : 'Board'
+				const names = Array.isArray( secondArg.value ) ? secondArg.value.join( ',' ) : secondArg.value
+
+				const newStorage = storage.extractBoard( secondArg.value as string[] | string, thirdArg.value as string )
+				const newPrinter = new Printer( newStorage, config.states, { ...printing, ...config.defaultArgs } )
+
+				newPrinter.addFeedback( `${ startText } '${ names }' extracted to '${ thirdArg.value }'` ).setView( 'file' ).print()
+				break;
 			}
 		}
 
@@ -329,6 +350,8 @@ catch( error )
 			printError( error.message )
 			printMessage( Help.getMan( error.manEntry ) )
 		}
+
+		printError( error.message )
 	}
 
 	System.exit( -1 )

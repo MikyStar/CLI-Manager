@@ -74,3 +74,13 @@ export class MovingTaskSytaxError extends CLISyntaxError
 		super( message, 'movingTask', details )
 	}
 }
+
+////////////////////////////////////////
+
+export class ExtractingBoardSytaxError extends CLISyntaxError
+{
+	constructor( message: string, details ?: any )
+	{
+		super( message, 'extractingBoards', details )
+	}
+}
