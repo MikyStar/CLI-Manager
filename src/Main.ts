@@ -89,17 +89,24 @@ try
 
 					let parentItem
 					if( isTask( secondArg ) )
-						parentItem = { subTaskOf: secondArg.value as number }
-					else if( isBoard( secondArg ) )
-						parentItem = { boardName: secondArg.value as string }
+					{
+						const id = secondArg.value as number
+						parentItem = { subTaskOf: id }
+						printer.setView( 'task', id )
+					}
 					else
 					{
-						if( config.defaultArgs.board )
-							parentItem = { boardName: config.defaultArgs.board }
+						let boardName
+						if( isBoard( secondArg ) )
+							boardName = secondArg.value as string
+						else if( config.defaultArgs.board )
+							boardName = config.defaultArgs.board
 						else
 							throw new AddingTaskSytaxError( 'You must provide either a board (through cli or config file) or a task id' )
-					}
 
+						printer.setView( 'board', boardName )
+						parentItem = { boardName }
+					}
 
 					id = storage.addTask( task, parentItem )
 				}
@@ -107,7 +114,7 @@ try
 				let boardName
 				storage.retrieveTask( id, ({ board }) => boardName = board.name )
 
-				printer.addFeedback( `Task n°${ id } added` ).setView( 'board', boardName ).print()
+				printer.addFeedback( `Task n°${ id } added` ).print()
 				break;
 			}
 

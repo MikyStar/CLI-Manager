@@ -164,22 +164,6 @@ export class CliArgHandler
 				}
 	}
 
-	private getBoard = () =>
-	{
-		let toReturn = undefined
-
-		this.untreatedArgs.forEach( ( arg, index ) =>
-		{
-			if( arg.type === 'board' )
-			{
-				toReturn = arg.value
-				this.untreatedArgs.splice( index, 1 )
-			}
-		})
-
-		return toReturn
-	}
-
 	private rawParse = ( args: string[] ) : RawArg[] =>
 	{
 		let parsedArgs : RawArg[] = []
