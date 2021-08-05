@@ -181,7 +181,8 @@ try
 					const boardName = secondArg.value as string
 					storage.editBoard( boardName, newAttributes )
 
-					printer.addFeedback( `Board '${ boardName }' edited` ).setView( 'board', secondArg.value as string )
+					const finalBoardName = name ? name : secondArg.value as string
+					printer.addFeedback( `Board '${ boardName }' edited` ).setView( 'board', finalBoardName )
 				}
 
 				printer.print()
