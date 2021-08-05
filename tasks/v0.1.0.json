@@ -4,7 +4,7 @@
         "tasks": [
             {
                 "name": "refactor argcli, i really should make a phrase out of args, being able to access second arg like first arg ...",
-                "state": "wip",
+                "state": "done",
                 "dependencies": [],
                 "id": 5,
                 "timestamp": "28/07/2021"
@@ -101,6 +101,15 @@
                 "dependencies": [],
                 "id": 70,
                 "timestamp": "04/08/2021"
+            },
+            {
+                "name": "print problem for description of last subtask child",
+                "state": "todo",
+                "dependencies": [
+                    null
+                ],
+                "id": 77,
+                "timestamp": "05/08/2021"
             }
         ]
     },
@@ -553,7 +562,7 @@
             },
             {
                 "name": "in the retrieve nested task, i might want to access the parent board id from the callback",
-                "state": "todo",
+                "state": "done",
                 "dependencies": [],
                 "id": 71,
                 "timestamp": "04/08/2021",
@@ -561,7 +570,9 @@
                     {
                         "name": "this way if I update a nested task and the parent is at a previous state, promt for possible update",
                         "state": "todo",
-                        "dependencies": [],
+                        "dependencies": [
+                            null
+                        ],
                         "id": 72,
                         "timestamp": "04/08/2021",
                         "subtasks": [
@@ -572,7 +583,8 @@
                                 "id": 73,
                                 "timestamp": "04/08/2021"
                             }
-                        ]
+                        ],
+                        "description": "REALLY NEED TO BE IMPLEMENTED"
                     }
                 ]
             },
