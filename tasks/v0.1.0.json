@@ -1,6 +1,6 @@
 [
     {
-        "name": "TOFIX",
+        "name": "fix",
         "tasks": [
             {
                 "name": "refactor argcli, i really should make a phrase out of args, being able to access second arg like first arg ...",
@@ -139,11 +139,20 @@
                 ],
                 "id": 80,
                 "timestamp": "05/08/2021"
+            },
+            {
+                "name": "refactor init with better file classes like the creation arg in storage constructor",
+                "state": "todo",
+                "dependencies": [
+                    null
+                ],
+                "id": 0,
+                "timestamp": "06/08/2021"
             }
         ]
     },
     {
-        "name": "TODO",
+        "name": "backlog",
         "tasks": [
             {
                 "name": "extraction",
@@ -264,7 +273,7 @@
             },
             {
                 "name": "--group flag",
-                "state": "todo",
+                "state": "wip",
                 "dependencies": [],
                 "description": "to display with grouped state recursively",
                 "id": 19,
@@ -272,21 +281,21 @@
                 "subtasks": [
                     {
                         "name": "can be combined with --sort asc desc",
-                        "state": "todo",
+                        "state": "wip",
                         "dependencies": [],
                         "id": 20,
                         "timestamp": "28/07/2021"
                     },
                     {
                         "name": "can be added in config file",
-                        "state": "todo",
+                        "state": "wip",
                         "dependencies": [],
                         "id": 29,
                         "timestamp": "28/07/2021"
                     },
                     {
                         "name": "the function should return a IBoard",
-                        "state": "todo",
+                        "state": "wip",
                         "dependencies": [],
                         "id": 25,
                         "timestamp": "29/07/2021"
