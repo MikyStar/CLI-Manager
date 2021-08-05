@@ -33,7 +33,7 @@ try
 
 	if( !isThereCLIArgs )
 	{
-		printer.loadFileView().printView()
+		printer.setView( 'file' ).printView()
 		System.exit()
 	}
 
@@ -43,13 +43,13 @@ try
 		{
 			const tasksId = firstArg.value as number[]
 
-			printer.loadTaskView( tasksId ).printView()
+			printer.setView( 'task', tasksId ).printView()
 		}
 		else if( isBoard( firstArg ) )
 		{
 			const boardName = firstArg.value as string
 
-			printer.loadBoardView( boardName ).printView()
+			printer.setView( 'board', boardName ).printView()
 		}
 		else if( isHelpNeeded )
 			printer.addFeedback( Help.fullMan() ).printFeedback()
@@ -104,7 +104,10 @@ try
 					id = storage.addTask( task, parentItem )
 				}
 
-				printer.addFeedback( `Task n°${ id } added` ).loadBoardView( board ).print()
+				let boardName
+				storage.retrieveTask( id, ({ board }) => boardName = board.name )
+
+				printer.addFeedback( `Task n°${ id } added` ).setView( 'board', boardName ).print()
 				break;
 			}
 
@@ -114,7 +117,7 @@ try
 			{
 				const boardName = storage.addBoard( argHandler.getFirstText(), description )
 
-				printer.addFeedback( `Board '${ boardName }' added` ).loadBoardView( boardName ).print()
+				printer.addFeedback( `Board '${ boardName }' added` ).setView( 'board', boardName ).print()
 				break;
 			}
 
@@ -153,7 +156,7 @@ try
 
 					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` ).loadTaskView( ids )
+					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` ).setView( 'task', ids )
 				}
 				else if( isBoard( secondArg ) )
 				{
@@ -171,7 +174,7 @@ try
 					const boardName = secondArg.value as string
 					storage.editBoard( boardName, newAttributes )
 
-					printer.addFeedback( `Board '${ boardName }' edited` ).loadBoardView( secondArg.value as string )
+					printer.addFeedback( `Board '${ boardName }' edited` ).setView( 'board', secondArg.value as string )
 				}
 
 				printer.print()
@@ -192,7 +195,7 @@ try
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` ).loadTaskView( ids ).print()
+				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` ).setView( 'task', ids ).print()
 				break;
 			}
 
@@ -211,7 +214,7 @@ try
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` ).loadTaskView( ids ).print()
+				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` ).setView( 'task', ids ).print()
 				break;
 			}
 
@@ -223,10 +226,32 @@ try
 				{
 					const ids = secondArg.value as number | number[]
 
-					const tasksID = storage.deleteTask( ids )
+					let taskPluralHandled, stringifyiedIDS
 
-					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
-					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
+					if( Array.isArray( ids ) && ids.length > 1 )
+					{
+						taskPluralHandled = 'Tasks'
+						stringifyiedIDS = ids.join(',')
+
+						const { sameParentBoard, boardName } = storage.haveTasksSameParentBoard( ids )
+
+						if( sameParentBoard )
+							printer.setView( 'board', boardName )
+						else
+							printer.setView( 'file' )
+					}
+					else
+					{
+						taskPluralHandled = 'Task'
+						stringifyiedIDS = ids
+
+						let parentBoardName
+						storage.retrieveTask( ids as number, ({ board }) => parentBoardName = board.name )
+						printer.setView( 'board', parentBoardName )
+					}
+
+					storage.deleteTask( ids )
+
 					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
 				}
 				else if( isBoard( secondArg ) )
@@ -234,12 +259,12 @@ try
 					const board = secondArg.value as string
 					storage.deleteBoard( board )
 
-					printer.addFeedback( `Board '${ board }' deleted` )
+					printer.addFeedback( `Board '${ board }' deleted` ).setView( 'file' )
 				}
 				else
 					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
 
-				printer.loadFileView().print()
+				printer.print()
 				break;
 			}
 
@@ -265,14 +290,14 @@ try
 					const destTaskID = thirdArg.value as number
 					destination = { subTask: destTaskID }
 					destFeedback = `task n°${ destTaskID }`
-					printer.loadTaskView( destTaskID )
+					printer.setView( 'task', destTaskID )
 				}
 				else if( isBoard( thirdArg ) )
 				{
 					const destBoardName = thirdArg.value as string
 					destination = { boardName: destBoardName }
 					destFeedback = `board '${ destBoardName }'`
-					printer.loadBoardView( destBoardName )
+					printer.setView( 'board', destBoardName )
 				}
 
 				// TODO if no dest provided make new board with parent task name and check only one task to move
@@ -289,7 +314,7 @@ try
 catch( error )
 {
 	if( !( error instanceof CatchableError ) )
-		printError( error )
+		console.error( error )
 	else
 	{
 		if( error instanceof CLISyntaxError )
