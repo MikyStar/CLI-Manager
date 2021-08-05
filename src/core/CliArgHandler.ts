@@ -269,3 +269,9 @@ export class CliArgHandler
 		}
 	}
 }
+
+////////////////////
+
+export const isTask = ( arg: RawArg ) => arg.type === 'task'
+export const isBoard = ( arg: RawArg ) => arg.type === 'board'
+export const isAction = ( arg: RawArg ) => arg.type === 'action'
