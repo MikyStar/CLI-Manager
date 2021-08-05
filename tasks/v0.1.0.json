@@ -147,7 +147,7 @@
         "tasks": [
             {
                 "name": "extraction",
-                "state": "wip",
+                "state": "done",
                 "dependencies": [],
                 "id": 1,
                 "timestamp": "25/07/2021"
