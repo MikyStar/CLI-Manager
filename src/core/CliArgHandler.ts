@@ -130,9 +130,21 @@ export class CliArgHandler
 
 	////////////////////
 
-	private concatGroupByFlags = () =>
+	private getFinalGroupBy = () =>
 	{
-		// todo
+		const { GROUPB_BY } = ValueFlag
+
+		const flagCount = this.untreatedArgs.filter( arg => arg.flagType === GROUPB_BY ).length
+
+		if( flagCount === 1 )
+			return this.getValueFlag( GROUPB_BY ) as GroupBy
+
+		const groupings : GroupBy[] = []
+
+		for( let i = 0; i < flagCount; i++ )
+			groupings.push( this.getValueFlag( GROUPB_BY ) as GroupBy )
+
+		return groupings
 	}
 
 	private getPrinterConfig = () : PrinterConfig =>
@@ -144,9 +156,7 @@ export class CliArgHandler
 		const shouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
 
 		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
-
-		this.concatGroupByFlags()
-		const groupBy = this.getValueFlag( ValueFlag.GROUPB_BY ) as GroupBy | GroupBy[]
+		const groupBy = this.getFinalGroupBy()
 
 		return	{
 					hideDescription,
@@ -289,7 +299,7 @@ export class CliArgHandler
 			}
 			else
 			{
-				const [ parsed ] = this.rawParse( [ arg ] )
+				const [ parsed ] = this.rawParse( [ value ] )
 				if( !isText( parsed ) )
 					throw new GroupBySyntaxError( `Value '${ value }' can only be text` )
 
@@ -309,11 +319,11 @@ export class CliArgHandler
 			}
 			else
 			{
-				const [ parsed ] = this.rawParse( [ arg ] )
+				const [ parsed ] = this.rawParse( [ value ] )
 				if( !isTask( parsed ) )
 					throw new GroupBySyntaxError( `Value '${ value }' can only be task id` )
 
-				return { attribute: GroupByAttribute.LINKED, toMatch: value }
+				return { attribute: GroupByAttribute.LINKED, toMatch: Number.parseInt( value ) }
 			}
 		}
 	}
