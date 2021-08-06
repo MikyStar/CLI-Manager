@@ -8,8 +8,8 @@ import Help from './core/Help'
 
 import { MainController } from "./controller/MainController";
 
-import { CLISyntaxError, DeletingTaskSytaxError, EditingSytaxError, CheckingTaskSytaxError
-	, IncrementingTaskSytaxError, MovingTaskSytaxError, AddingTaskSytaxError, ExtractingBoardSytaxError } from './errors/CLISyntaxErrors';
+import { CLISyntaxError, DeletingTaskSyntaxError, EditingSyntaxError, CheckingTaskSyntaxError
+	, IncrementingTaskSyntaxError, MovingTaskSyntaxError, AddingTaskSyntaxError, ExtractingBoardSyntaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
 import { IBoard } from "./core/Board";
 
@@ -102,7 +102,7 @@ try
 						else if( config.defaultArgs.board )
 							boardName = config.defaultArgs.board
 						else
-							throw new AddingTaskSytaxError( 'You must provide either a board (through cli or config file) or a task id' )
+							throw new AddingTaskSyntaxError( 'You must provide either a board (through cli or config file) or a task id' )
 
 						printer.setView( 'board', boardName )
 						parentItem = { boardName }
@@ -133,7 +133,7 @@ try
 			case Action.EDIT:
 			{
 				if( !isTask( secondArg ) && !isBoard( secondArg ) )
-					throw new EditingSytaxError( "Your second arguments should be one or more tasks id join by ',' or a board name" )
+					throw new EditingSyntaxError( "Your second arguments should be one or more tasks id join by ',' or a board name" )
 
 				const name = argHandler.getFirstText()
 
@@ -194,7 +194,7 @@ try
 			case Action.CHECK:
 			{
 				if( !isTask( secondArg ) )
-					throw new CheckingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
+					throw new CheckingTaskSyntaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const ids = secondArg.value as number | number[]
 
@@ -212,7 +212,7 @@ try
 			case Action.INCREMENT:
 			{
 				if( !isTask( secondArg ) )
-					throw new IncrementingTaskSytaxError( "Your second arguments should be a number or numbers join by ','" )
+					throw new IncrementingTaskSyntaxError( "Your second arguments should be a number or numbers join by ','" )
 
 				const ids = secondArg.value as number | number[]
 
@@ -270,7 +270,7 @@ try
 					printer.addFeedback( `Board '${ board }' deleted` ).setView( 'file' )
 				}
 				else
-					throw new DeletingTaskSytaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
+					throw new DeletingTaskSyntaxError( `Second arg '${ secondArg.value }' should be a board or task(s)` )
 
 				printer.print()
 				break;
@@ -281,10 +281,10 @@ try
 			case Action.MOVE:
 			{
 				if( !isTask( secondArg ) )
-					throw new MovingTaskSytaxError( `Second arg '${ secondArg.value }' should be one or more task id` )
+					throw new MovingTaskSyntaxError( `Second arg '${ secondArg.value }' should be one or more task id` )
 
 				if( !isTask( thirdArg ) && !isBoard( thirdArg ) )
-					throw new MovingTaskSytaxError( `Third arg '${ thirdArg.value }' should be one task id or a board name` )
+					throw new MovingTaskSyntaxError( `Third arg '${ thirdArg.value }' should be one task id or a board name` )
 
 				const targetIDs = secondArg.value as number | number[]
 
@@ -293,7 +293,7 @@ try
 				if( isTask( thirdArg ) )
 				{
 					if( Array.isArray( thirdArg.value ) )
-						throw new MovingTaskSytaxError( `Please provide only one destination task id` )
+						throw new MovingTaskSyntaxError( `Please provide only one destination task id` )
 
 					const destTaskID = thirdArg.value as number
 					destination = { subTask: destTaskID }
@@ -321,10 +321,10 @@ try
 			case Action.EXTRACT:
 			{
 				if( !isBoard( secondArg ) )
-					throw new ExtractingBoardSytaxError( `Second arg '${ secondArg.value }' should be one or more board` )
+					throw new ExtractingBoardSyntaxError( `Second arg '${ secondArg.value }' should be one or more board` )
 
 				if( !isText( thirdArg ) )
-					throw new ExtractingBoardSytaxError( `Third arg '${ thirdArg.value }' should be text` )
+					throw new ExtractingBoardSyntaxError( `Third arg '${ thirdArg.value }' should be text` )
 
 				const startText = Array.isArray( secondArg.value ) ? 'Boards' : 'Board'
 				const names = Array.isArray( secondArg.value ) ? secondArg.value.join( ',' ) : secondArg.value
