@@ -1,5 +1,6 @@
-import { PrinterConfig } from './Printer'
+import { PrinterConfig, GroupBy, GroupByAttribute } from './Printer'
 import { MultipleValuesMismatchError } from '../errors'
+import { GroupBySyntaxError } from '../errors/CLISyntaxErrors'
 
 ////////////////////////////////////////
 
@@ -36,6 +37,7 @@ export enum ValueFlag
 	STORAGE_FILE = '--storage',
 	CONFIG_FILE = '--config',
 	DEPTH = '--depth',
+	GROUPB_BY = '--group',
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
@@ -43,7 +45,7 @@ export enum ValueFlag
 
 export interface RawArg
 {
-	value: string | string[] | number | number[] | true
+	value: string | string[] | number | number[] | true | GroupBy | GroupBy[]
 	type: ArgType
 	flagType ?: ValueFlag | BooleanFlag
 }
@@ -128,6 +130,11 @@ export class CliArgHandler
 
 	////////////////////
 
+	private concatGroupByFlags = () =>
+	{
+		// todo
+	}
+
 	private getPrinterConfig = () : PrinterConfig =>
 	{
 		const hideDescription = this.getBoolFlag( BooleanFlag.HIDE_DESCRIPTION )
@@ -138,6 +145,9 @@ export class CliArgHandler
 
 		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
 
+		this.concatGroupByFlags()
+		const groupBy = this.getValueFlag( ValueFlag.GROUPB_BY ) as GroupBy | GroupBy[]
+
 		return	{
 					hideDescription,
 					hideTimestamp,
@@ -146,6 +156,7 @@ export class CliArgHandler
 					shouldNotPrintAfter,
 
 					depth,
+					groupBy
 				}
 	}
 
@@ -177,17 +188,7 @@ export class CliArgHandler
 			const containsSpace = /\s/.test( theArg )
 			if( theArg.includes( ',' ) && !containsSpace )
 			{
-				const splitted = theArg.split( ',' )
-				const subParsed = this.rawParse( splitted )
-
-				let argType : ArgType | undefined = undefined
-				subParsed.forEach( arg =>
-				{
-					if( argType === undefined )
-						argType = arg.type
-					else if( arg.type !== argType )
-						throw new MultipleValuesMismatchError( argType, arg.type )
-				});
+				const { subParsed, argType } = this.handleMultipleValuesType( theArg )
 
 				const values = subParsed.map( sub => sub.value ) as string[] | number[]
 				parsedArgs.push({ value: values, type: argType })
@@ -199,6 +200,7 @@ export class CliArgHandler
 				const isAction = Object.values( Action ).includes( theArg as Action )
 				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
 				const isValueVlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
+				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUPB_BY
 
 				if( isBoard )
 					parsedArgs.push( { value: theArg.slice( 1 ), type: 'board' } )
@@ -210,12 +212,20 @@ export class CliArgHandler
 					parsedArgs.push( { value: true, type: 'flag', flagType: theArg as BooleanFlag } )
 				else if( isValueVlag )
 				{
-					let followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
-					if( isNumber( followingValue ) )
-						followingValue = Number.parseInt( followingValue )
+					let value : string | number | GroupBy
 
-					parsedArgs.push({ value: followingValue, type: 'flag', flagType: theArg as ValueFlag })
+					if( isGroupBy )
+						value = this.parseGroupByValue( args[ i + 1 ] )
+					else
+					{
+						let followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
+						if( isNumber( followingValue ) )
+							followingValue = Number.parseInt( followingValue )
 
+						value = followingValue
+					}
+
+					parsedArgs.push({ value, type: 'flag', flagType: theArg as ValueFlag })
 					i++ // Because we used the next value
 				}
 				else
@@ -224,6 +234,88 @@ export class CliArgHandler
 		}
 
 		return parsedArgs
+	}
+
+	/**
+	 * @param multipleArg string containing a comma
+	 *
+	 * @throws {MultipleValuesMismatchError}
+	 */
+	private handleMultipleValuesType = ( multipleArg: string ) =>
+	{
+		const splitted = multipleArg.split( ',' )
+		const subParsed = this.rawParse( splitted )
+
+		let argType : ArgType | undefined = undefined
+
+		subParsed.forEach( arg =>
+		{
+			if( argType === undefined )
+				argType = arg.type
+			else if( arg.type !== argType )
+				throw new MultipleValuesMismatchError( argType, arg.type )
+		});
+
+		return { subParsed, argType }
+	}
+
+	/**
+	 * @param arg the next arg from the raw cli
+	 */
+	private parseGroupByValue = ( arg: string ) : GroupBy =>
+	{
+		const isThereEq = /=/.test( arg )
+		if( !isThereEq )
+			throw new GroupBySyntaxError( `There should be an equal in the arg '${ arg }'`)
+
+		const [ attribute, value ] = arg.split( '=' )
+		const isState = GroupByAttribute.STATE === attribute
+		const isLinked = GroupByAttribute.LINKED === attribute
+		const isMultipleValues = value.includes( ',' )
+
+		if( !isState && !isLinked )
+			throw new GroupBySyntaxError( `You should provide either ${ GroupByAttribute.STATE } or ${ GroupByAttribute.STATE } as first part of your = in ${ arg }` )
+
+		if( isState )
+		{
+			if( isMultipleValues )
+			{
+				const { subParsed, argType } = this.handleMultipleValuesType( value )
+				if( argType !== 'text' )
+					throw new GroupBySyntaxError( `Values '${ value }' can only be text` )
+
+				const toMatch = subParsed.map( sub => sub.value as string )
+				return { attribute: GroupByAttribute.STATE, toMatch }
+			}
+			else
+			{
+				const [ parsed ] = this.rawParse( [ arg ] )
+				if( !isText( parsed ) )
+					throw new GroupBySyntaxError( `Value '${ value }' can only be text` )
+
+				return { attribute: GroupByAttribute.STATE, toMatch: value }
+			}
+		}
+		else if( isLinked )
+		{
+			if( isMultipleValues )
+			{
+				const { subParsed, argType } = this.handleMultipleValuesType( value )
+				if( argType !== 'task' )
+					throw new GroupBySyntaxError( `Values '${ value }' can only be tasks id` )
+
+				const toMatch = subParsed.map( sub => sub.value as number )
+				return { attribute: GroupByAttribute.LINKED, toMatch }
+			}
+			else
+			{
+				const [ parsed ] = this.rawParse( [ arg ] )
+				if( !isTask( parsed ) )
+					throw new GroupBySyntaxError( `Value '${ value }' can only be task id` )
+
+				return { attribute: GroupByAttribute.LINKED, toMatch: value }
+			}
+		}
 	}
 
 	private getBoolFlag = ( flag: BooleanFlag ) =>

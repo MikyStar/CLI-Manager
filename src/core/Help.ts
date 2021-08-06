@@ -122,7 +122,8 @@ class Help implements ManEntries
 				'--hide-tree : Hide tree branches',
 				'--hide-timestamp : No timestamp',
 				'--hide-sub-counter : No subtask counter in parent task',
-				'--print : Print your tasks or boards after having ran your command'
+				'--print : Print your tasks or boards after having ran your command',
+				`--group (state|linked)=(<state name(s)>|<dependencies task id>) : Group by attribute, ${ bold( 'you can used this flag more than once' ) }`
 			],
 		}
 
@@ -149,7 +150,7 @@ class Help implements ManEntries
 		this.editing =
 		{
 			title: 'Editing',
-			prototype: 'task e [<task(s)>] [<board name>] [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
+			prototype: 'task e (<task(s)>|<board name>) [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to edit, you can pass multiple by separating the ids by ',' without space",

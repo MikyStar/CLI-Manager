@@ -16,12 +16,24 @@ export interface PrinterConfig
 	hideTree ?: boolean,
 
 	depth ?: number,
+	groupBy ?: GroupBy | GroupBy[]
 }
 
+export interface GroupBy
+{
+	attribute: GroupByAttribute,
+	toMatch: string | string[] | number | number[]
+}
 export interface ViewParams
 {
 	view: ViewType,
 	target ?: ViewTargetType
+}
+
+export enum GroupByAttribute
+{
+	STATE = 'state',
+	LINKED = 'linked'
 }
 
 type ViewType = 'file' | 'board' | 'task'
