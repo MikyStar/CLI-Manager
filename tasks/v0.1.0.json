@@ -299,6 +299,15 @@
                         "dependencies": [],
                         "id": 25,
                         "timestamp": "29/07/2021"
+                    },
+                    {
+                        "name": "there can be multiple times this flag -> raw arg should make it a a single value with array of GroubyInterface",
+                        "state": "wip",
+                        "dependencies": [
+                            null
+                        ],
+                        "id": 16,
+                        "timestamp": "06/08/2021"
                     }
                 ]
             },
@@ -477,6 +486,15 @@
                 "dependencies": [],
                 "id": 74,
                 "timestamp": "04/08/2021"
+            },
+            {
+                "name": "add in readme that icon can be simple string too",
+                "state": "todo",
+                "dependencies": [
+                    null
+                ],
+                "id": 41,
+                "timestamp": "06/08/2021"
             }
         ]
     }

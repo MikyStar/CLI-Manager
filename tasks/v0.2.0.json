@@ -181,6 +181,15 @@
                 ],
                 "id": 0,
                 "timestamp": "06/08/2021"
+            },
+            {
+                "name": "if rename board and boardname is same as default board name and storage file used is same as the one in config file, prompt if should also update config file board",
+                "state": "todo",
+                "dependencies": [
+                    null
+                ],
+                "id": 1,
+                "timestamp": "06/08/2021"
             }
         ]
     }

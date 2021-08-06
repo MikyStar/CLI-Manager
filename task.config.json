@@ -3,7 +3,7 @@
 	{
 		"hideDescription": false,
 		"shouldNotPrintAfter": false,
-		"board": "TODO",
+		"board": "backlog",
 		"storageFile": "./tasks/v0.1.0.json"
 	},
 	"states": [
