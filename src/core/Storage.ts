@@ -286,30 +286,6 @@ export class Storage
 			throw new TaskNotFoundError( taskID )
 	}
 
-	/**
-	 * Use recursion to return any task within any boards and any subtask matching value
-	 */
-	searchAllNestedTask = <K extends keyof ITask>( taskAttribute: K, value: any ) =>
-	{
-		const tasks : ITask[] = []
-
-		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		this.boards.forEach( ( board ) =>
-		{
-			board.tasks.forEach( function iter( task )
-			{
-				if( task[ taskAttribute ] === value )
-				{
-					tasks.push( task )
-				}
-
-				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
-			});
-		});
-
-		return tasks
-	}
-
 	haveTasksSameParentBoard = ( tasksID: number[] ) =>
 	{
 		const parentBoards = []

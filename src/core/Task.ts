@@ -263,4 +263,48 @@ export namespace Task
 
 		return toReturn
 	}
+
+	/**
+	 * Use recursion to return any task and any subtask matching value
+	 */
+	export const findAll = <K extends keyof ITask>( tasks: ITask[], taskAttribute: K, value: any ) =>
+	{
+		const toReturn : ITask[] = []
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		tasks.forEach( function iter( task )
+		{
+			if( task[ taskAttribute ] === value )
+				toReturn.push( task )
+
+			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+		});
+
+		return toReturn
+	}
+
+	export const sort = ( tasks : ITask[], groupBy: GroupBy = 'state', order: Order = 'desc', config : Config ) : SortingReturn =>
+	{
+		/*
+		 * if i need both tasks array and config, then it should be a method in Storage
+		 */
+		let toReturn : SortingReturn = {}
+
+		switch( groupBy )
+		{
+			case 'state':
+			{
+				config.states.forEach( state =>
+				{
+					const sortFunc = ( a: ITask, b: ITask ) =>
+					{
+					}
+				});
+
+				break;
+			}
+		}
+
+		return toReturn
+	}
 }
