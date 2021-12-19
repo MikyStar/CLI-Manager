@@ -1,4 +1,6 @@
-import { PrinterConfig, GroupBy, GroupByAttribute } from './Printer'
+import { PrinterConfig } from './Printer'
+import { GroupByType, handledGroupings } from './Task'
+
 import { MultipleValuesMismatchError } from '../errors'
 import { GroupBySyntaxError } from '../errors/CLISyntaxErrors'
 
@@ -45,7 +47,7 @@ export enum ValueFlag
 
 export interface RawArg
 {
-	value: string | string[] | number | number[] | true | GroupBy | GroupBy[]
+	value: string | string[] | number | number[] | true
 	type: ArgType
 	flagType ?: ValueFlag | BooleanFlag
 }
@@ -137,12 +139,12 @@ export class CliArgHandler
 		const flagCount = this.untreatedArgs.filter( arg => arg.flagType === GROUPB_BY ).length
 
 		if( flagCount === 1 )
-			return this.getValueFlag( GROUPB_BY ) as GroupBy
+			return this.getValueFlag( GROUPB_BY ) as GroupByType
 
-		const groupings : GroupBy[] = []
+		const groupings : GroupByType[] = []
 
 		for( let i = 0; i < flagCount; i++ )
-			groupings.push( this.getValueFlag( GROUPB_BY ) as GroupBy )
+			groupings.push( this.getValueFlag( GROUPB_BY ) as GroupByType )
 
 		return groupings
 	}
@@ -209,7 +211,7 @@ export class CliArgHandler
 				const isTask = isNumber( theArg )
 				const isAction = Object.values( Action ).includes( theArg as Action )
 				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
-				const isValueVlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
+				const isValueFlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
 				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUPB_BY
 
 				if( isBoard )
@@ -220,20 +222,16 @@ export class CliArgHandler
 					parsedArgs.push( { value: theArg, type: 'action' } )
 				else if( isBooleanFlag )
 					parsedArgs.push( { value: true, type: 'flag', flagType: theArg as BooleanFlag } )
-				else if( isValueVlag )
+				else if( isValueFlag )
 				{
-					let value : string | number | GroupBy
+					const followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
 
-					if( isGroupBy )
-						value = this.parseGroupByValue( args[ i + 1 ] )
+					let value : string | number
+					if( isGroupBy && !handledGroupings.includes( followingValue as GroupByType ) )
+						throw new GroupBySyntaxError( `'--group' following attribute should be from '${ handledGroupings.map( str => str ) }'` )
 					else
-					{
-						let followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
-						if( isNumber( followingValue ) )
-							followingValue = Number.parseInt( followingValue )
+						value = isNumber( followingValue ) ? Number.parseInt( followingValue ) : followingValue
 
-						value = followingValue
-					}
 
 					parsedArgs.push({ value, type: 'flag', flagType: theArg as ValueFlag })
 					i++ // Because we used the next value
@@ -267,65 +265,6 @@ export class CliArgHandler
 		});
 
 		return { subParsed, argType }
-	}
-
-	/**
-	 * @param arg the next arg from the raw cli
-	 */
-	private parseGroupByValue = ( arg: string ) : GroupBy =>
-	{
-		const isThereEq = /=/.test( arg )
-		if( !isThereEq )
-			throw new GroupBySyntaxError( `There should be an equal in the arg '${ arg }'`)
-
-		const [ attribute, value ] = arg.split( '=' )
-		const isState = GroupByAttribute.STATE === attribute
-		const isLinked = GroupByAttribute.LINKED === attribute
-		const isMultipleValues = value.includes( ',' )
-
-		if( !isState && !isLinked )
-			throw new GroupBySyntaxError( `You should provide either ${ GroupByAttribute.STATE } or ${ GroupByAttribute.STATE } as first part of your = in ${ arg }` )
-
-		if( isState )
-		{
-			if( isMultipleValues )
-			{
-				const { subParsed, argType } = this.handleMultipleValuesType( value )
-				if( argType !== 'text' )
-					throw new GroupBySyntaxError( `Values '${ value }' can only be text` )
-
-				const toMatch = subParsed.map( sub => sub.value as string )
-				return { attribute: GroupByAttribute.STATE, toMatch }
-			}
-			else
-			{
-				const [ parsed ] = this.rawParse( [ value ] )
-				if( !isText( parsed ) )
-					throw new GroupBySyntaxError( `Value '${ value }' can only be text` )
-
-				return { attribute: GroupByAttribute.STATE, toMatch: value }
-			}
-		}
-		else if( isLinked )
-		{
-			if( isMultipleValues )
-			{
-				const { subParsed, argType } = this.handleMultipleValuesType( value )
-				if( argType !== 'task' )
-					throw new GroupBySyntaxError( `Values '${ value }' can only be tasks id` )
-
-				const toMatch = subParsed.map( sub => sub.value as number )
-				return { attribute: GroupByAttribute.LINKED, toMatch }
-			}
-			else
-			{
-				const [ parsed ] = this.rawParse( [ value ] )
-				if( !isTask( parsed ) )
-					throw new GroupBySyntaxError( `Value '${ value }' can only be task id` )
-
-				return { attribute: GroupByAttribute.LINKED, toMatch: Number.parseInt( value ) }
-			}
-		}
 	}
 
 	private getBoolFlag = ( flag: BooleanFlag ) =>

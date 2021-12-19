@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { DefaultArgs } from './Config'
+import { Config, DefaultArgs } from './Config'
 
 import { ConfigState } from './Config'
 
@@ -27,6 +27,16 @@ export interface StringifyArgs extends DefaultArgs
 	isLastChild ?: boolean,
 	isSubTask ?: boolean,
 	isLastParent ?: boolean,
+}
+
+export const handledGroupings = [ 'state', 'priority', 'tag', 'deadline', 'load', 'linked' ] as const
+export type GroupByType = typeof handledGroupings[ number ]
+
+export type Order = 'asc' | 'desc'
+
+interface SortingReturn
+{
+	[key: string] : ITask[]
 }
 
 ////////////////////////////////////////
@@ -283,7 +293,7 @@ export namespace Task
 		return toReturn
 	}
 
-	export const sort = ( tasks : ITask[], groupBy: GroupBy = 'state', order: Order = 'desc', config : Config ) : SortingReturn =>
+	export const sort = ( tasks : ITask[], groupBy: GroupByType = 'state', order: Order = 'desc', config : Config ) : SortingReturn =>
 	{
 		/*
 		 * if i need both tasks array and config, then it should be a method in Storage

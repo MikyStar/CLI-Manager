@@ -2,7 +2,7 @@ import chalk from "chalk"
 
 import { Board } from "./Board";
 import { ConfigState } from "./Config";
-import { Task } from './Task';
+import { Task, GroupByType } from './Task';
 import { Storage } from './Storage';
 
 ////////////////////////////////////////
@@ -16,24 +16,13 @@ export interface PrinterConfig
 	hideTree ?: boolean,
 
 	depth ?: number,
-	groupBy ?: GroupBy | GroupBy[]
+	groupBy ?: GroupByType | GroupByType[]
 }
 
-export interface GroupBy
-{
-	attribute: GroupByAttribute,
-	toMatch: string | string[] | number | number[]
-}
 export interface ViewParams
 {
 	view: ViewType,
 	target ?: ViewTargetType
-}
-
-export enum GroupByAttribute
-{
-	STATE = 'state',
-	LINKED = 'linked'
 }
 
 type ViewType = 'file' | 'board' | 'task'

@@ -166,6 +166,7 @@ Can either be passed as CLI arguments or stored in the `defaultArgs` object in t
 --hide-timestamp	# No timestamp
 --hide-sub-counter	# No subtask counter in parent task
 --no-print	# Don't print tasks after an action
+--group <state, priority, tag, deadline, load, linked> # Recursively group by attribute
 ```
 
 ### Board

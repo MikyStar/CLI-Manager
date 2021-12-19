@@ -123,7 +123,7 @@ class Help implements ManEntries
 				'--hide-timestamp : No timestamp',
 				'--hide-sub-counter : No subtask counter in parent task',
 				'--print : Print your tasks or boards after having ran your command',
-				`--group (state|linked)=(<state name(s)>|<dependencies task id>) : Group by attribute, ${ bold( 'you can used this flag more than once' ) }`
+				`--group (state|linked|priority|tag|deadline|load|linked) : Group by attribute, ${ bold( 'you can use this flag more than once' ) }`
 			],
 		}
 
