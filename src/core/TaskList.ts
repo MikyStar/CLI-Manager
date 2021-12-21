@@ -45,21 +45,29 @@ export class TaskList extends Array<Task> implements TaskActions
 
 		this.allIDs = []
 
-		items && items.forEach( item =>
+		items && items.forEach( item => this.push( item ) )
+	}
+
+	//////////
+
+	/** @override */
+	push = ( ...tasks: Task[] ) =>
+	{
+		tasks.forEach( task =>
 		{
-			const { id } = item
+			const { id } = task
 
 			if( this.allIDs.includes( id ) )
 				throw new TaskIdDuplicatedError( id )
 			else
 			{
 				this.allIDs.push( id )
-				this.push( item )
+				this.push( task )
 			}
 		})
-	}
 
-	//////////
+		return this.length
+	}
 
 	addTask = ( task: Task, subTaskOf: number ) =>
 	{
@@ -257,7 +265,7 @@ export class TaskList extends Array<Task> implements TaskActions
 			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
 		})
 
-		return tasks
+		return new TaskList( tasks )
 	}
 
 	/**
@@ -317,10 +325,10 @@ export class TaskList extends Array<Task> implements TaskActions
 			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
 		});
 
-		return toReturn
+		return new TaskList( toReturn )
 	}
 
-	groupBy = ( groupBy: GroupByType = 'state', order: Order = 'desc', config : Config ) : Task[] =>
+	groupBy = ( groupBy: GroupByType = 'state', order: Order = 'desc', config : Config ) =>
 	{
 		/*
 		* if i need both tasks array and config, then it should be a method in Storage
@@ -344,6 +352,6 @@ export class TaskList extends Array<Task> implements TaskActions
 			}
 		}
 
-		return ( order === 'asc' ) ? toReturn : toReturn.reverse()
+		return new TaskList( ( order === 'asc' ) ? toReturn : toReturn.reverse() )
 	}
 }
