@@ -10,14 +10,11 @@ export enum Action
 {
 	ADD_TASK = 'a',
 	INIT = 'init',
-	ADD_BOARD = 'b',
 	CHECK = 'c',
 	DELETE = 'd',
 	EDIT = 'e',
 	INCREMENT = 'i',
 	MOVE = 'mv',
-	RENAME = 'rn',
-	EXTRACT = 'x'
 }
 
 export enum BooleanFlag
@@ -43,6 +40,7 @@ export enum ValueFlag
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
+	TAG = '-t',
 }
 
 export interface RawArg
@@ -208,16 +206,13 @@ export class CliArgHandler
 			}
 			else
 			{
-				const isBoard = theArg[0] === '@'
 				const isTask = isNumber( theArg )
 				const isAction = Object.values( Action ).includes( theArg as Action )
 				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
 				const isValueFlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
 				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUPB_BY
 
-				if( isBoard )
-					parsedArgs.push( { value: theArg.slice( 1 ), type: 'board' } )
-				else if( isTask )
+				if( isTask )
 					parsedArgs.push( { value: Number.parseInt( theArg ), type: 'task' } )
 				else if( isAction )
 					parsedArgs.push( { value: theArg, type: 'action' } )
@@ -301,6 +296,5 @@ export class CliArgHandler
 ////////////////////
 
 export const isTask = ( arg: RawArg ) => arg.type === 'task'
-export const isBoard = ( arg: RawArg ) => arg.type === 'board'
 export const isAction = ( arg: RawArg ) => arg.type === 'action'
 export const isText = ( arg: RawArg ) => arg.type === 'text'

@@ -12,8 +12,6 @@ export interface ConfigState
 
 export interface DefaultArgs extends PrinterConfig
 {
-	board ?: string,
-
 	storageFile ?: string,
 	configFile ?: string,
 }
@@ -27,7 +25,6 @@ export const DEFAULT_CONFIG_DATAS =
 	"defaultArgs":
 	{
 		"shouldNotPrintAfter": false,
-		"board": "backlog",
 		"storageFile": "tasks.json"
 	},
 	"states": [

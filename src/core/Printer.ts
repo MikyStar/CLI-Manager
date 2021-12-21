@@ -15,7 +15,7 @@ export interface PrinterConfig
 	hideTree ?: boolean,
 
 	depth ?: number,
-	groupBy ?: GroupByType
+	groupBy ?: GroupByType | GroupByType []
 }
 
 export interface ViewParams

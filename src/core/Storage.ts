@@ -14,11 +14,12 @@ import { FileAlreadyExistsError } from '../errors/FileErrors';
 export const DEFAULT_STORAGE_FILE_NAME = "tasks.json"
 export const DEFAULT_STORAGE_DATAS =
 [
-    {
-        "name": "backlog",
-		"description": "Where everything lies",
-        "tasks": []
-    }
+	{
+		"name": "Add more stuff",
+		"description": "There's a lot of things to do",
+		"state": "todo",
+		"id": 0,
+	}
 ]
 
 ////////////////////////////////////////

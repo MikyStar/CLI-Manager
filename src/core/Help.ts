@@ -31,10 +31,6 @@ export interface ManEntries
 	checkingTask: ManPage
 	incrementingTask: ManPage
 	movingTask: ManPage
-
-	creatingBoard: ManPage
-	cleaningBoard: ManPage
-	extractingBoards: ManPage
 }
 
 ////////////////////////////////////////
@@ -229,43 +225,6 @@ class Help implements ManEntries
 			],
 			globalArgs: true,
 		}
-
-		//////////
-
-		this.creatingBoard =
-		{
-			title: 'Creating boad',
-			prototype: 'task b <board name> [-d <description>] [global args]',
-			argDef:
-			[
-				'<board name> : Board name',
-				'-d <description> : Board description',
-			],
-			globalArgs: true,
-		}
-
-		this.cleaningBoard =
-		{
-			title: 'Cleaning board',
-			prototype: 'task clean @<board name>',
-			argDef:
-			[
-				"@<board name> : The target board preceded by '@'",
-			],
-			globalArgs: true
-		}
-
-		this.extractingBoards =
-		{
-			title: 'Extracting board',
-			prototype: 'task x @<board name 1>,@<board name x> <relative path>',
-			argDef:
-			[
-				"@<board name 1...x> : Target board names preceded by '@' separated by ',' without space",
-				"relative path : The path where you want to make a new storage file"
-			],
-			globalArgs: true
-		}
 	}
 
 	////////////////////
@@ -277,8 +236,7 @@ class Help implements ManEntries
 		let toReturn = []
 
 		const entries = [ 'init', 'viewing', 'creatingTask', 'editingTask'
-			, 'checkingTask', 'incrementingTask', 'movingTask', 'creatingBoard'
-			, 'renamingBoard', 'cleaningBoard', 'extractingBoards', 'deleting' ]
+			, 'checkingTask', 'incrementingTask', 'movingTask', 'deleting' ]
 
 		entries.forEach( entry =>
 		{
@@ -302,9 +260,6 @@ class Help implements ManEntries
 			case Action.INIT:
 				toReturn = this.getMan( 'init' )
 				break;
-			case Action.ADD_BOARD:
-				toReturn = this.getMan( 'creatingBoard' )
-				break;
 			case Action.ADD_TASK:
 				toReturn = this.getMan( 'creatingTask' )
 				break;
@@ -319,9 +274,6 @@ class Help implements ManEntries
 				break;
 			case Action.EDIT:
 				toReturn = this.getMan( 'editing' )
-				break;
-			case Action.EXTRACT:
-				toReturn = this.getMan( 'extractingBoards' )
 				break;
 			case Action.MOVE:
 				toReturn = this.getMan( 'movingTask' )
