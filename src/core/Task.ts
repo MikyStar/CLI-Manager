@@ -8,7 +8,7 @@ export const TIMESTAMP_FORMAT = 'DD/MM/YYYY'
 
 ////////////////////////////////////////
 
-interface ITask
+export interface ITask
 {
 	name ?: string,
 	description ?: string,

@@ -2,7 +2,7 @@ import chalk from "chalk"
 import moment from "moment"
 
 import { ConfigState, Config } from "./Config"
-import { Task, TIMESTAMP_FORMAT } from "./Task"
+import { Task, ITask,TIMESTAMP_FORMAT } from "./Task"
 
 import { TaskIdDuplicatedError, TaskNotFoundError, TaskStateUnknownError } from "../errors/TaskErrors"
 
@@ -25,7 +25,7 @@ interface RetrieveTaskCallback
 export interface TaskActions
 {
 	addTask : ( task: Task, subTaskOf: number ) => number | number[]
-	editTask : ( tasksID: number | number[], newAttributes: Task, isRecurive ?: boolean ) => number | number[]
+	editTask : ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) => number | number[]
 	incrementTask : ( tasksID: number | number[], configStates: string[], isRecurive ?: boolean ) => number | number[]
 	deleteTask : ( tasksID: number | number[] ) => number | number[]
 	moveTask : ( tasksID: number | number [], subTaskOf: number ) => number | number[]
@@ -69,7 +69,7 @@ export class TaskList extends Array<Task> implements TaskActions
 		return this.length
 	}
 
-	addTask = ( task: Task, subTaskOf: number ) =>
+	addTask = ( task: Task, subTaskOf ?: number ) =>
 	{
 		const createUniqueId = () =>
 		{
@@ -96,18 +96,23 @@ export class TaskList extends Array<Task> implements TaskActions
 			timestamp: moment().format( TIMESTAMP_FORMAT )
 		}
 
-		this.retrieveTask( subTaskOf, ({ task }) =>
+		if( subTaskOf )
 		{
-			if( task.subtasks === undefined )
-				task.subtasks = [ finalTask ]
-			else
-				task.subtasks = [ ...task.subtasks, finalTask ];
-		})
+			this.retrieveTask( subTaskOf, ({ task }) =>
+			{
+				if( task.subtasks === undefined )
+					task.subtasks = [ finalTask ]
+				else
+					task.subtasks = [ ...task.subtasks, finalTask ];
+			})
+		}
+		else
+			this.push( finalTask )
 
 		return taskID
 	}
 
-	editTask = ( tasksID: number | number[], newAttributes: Task, isRecurive ?: boolean ) =>
+	editTask = ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) =>
 	{
 		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
 

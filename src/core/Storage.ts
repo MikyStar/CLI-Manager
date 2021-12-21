@@ -1,12 +1,8 @@
-import chalk from 'chalk';
-import moment from 'moment';
-
-import { Task, TIMESTAMP_FORMAT } from './Task';
+import { ITask, Task } from './Task';
 import { TaskList, TaskActions } from './TaskList';
 import { System } from './System'
-import { Config, ConfigState } from './Config';
 
-import { TaskIdDuplicatedError, TaskNotFoundError, TaskStateUnknownError } from '../errors/TaskErrors';
+import { TaskIdDuplicatedError } from '../errors/TaskErrors';
 import { FileAlreadyExistsError } from '../errors/FileErrors';
 
 ////////////////////////////////////////
@@ -70,7 +66,7 @@ export class Storage implements TaskActions
 		return id
 	}
 
-	editTask = ( tasksID: number | number[], newAttributes: Task, isRecurive ?: boolean ) =>
+	editTask = ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) =>
 	{
 		const id = this.tasks.editTask( tasksID, newAttributes, isRecurive )
 		this.save()
