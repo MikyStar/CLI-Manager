@@ -77,16 +77,6 @@ export class MovingTaskSyntaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class ExtractingBoardSyntaxError extends CLISyntaxError
-{
-	constructor( message: string, details ?: any )
-	{
-		super( message, 'extractingBoards', details )
-	}
-}
-
-////////////////////////////////////////
-
 export class GroupBySyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )

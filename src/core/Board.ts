@@ -1,3 +1,4 @@
+/*
 export const stringify = ( board : IBoard, availableStates : ConfigState[], options ?: StringifyArgs ) : string[] =>
 	{
 		let toReturn : string[] = []
@@ -26,3 +27,4 @@ export const stringify = ( board : IBoard, availableStates : ConfigState[], opti
 
 		return toReturn
 	}
+*/

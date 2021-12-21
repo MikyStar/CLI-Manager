@@ -27,8 +27,6 @@ export class MainController
 	 */
 	constructor()
 	{
-		this.printer = new Printer()
-
 		this.argHandler = new CliArgHandler()
 		const { flags, words } = this.argHandler
 		const { files, printing } = flags

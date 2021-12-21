@@ -24,7 +24,7 @@ interface RetrieveTaskCallback
 
 export interface TaskActions
 {
-	addTask : ( task: Task, subTaskOf: number ) => number | number[]
+	addTask : ( task: Task, subTaskOf ?: number ) => number | number[]
 	editTask : ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) => number | number[]
 	incrementTask : ( tasksID: number | number[], configStates: string[], isRecurive ?: boolean ) => number | number[]
 	deleteTask : ( tasksID: number | number[] ) => number | number[]
@@ -45,7 +45,8 @@ export class TaskList extends Array<Task> implements TaskActions
 
 		this.allIDs = []
 
-		items && items.forEach( item => this.push( item ) )
+		if( items )
+			this.push( ...items )
 	}
 
 	//////////
@@ -62,7 +63,7 @@ export class TaskList extends Array<Task> implements TaskActions
 			else
 			{
 				this.allIDs.push( id )
-				this.push( task )
+				super.push( task )
 			}
 		})
 

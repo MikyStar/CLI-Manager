@@ -44,7 +44,7 @@ export class Storage implements TaskActions
 
 		this.relativePath = relativePath
 		this.allIDs = []
-		this.tasks = System.readJSONFile( this.relativePath )
+		this.tasks = new TaskList( System.readJSONFile( this.relativePath ) )
 
 		this.tasks.map( task =>
 		{
@@ -59,7 +59,7 @@ export class Storage implements TaskActions
 
 	////////////////////////////////////////
 
-	addTask = ( task: Task, subTaskOf: number ) =>
+	addTask = ( task: Task, subTaskOf ?: number ) =>
 	{
 		const id = this.tasks.addTask( task, subTaskOf )
 		this.save()

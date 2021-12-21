@@ -105,10 +105,9 @@ class Help implements ManEntries
 		this.viewing =
 		{
 			title: 'Viewing',
-			prototype: 'task [@<board name>] [<task(s)>] [printing args]',
+			prototype: 'task [<task(s)>] [printing args]',
 			argDef:
 			[
-				"@<board name> : The board you want to display preceded by '@'",
 				"<task(s)> : The id of the task you want to display, you can pass multiple by separating the ids by ',' without space",
 				'',
 				underline( 'Printing arguments:' ),
@@ -126,10 +125,9 @@ class Help implements ManEntries
 		this.creatingTask =
 		{
 			title: 'Creating a task',
-			prototype: 'task a [@<board name>] [<task>] [<task name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
+			prototype: 'task a [<task>] [<task name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
 			argDef:
 			[
-				"@<board name> : The board you want to display preceded by '@'",
 				'<task> : Task id uppon which you want to add a child subtask',
 				'<name> : Task name',
 				'-d <description> : Task description',
@@ -146,11 +144,10 @@ class Help implements ManEntries
 		this.editing =
 		{
 			title: 'Editing',
-			prototype: 'task e (<task(s)>|<board name>) [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
+			prototype: 'task e <task(s)> [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to edit, you can pass multiple by separating the ids by ',' without space",
-				"<board name> : The name of the board you want to edit",
 				'<new name> : Edit task or board name',
 				'-d <description> : Edit task or board description',
 				'-s <state> : Edit task state defined by the config file',
@@ -198,11 +195,10 @@ class Help implements ManEntries
 		this.movingTask =
 		{
 			title: 'Moving task',
-			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [global args]',
+			prototype: 'task mv <target task(s)> [<task id dest>] [global args]',
 			argDef:
 			[
 				"<target task(s)> : The id of the task you want to move, you can pass multiple by separating the ids by ',' without space",
-				"@<existing board name dest> : The target board preceded by '@'",
 				"<task id dest> : The id of the target task",
 			],
 			furtherDescription:
@@ -217,10 +213,9 @@ class Help implements ManEntries
 		this.deleting =
 		{
 			title: 'Deleting',
-			prototype: 'task d [@<board name>] [<task(s)>]',
+			prototype: 'task d [<task(s)>]',
 			argDef:
 			[
-				"@<board name> : The target board preceded by '@'",
 				"<task(s)> : The id of the task you want to remove, you can pass multiple by separating the ids by ',' without space",
 			],
 			globalArgs: true,
