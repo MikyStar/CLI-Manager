@@ -39,14 +39,14 @@ export class TaskList extends Array<Task> implements TaskActions
 
 	//////////
 
-	constructor( items?: Task[])
+	constructor( items?: ITask[])
 	{
 		super()
 
 		this.allIDs = []
 
 		if( items )
-			this.push( ...items )
+			this.push( ...items.map( item => new Task( item ) ) )
 	}
 
 	//////////

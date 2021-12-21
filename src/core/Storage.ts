@@ -28,7 +28,6 @@ export class Storage implements TaskActions
 	relativePath : string
 
 	tasks: TaskList
-	allIDs : number[]
 
 	////////////////////////////////////////
 
@@ -43,17 +42,7 @@ export class Storage implements TaskActions
 		}
 
 		this.relativePath = relativePath
-		this.allIDs = []
 		this.tasks = new TaskList( System.readJSONFile( this.relativePath ) )
-
-		this.tasks.map( task =>
-		{
-			const { id } = task
-			if( this.allIDs.includes( id ) )
-				throw new TaskIdDuplicatedError( id )
-			else
-				this.allIDs.push( id )
-		})
 	}
 
 
