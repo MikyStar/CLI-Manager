@@ -1,11 +1,11 @@
+import chalk from 'chalk';
 import moment from 'moment';
 
-import { IBoard, Board } from './Board';
-import { ITask, TIMESTAMP_FORMAT } from './Task';
-
-import { TaskNotFoundError, TaskStateUnknownError } from '../errors/TaskErrors';
-import { BoardNotFoundError, BoardAlreadyExistsError } from '../errors/BoardErrors';
+import { Task, TIMESTAMP_FORMAT } from './Task';
 import { System } from './System'
+import { Config, ConfigState } from './Config';
+
+import { TaskIdDuplicatedError, TaskNotFoundError, TaskStateUnknownError } from '../errors/TaskErrors';
 import { FileAlreadyExistsError } from '../errors/FileErrors';
 
 ////////////////////////////////////////
@@ -22,12 +22,15 @@ export const DEFAULT_STORAGE_DATAS =
 
 interface RetrieveTaskCallback
 {
-	task: ITask,
-	board: IBoard,
+	task: Task,
 	taskIndex: number,
-	boardIndex: number,
 	parentTaskID ?: number
 }
+
+export const handledGroupings = [ 'state', 'priority', 'tag', 'deadline', 'load', 'linked' ] as const
+export type GroupByType = typeof handledGroupings[ number ]
+
+export type Order = 'asc' | 'desc'
 
 ////////////////////////////////////////
 
@@ -38,8 +41,8 @@ export class Storage
 {
 	relativePath : string
 
-	boards: IBoard[]
-	straightTasks : ITask[]
+	tasks: Task[]
+	allIDs : number[]
 
 	////////////////////////////////////////
 
@@ -54,39 +57,35 @@ export class Storage
 		}
 
 		this.relativePath = relativePath
-		const storageDatas = System.readJSONFile( this.relativePath )
+		this.allIDs = []
+		this.tasks = System.readJSONFile( this.relativePath )
 
-		this.boards = storageDatas
-
-		let straightTasks = []
-		this.boards.forEach( board => straightTasks = [ ...straightTasks, ...Board.straightBoard( board ) ] )
-		this.straightTasks = straightTasks
-
-		// TODO : search for dusplicates and gracefully print error
+		this.tasks.map( task =>
+		{
+			const { id } = task
+			if( this.allIDs.includes( id ) )
+				throw new TaskIdDuplicatedError( id )
+			else
+				this.allIDs.push( id )
+		})
 	}
 
-	////////////////////////////////////////
-
-	private setBoards = ( boards: IBoard[] ) => this.boards = boards
 
 	////////////////////////////////////////
 
-	addTask = ( task: ITask, { boardName, subTaskOf } : { boardName ?: string, subTaskOf ?: number } ) =>
+	addTask = ( task: Task, subTaskOf: number ) =>
 	{
 		const createUniqueId = () =>
 		{
-			const allTasksId = []
-			this.straightTasks.forEach( task => allTasksId.push( task.id ) )
+			const maxInArray = Math.max( ...this.allIDs )
 
-			const maxInArray = Math.max( ...allTasksId )
-
-			if( maxInArray === ( allTasksId.length -1 ) )
-				return allTasksId.length
+			if( maxInArray === ( this.allIDs.length -1 ) )
+				return this.allIDs.length
 			else
 			{
 				let id = 0
 
-				while( allTasksId.includes( id ) )
+				while( this.allIDs.includes( id ) )
 					id++
 
 				return id
@@ -94,36 +93,27 @@ export class Storage
 		}
 		const taskID = task.id || createUniqueId()
 
-		const finalTask : ITask =
+		const finalTask : Task =
 		{
 			...task,
 			id: taskID,
 			timestamp: moment().format( TIMESTAMP_FORMAT )
 		}
 
-		if( boardName )
+		this.retrieveTask( subTaskOf, ({ task }) =>
 		{
-			this.retrieveBoard( boardName, board => board.tasks.push( finalTask ) )
-		}
-		else if( subTaskOf )
-		{
-			this.retrieveTask( subTaskOf, ({ task }) =>
-			{
-				if( task.subtasks === undefined )
-					task.subtasks = [ finalTask ]
-				else
-					task.subtasks = [ ...task.subtasks, finalTask ];
-			})
-		}
-		else
-			throw new Error('Should be either add to board or task')
+			if( task.subtasks === undefined )
+				task.subtasks = [ finalTask ]
+			else
+				task.subtasks = [ ...task.subtasks, finalTask ];
+		})
 
 		this.save()
 
 		return taskID
 	}
 
-	editTask = ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) =>
+	editTask = ( tasksID: number | number[], newAttributes: Task, isRecurive ?: boolean ) =>
 	{
 		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
 
@@ -189,34 +179,31 @@ export class Storage
 			let wasTaskFound = false
 
 			// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-			this.boards.forEach( board =>
+			this.tasks.forEach( ( task, taskIndex ) =>
 			{
-				board.tasks.forEach( ( task, taskIndex ) =>
+				if( task.id === id )
 				{
-					if( task.id === id )
-					{
-						wasTaskFound = true
+					wasTaskFound = true
 
-						board.tasks.splice( taskIndex, 1 )
-					}
-					else
+					this.tasks.splice( taskIndex, 1 )
+				}
+				else
+				{
+					if( Array.isArray( task.subtasks ) && ( task.subtasks.length !== 0 ) )
 					{
-						if( Array.isArray( task.subtasks ) && ( task.subtasks.length !== 0 ) )
+						task.subtasks.forEach( function iter( sub, subIndex )
 						{
-							task.subtasks.forEach( function iter( sub, subIndex )
+							if( sub.id === id )
 							{
-								if( sub.id === id )
-								{
-									wasTaskFound = true
+								wasTaskFound = true
 
-									task.subtasks.splice( subIndex, 1 )
-								}
-								else if( Array.isArray( sub.subtasks ) &&  ( sub.subtasks.length !== 0 ) )
-									sub.subtasks.forEach( iter )
-							})
-						}
+								task.subtasks.splice( subIndex, 1 )
+							}
+							else if( Array.isArray( sub.subtasks ) &&  ( sub.subtasks.length !== 0 ) )
+								sub.subtasks.forEach( iter )
+						})
 					}
-				});
+				}
 			});
 
 			if( !wasTaskFound )
@@ -228,24 +215,15 @@ export class Storage
 		return tasksID
 	}
 
-	moveTask = ( tasksID: number | number [], { boardName, subTask } : { boardName ?: string, subTask ?: number } ) =>
+	moveTask = ( tasksID: number | number [], subTaskOf: number ) =>
 	{
-		if( ( !boardName && !subTask ) || ( boardName && subTask ) )
-			throw new Error('Should provide either a board or a subtask, not both')
-
 		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
 
 		tasksID.forEach( id => this.retrieveTask( id, ({ task }) =>
 		{
 			this.deleteTask( id )
 
-			let dest = {}
-			if( boardName )
-				dest = { boardName }
-			else if( subTask )
-				dest = { subTaskOf: subTask }
-
-			this.addTask( task, dest )
+			this.addTask( task, subTaskOf )
 		}));
 
 		this.save()
@@ -264,144 +242,134 @@ export class Storage
 		let lastParentTaskId = undefined
 
 		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		this.boards.forEach( ( board, boardIndex ) =>
+		this.tasks.forEach( function iter( task, taskIndex )
 		{
-			board.tasks.forEach( function iter( task, taskIndex )
+			if( task.id === taskID )
 			{
-				if( task.id === taskID )
-				{
-					wasTaskFound = true
+				wasTaskFound = true
 
-					callback( { task, board, taskIndex, boardIndex, parentTaskID: lastParentTaskId })
-				}
-				else if( !wasTaskFound )
-				{
-					lastParentTaskId = task.id
-					Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
-				}
-			});
+				callback( { task, taskIndex, parentTaskID: lastParentTaskId })
+			}
+			else if( !wasTaskFound )
+			{
+				lastParentTaskId = task.id
+				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+			}
 		});
 
 		if( !wasTaskFound )
 			throw new TaskNotFoundError( taskID )
 	}
 
-	haveTasksSameParentBoard = ( tasksID: number[] ) =>
+	/**
+	 * Use recursion to return all tasks matching value
+	 */
+	search = <K extends keyof Task>( taskAttribute: K, value: any ) =>
 	{
-		const parentBoards = []
-		tasksID.forEach( id => this.retrieveTask( id, ({ board }) => parentBoards.push( board.name ) ) )
+		const tasks : Task[] = []
 
-		let sameParentBoard = true
-		let nameToMatch : string | undefined = undefined
-		parentBoards.forEach( boardName =>
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.tasks.forEach( function iter( task )
 		{
-			if( nameToMatch === undefined )
-				nameToMatch = boardName
-			else if( boardName !== nameToMatch )
-				sameParentBoard = false
-		});
-
-		return { sameParentBoard, boardName: nameToMatch }
-	}
-
-	////////////////////
-
-	addBoard = ( boardName: string, description ?: string ) =>
-	{
-		const nameAlreadyTaken = this.boards.filter( board => board.name === boardName ).length !== 0
-		if( nameAlreadyTaken )
-			throw new BoardAlreadyExistsError( boardName )
-
-		this.boards.push( { name: boardName, tasks: [], description } )
-		this.save()
-
-		return boardName
-	}
-
-	deleteBoard = ( boardNames: string | string[] ) =>
-	{
-		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
-
-		let wasBoardFound = false
-
-		boardNames.forEach( name =>
-		{
-			this.boards.forEach( ( board, index ) =>
+			if( task[ taskAttribute ] === value )
 			{
-				if( board.name === name )
-				{
-					wasBoardFound = true
+				tasks.push( task )
+			}
 
-					this.boards.splice( index, 1 )
-				}
-			})
-
-			if( !wasBoardFound )
-				throw new BoardNotFoundError( name )
+			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
 		})
 
-		this.save()
-
-		return boardNames
-	}
-
-	editBoard = ( boardNames: string | string[], newAttributes: IBoard ) =>
-	{
-		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
-
-		boardNames.forEach( name =>
-		{
-			this.retrieveBoard( name, board =>
-			{
-				for( const [k, v] of Object.entries( newAttributes ) )
-					board[ k ] = v
-			});
-		});
-
-		this.save()
-
-		return boardNames
-	}
-
-	extractBoard = ( boardNames: string | string[], relativePath: string ) =>
-	{
-		boardNames = Array.isArray( boardNames ) ? boardNames : [ boardNames ]
-
-		const boards : IBoard[] = []
-
-		boardNames.forEach( name => this.retrieveBoard( name, board => boards.push( board ) ) )
-		this.deleteBoard( boardNames )
-		this.save()
-
-		const newStorage = new Storage( relativePath, true )
-		newStorage.setBoards( boards )
-		newStorage.save()
-
-		return newStorage
+		return tasks
 	}
 
 	/**
-	 * @throws {BoardNotFoundError}
+	 * Use recursion to return a count of every tasks and subtasks included in list
 	 */
-	retrieveBoard = ( boardName: string, callback: ( board: IBoard, boardIndex ?: number ) => void ) =>
+	countTaskAndSub = () =>
 	{
-		let wasBoardFound = false
+		let count = 0
 
-		this.boards.forEach( ( board, index ) =>
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.tasks.forEach( function iter( task )
 		{
-			if( board.name === boardName )
-			{
-				wasBoardFound = true
+			count++
 
-				callback( board, index )
-			}
+			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
 		})
 
-		if( !wasBoardFound )
-			throw new BoardNotFoundError( boardName )
+		return count
+	}
+
+	getStats = ( availableStates : ConfigState[] ) : string =>
+	{
+		let toReturn = ''
+		const totalCount = this.countTaskAndSub()
+
+		availableStates.forEach( ( state, index ) =>
+		{
+			const count = this.search( 'state', state.name ).length
+			const percent = ( count / totalCount ) * 100
+
+			if( ( index !== 0 ) && ( index !== availableStates.length ) )
+				toReturn += ' ► '
+
+			const text = `${ count } ${ state.name } (${ percent.toFixed(0) }%)`
+
+			toReturn += chalk.hex( state.hexColor )( text )
+		});
+
+		toReturn += ` ❯ ${ totalCount }`
+
+		return toReturn
+	}
+
+	/**
+	 * Use recursion to return any task and any subtask matching value
+	 */
+	findAll = <K extends keyof Task>( taskAttribute: K, value: any ) =>
+	{
+		const toReturn : Task[] = []
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.tasks.forEach( function iter( task )
+		{
+			if( task[ taskAttribute ] === value )
+				toReturn.push( task )
+
+			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+		});
+
+		return toReturn
+	}
+
+	sort = ( groupBy: GroupByType = 'state', order: Order = 'desc', config : Config ) : Task[] =>
+	{
+		/*
+		* if i need both tasks array and config, then it should be a method in Storage
+		*/
+		let toReturn : Task[] = []
+
+		switch( groupBy )
+		{
+			case 'state':
+			{
+				const stateNames = config.states.map( state => state.name )
+
+				const sortFunc = ( a: Task, b: Task ) =>
+				{
+					if( a.state === b.state ) return 0
+
+					return ( stateNames.indexOf( a.state ) < stateNames.indexOf( b.state ) ) ? -1 : 1
+				}
+
+				toReturn = this.tasks.sort( sortFunc )
+			}
+		}
+
+		return ( order === 'asc' ) ? toReturn : toReturn.reverse()
 	}
 
 	////////////////////////////////////////
 
-	save = () => System.writeJSONFile( this.relativePath, this.boards )
+	save = () => System.writeJSONFile( this.relativePath, this.tasks )
 }

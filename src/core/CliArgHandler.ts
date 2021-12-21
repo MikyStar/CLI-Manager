@@ -74,6 +74,7 @@ export interface HandledFlags
 	isHelpNeeded ?: boolean
 	isVersion ?: boolean
 }
+
 ////////////////////////////////////////
 
 export class CliArgHandler

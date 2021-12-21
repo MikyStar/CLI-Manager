@@ -1,22 +1,4 @@
-import chalk from 'chalk'
-
-import { ConfigState } from './Config'
-import { Task, ITask, StringifyArgs } from './Task'
-
-////////////////////////////////////////
-
-export interface IBoard
-{
-	name: string,
-	description ?: string,
-	tasks ?: ITask[],
-}
-
-////////////////////////////////////////
-
-export namespace Board
-{
-	export const stringify = ( board : IBoard, availableStates : ConfigState[], options ?: StringifyArgs ) : string[] =>
+export const stringify = ( board : IBoard, availableStates : ConfigState[], options ?: StringifyArgs ) : string[] =>
 	{
 		let toReturn : string[] = []
 
@@ -44,23 +26,3 @@ export namespace Board
 
 		return toReturn
 	}
-
-	/**
-	 * Transform the tree of tasks and subtasks to an array of tasks
-	 */
-	export const straightBoard = ( board : IBoard ) =>
-	{
-		let toReturn : ITask[] = []
-
-		/////////////////
-
-		board.tasks.forEach( task =>
-		{
-			const result = Task.straightTask( task )
-
-			toReturn = [ ...toReturn, ...result ]
-		})
-
-		return toReturn
-	}
-}

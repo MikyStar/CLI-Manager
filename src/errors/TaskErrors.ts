@@ -17,3 +17,11 @@ export class TaskStateUnknownError extends CatchableError
 		super( `Task's n°${ taskID } state '${ state }' is not defined in your configuration file`, error )
 	}
 }
+
+export class TaskIdDuplicatedError extends CatchableError
+{
+	constructor( taskID: number, error ?: any )
+	{
+		super( `Multiple task has the id '${ taskID }'`, error )
+	}
+}
