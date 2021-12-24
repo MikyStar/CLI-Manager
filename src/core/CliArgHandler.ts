@@ -1,5 +1,5 @@
 import { PrinterConfig } from './Printer'
-import { GroupByType, handledGroupings } from './TaskList'
+import { GroupByType, handledGroupings, Order } from './TaskList'
 
 import { MultipleValuesMismatchError } from '../errors'
 import { GroupBySyntaxError } from '../errors/CLISyntaxErrors'
@@ -37,6 +37,7 @@ export enum ValueFlag
 	CONFIG_FILE = '--config',
 	DEPTH = '--depth',
 	GROUPB_BY = '--group',
+	SORT = '--sort',
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
@@ -131,23 +132,6 @@ export class CliArgHandler
 
 	////////////////////
 
-	private getFinalGroupBy = () =>
-	{
-		const { GROUPB_BY } = ValueFlag
-
-		const flagCount = this.untreatedArgs.filter( arg => arg.flagType === GROUPB_BY ).length
-
-		if( flagCount === 1 )
-			return this.getValueFlag( GROUPB_BY ) as GroupByType
-
-		const groupings : GroupByType[] = []
-
-		for( let i = 0; i < flagCount; i++ )
-			groupings.push( this.getValueFlag( GROUPB_BY ) as GroupByType )
-
-		return groupings
-	}
-
 	private getPrinterConfig = () : PrinterConfig =>
 	{
 		const hideDescription = this.getBoolFlag( BooleanFlag.HIDE_DESCRIPTION )
@@ -157,7 +141,8 @@ export class CliArgHandler
 		const shouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
 
 		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
-		const groupBy = this.getFinalGroupBy()
+		const groupBy = this.getValueFlag( ValueFlag.GROUPB_BY ) as GroupByType
+		const sort = this.getValueFlag( ValueFlag.SORT ) as Order
 
 		return	{
 					hideDescription,
@@ -167,7 +152,8 @@ export class CliArgHandler
 					shouldNotPrintAfter,
 
 					depth,
-					groupBy
+					groupBy,
+					sort
 				}
 	}
 

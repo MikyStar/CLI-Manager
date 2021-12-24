@@ -63,6 +63,10 @@ export class MainController
 			...printing,
 			...this.config.defaultArgs
 		}
+
+		if( printConfig.groupBy )
+			this.storage.tasks.groupBy( printConfig.groupBy, printConfig.sort, this.config )
+
 		this.printer = new Printer( this.storage, this.config.states, printConfig )
 	}
 

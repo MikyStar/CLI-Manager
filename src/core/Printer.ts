@@ -1,7 +1,7 @@
 import chalk from "chalk"
 
 import { ConfigState } from "./Config";
-import { TaskList, GroupByType } from './TaskList';
+import { TaskList, GroupByType, Order } from './TaskList';
 import { Storage } from './Storage';
 
 ////////////////////////////////////////
@@ -15,7 +15,8 @@ export interface PrinterConfig
 	hideTree ?: boolean,
 
 	depth ?: number,
-	groupBy ?: GroupByType | GroupByType []
+	groupBy ?: GroupByType
+	sort ?: Order
 }
 
 export interface ViewParams
