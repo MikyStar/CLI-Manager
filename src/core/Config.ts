@@ -46,7 +46,7 @@ export class Config implements PrinterConfig
 	hideTree ?: boolean
 
 	depth ?: number
-	groupBy ?: GroupByType
+	group ?: GroupByType
 	sort ?: Order
 
 	////////////////////////////////////////

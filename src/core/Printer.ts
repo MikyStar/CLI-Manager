@@ -14,7 +14,7 @@ export interface PrinterConfig
 	hideTree ?: boolean,
 
 	depth ?: number,
-	groupBy ?: GroupByType
+	group ?: GroupByType
 	sort ?: Order
 }
 

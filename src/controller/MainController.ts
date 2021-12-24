@@ -64,11 +64,13 @@ export class MainController
 			...this.config
 		}
 
-		if( printConfig.groupBy )
-			this.storage.group( printConfig.groupBy )
+		if( printConfig.group )
+		{
+			this.storage.group( printConfig.group )
 
-		if( printConfig.sort )
-			this.storage.order( printConfig.sort )
+			if( printConfig.sort )
+				this.storage.order( printConfig.sort )
+		}
 
 		this.printer = new Printer( this.storage, printConfig )
 	}
