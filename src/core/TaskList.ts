@@ -54,17 +54,19 @@ export class TaskList extends Array<Task> implements TaskActions
 	/** @override */
 	push = ( ...tasks: Task[] ) =>
 	{
-		tasks.forEach( task =>
+		tasks.forEach( ( task: Task ) =>
 		{
-			const { id } = task
+			const containedIDS = task.straightTask().map( task => task.id )
 
-			if( this.allIDs.includes( id ) )
-				throw new TaskIdDuplicatedError( id )
-			else
+			containedIDS.forEach( id =>
 			{
-				this.allIDs.push( id )
-				super.push( task )
-			}
+				if( this.allIDs.includes( id ) )
+					throw new TaskIdDuplicatedError( id )
+			})
+
+			this.allIDs.push( task.id )
+
+			super.push( task )
 		})
 
 		return this.length
@@ -105,6 +107,8 @@ export class TaskList extends Array<Task> implements TaskActions
 					task.subtasks = [ finalTask ]
 				else
 					task.subtasks = [ ...task.subtasks, finalTask ];
+
+				this.allIDs.push( taskID )
 			})
 		}
 		else
@@ -260,18 +264,18 @@ export class TaskList extends Array<Task> implements TaskActions
 	{
 		const tasks : Task[] = []
 
-		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		this.forEach( function iter( task )
+		this.forEach( task =>
 		{
-			if( task[ taskAttribute ] === value )
-			{
-				tasks.push( task )
-			}
+			const within = task.straightTask()
 
-			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+			within.forEach( withinTask =>
+			{
+				if( withinTask[ taskAttribute ] === value )
+					tasks.push( withinTask )
+			})
 		})
 
-		return new TaskList( tasks )
+		return tasks
 	}
 
 	/**
@@ -313,25 +317,6 @@ export class TaskList extends Array<Task> implements TaskActions
 		toReturn += ` ❯ ${ totalCount }`
 
 		return toReturn
-	}
-
-	/**
-	 * Use recursion to return any task and any subtask matching value
-	 */
-	findAll = <K extends keyof Task>( taskAttribute: K, value: any ) =>
-	{
-		const toReturn : Task[] = []
-
-		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		this.forEach( function iter( task )
-		{
-			if( task[ taskAttribute ] === value )
-				toReturn.push( task )
-
-			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
-		});
-
-		return new TaskList( toReturn )
 	}
 
 	groupBy = ( groupBy: GroupByType = 'state', order: Order = 'desc', config : Config ) =>
