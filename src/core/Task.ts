@@ -49,13 +49,13 @@ export class Task implements ITask
 	{
 		Object.assign( this, task )
 
-		if( !task.dependencies )
+		if( !task.dependencies || ( task.dependencies.length === 0 ) )
 			delete this.dependencies
 
-		if( !task.subtasks )
+		if( !task.subtasks || ( task.subtasks.length === 0 ) )
 			delete this.subtasks
-
-		this.subtasks = ( task.subtasks && ( task.subtasks.length > 0 ) ) && task.subtasks.map( sub => new Task( sub ))
+		else
+			this.subtasks = task.subtasks.map( sub => new Task( sub ) )
 	}
 
 	/////
