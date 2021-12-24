@@ -92,27 +92,23 @@ export class TaskList extends Array<Task> implements TaskActions
 		}
 		const taskID = ( task.id && !this.allIDs.includes( task.id ) ) ? task.id : createUniqueId()
 
-		const finalTask : Task = new Task(
-		{
-			...task,
-			id: taskID,
-			timestamp: moment().format( TIMESTAMP_FORMAT )
-		})
+		task.id = taskID
+		task.timestamp = moment().format( TIMESTAMP_FORMAT )
 
 		if( subTaskOf )
 		{
-			this.retrieveTask( subTaskOf, ({ task }) =>
+			this.retrieveTask( subTaskOf, ({ task: parent }) =>
 			{
-				if( task.subtasks === undefined )
-					task.subtasks = [ finalTask ]
+				if( parent.subtasks === undefined )
+					parent.subtasks = [ task ]
 				else
-					task.subtasks = [ ...task.subtasks, finalTask ];
+					parent.subtasks = [ ...parent.subtasks, task ];
 
 				this.allIDs.push( taskID )
 			})
 		}
 		else
-			this.push( finalTask )
+			this.push( task )
 
 		return taskID
 	}
