@@ -317,10 +317,7 @@ export class TaskList extends Array<Task> implements TaskActions
 
 	groupBy = ( groupBy: GroupByType = 'state', order: Order = 'desc', config : Config ) =>
 	{
-		/*
-		* if i need both tasks array and config, then it should be a method in Storage
-		*/
-		let toReturn : Task[] = []
+		let sortFunction = ( a: Task, b: Task ) => 0
 
 		switch( groupBy )
 		{
@@ -328,17 +325,18 @@ export class TaskList extends Array<Task> implements TaskActions
 			{
 				const stateNames = config.states.map( state => state.name )
 
-				const sortFunc = ( a: Task, b: Task ) =>
+				sortFunction = ( a: Task, b: Task ) =>
 				{
 					if( a.state === b.state ) return 0
 
 					return ( stateNames.indexOf( a.state ) < stateNames.indexOf( b.state ) ) ? -1 : 1
 				}
-
-				toReturn = this.sort( sortFunc )
 			}
 		}
 
-		return new TaskList( ( order === 'asc' ) ? toReturn : toReturn.reverse() )
+		this.sort( sortFunction )
+
+		if( order === 'desc' )
+			this.reverse()
 	}
 }
