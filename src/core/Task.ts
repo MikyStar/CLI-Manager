@@ -48,6 +48,8 @@ export class Task implements ITask
 	constructor( task: Partial<ITask> )
 	{
 		Object.assign( this, task )
+
+		this.subtasks = ( task.subtasks && ( task.subtasks.length > 0 ) ) && task.subtasks.map( sub => new Task( sub ))
 	}
 
 	/////

@@ -2,7 +2,6 @@ import { ITask, Task } from './Task';
 import { TaskList, TaskActions } from './TaskList';
 import { System } from './System'
 
-import { TaskIdDuplicatedError } from '../errors/TaskErrors';
 import { FileAlreadyExistsError } from '../errors/FileErrors';
 
 ////////////////////////////////////////
@@ -73,7 +72,6 @@ export class Storage implements TaskActions
 	{
 		const id = this.tasks.deleteTask( tasksID )
 		this.save()
-
 		return id
 	}
 

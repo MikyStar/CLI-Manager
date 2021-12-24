@@ -50,6 +50,7 @@ export class Printer
 
 		this.tasks = storage.tasks
 		this.storagePath = storage.relativePath
+		this.config = config
 		this.states = states
 	}
 

@@ -55,6 +55,7 @@ export class MainController
 
 		if( !this.config )
 			throw new FileNotFoundError( this.configLocation )
+
 		if( !this.storage )
 			throw new FileNotFoundError( this.storageLocation )
 
