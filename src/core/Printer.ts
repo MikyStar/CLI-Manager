@@ -104,17 +104,9 @@ export class Printer
 	{
 		let toReturn : string[] = []
 
-		this.tasks.forEach( ( task, index ) =>
-		{
-			toReturn = [ ...toReturn, ...task.stringify( this.states, this.config ), '' ]
+		this.tasks.forEach( task => toReturn.push( ...task.stringify( this.states, this.config ) ) );
 
-			if( index !== ( this.tasks.length - 1 ) )
-				toReturn.push( this.separator('-'), '' )
-			else
-				toReturn.push( this.tasks.getStats( this.states ), '' )
-		});
-
-		toReturn = [ ...toReturn, ...this.getFileStats() ]
+		toReturn.push( '', ...this.getFileStats() )
 
 		return toReturn
 	}

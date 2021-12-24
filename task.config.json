@@ -3,7 +3,6 @@
 	{
 		"hideDescription": false,
 		"shouldNotPrintAfter": false,
-		"board": "backlog",
 		"storageFile": "./tasks/v0.1.0.json"
 	},
 	"states": [
@@ -16,11 +15,6 @@
 			"name": "wip",
 			"hexColor": "#ab47bc",
 			"icon": "✹"
-		},
-		{
-			"name": "to test",
-			"hexColor": "#2196f3",
-			"icon": "♦"
 		},
 		{
 			"name": "done",
