@@ -37,7 +37,7 @@ export class MainController
 		if( System.doesFileExists( this.configLocation ) )
 		{
 			this.config = new Config( this.configLocation )
-			this.storageLocation =  this.storageLocation || this.config.defaultArgs.storageFile
+			this.storageLocation =  this.storageLocation || this.config.storageFile
 		}
 
 		if( !this.storageLocation )
@@ -61,13 +61,13 @@ export class MainController
 		const printConfig: PrinterConfig =
 		{
 			...printing,
-			...this.config.defaultArgs
+			...this.config
 		}
 
 		if( printConfig.groupBy )
-			this.storage.tasks.groupBy( printConfig.groupBy, printConfig.sort, this.config )
+			this.storage.group( printConfig.groupBy )
 
-		this.printer = new Printer( this.storage, this.config.states, printConfig )
+		this.printer = new Printer( this.storage, printConfig )
 	}
 
 	////////////////////

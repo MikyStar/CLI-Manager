@@ -1,5 +1,5 @@
 import { ITask, Task } from './Task';
-import { TaskList } from './TaskList';
+import { GroupByType, Order, TaskList } from './TaskList';
 import { System } from './System'
 
 import { FileAlreadyExistsError } from '../errors/FileErrors';
@@ -105,6 +105,10 @@ export class Storage
 		this.save()
 		return id
 	}
+
+	group = ( groupBy: GroupByType = 'state' ) => this.tasks.group( groupBy, this.meta )
+
+	order = ( order: Order ) => ( order === 'asc' ) && this.tasks.reverse()
 
 	////////////////////////////////////////
 
