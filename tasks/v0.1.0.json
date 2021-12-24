@@ -89,18 +89,12 @@
     {
         "name": "print problem for description of last subtask child",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 77,
         "timestamp": "05/08/2021",
         "subtasks": [
             {
                 "name": "maybe no | for description if no subtasks",
                 "state": "todo",
-                "dependencies": [
-                    null
-                ],
                 "id": 79,
                 "timestamp": "05/08/2021"
             }
@@ -109,27 +103,18 @@
     {
         "name": "a description flag as empty string should remove the description",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 78,
         "timestamp": "05/08/2021"
     },
     {
         "name": "duplicated task index -> N°72",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 80,
         "timestamp": "05/08/2021"
     },
     {
         "name": "refactor init with better file classes like the creation arg in storage constructor",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 0,
         "timestamp": "06/08/2021"
     },
@@ -262,9 +247,6 @@
             {
                 "name": "there can be multiple times this flag -> raw arg should make it a a single value with array of GroubyInterface",
                 "state": "wip",
-                "dependencies": [
-                    null
-                ],
                 "id": 16,
                 "timestamp": "06/08/2021"
             }
@@ -425,45 +407,30 @@
     {
         "name": "add in readme that icon can be simple string too",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 41,
         "timestamp": "06/08/2021"
     },
     {
         "name": "clickabke",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 43,
         "timestamp": "09/10/2021"
     },
     {
         "name": "every task should have a real unique id and the id provided by user is only to make a relatioship with the real hash id",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 42,
         "timestamp": "19/12/2021"
     },
     {
         "name": "using yaml rather than JSON",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 44,
         "timestamp": "19/12/2021",
         "subtasks": [
             {
                 "name": "need to properly remove empty arrays like for dependencies, subtasks ... from the final file",
                 "state": "todo",
-                "dependencies": [
-                    null
-                ],
                 "id": 45,
                 "timestamp": "19/12/2021"
             }
@@ -472,18 +439,12 @@
     {
         "name": "gitlike vim edition",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 46,
         "timestamp": "19/12/2021",
         "subtasks": [
             {
                 "name": "like for editing a task -> would only bring a temp file in yaml with current task attributes ready to be modified EXCEPT the id hash key wich will be present in the temp file as a comment with a side text saying not modifyable",
                 "state": "todo",
-                "dependencies": [
-                    null
-                ],
                 "id": 56,
                 "timestamp": "19/12/2021"
             }
@@ -492,9 +453,6 @@
     {
         "name": "add a way to print only boards names with their stats as on overview of available boards",
         "state": "todo",
-        "dependencies": [
-            null
-        ],
         "id": 57,
         "timestamp": "19/12/2021"
     }
