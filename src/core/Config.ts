@@ -3,13 +3,6 @@ import { PrinterConfig } from './Printer'
 
 ////////////////////////////////////////
 
-export interface ConfigState
-{
-	name: string,
-	hexColor: string,
-	icon: string
-}
-
 export interface DefaultArgs extends PrinterConfig
 {
 	storageFile ?: string,
@@ -59,8 +52,7 @@ export const DEFAULT_CONFIG_DATAS =
 export class Config
 {
 	relativePath : string
-	defaultArgs : DefaultArgs
-	states : ConfigState[]
+	defaultArgs : DefaultArgs // TODO flatten
 
 	////////////////////////////////////////
 
@@ -70,6 +62,5 @@ export class Config
 		const configDatas = System.readJSONFile( this.relativePath )
 
 		this.defaultArgs = configDatas.defaultArgs
-		this.states = configDatas.states
 	}
 }
