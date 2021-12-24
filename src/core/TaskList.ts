@@ -56,7 +56,7 @@ export class TaskList extends Array<Task> implements TaskActions
 	{
 		tasks.forEach( ( task: Task ) =>
 		{
-			const containedIDS = task.straightTask().map( task => task.id )
+			const containedIDS = task.straightTask().map( within => within.id )
 
 			containedIDS.forEach( id =>
 			{
@@ -90,14 +90,14 @@ export class TaskList extends Array<Task> implements TaskActions
 				return id
 			}
 		}
-		const taskID = task.id || createUniqueId()
+		const taskID = ( task.id && !this.allIDs.includes( task.id ) ) ? task.id : createUniqueId()
 
-		const finalTask : Task =
+		const finalTask : Task = new Task(
 		{
 			...task,
 			id: taskID,
 			timestamp: moment().format( TIMESTAMP_FORMAT )
-		}
+		})
 
 		if( subTaskOf )
 		{
