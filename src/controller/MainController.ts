@@ -37,7 +37,7 @@ export class MainController
 		if( System.doesFileExists( this.configLocation ) )
 		{
 			this.config = new Config( this.configLocation )
-			this.storageLocation =  this.storageLocation || this.config.defaultArgs.storageFile
+			this.storageLocation =  this.storageLocation || this.config.storageFile
 		}
 
 		if( !this.storageLocation )
@@ -58,21 +58,35 @@ export class MainController
 		if( !this.storage )
 			throw new FileNotFoundError( this.storageLocation )
 
-		const printConfig: PrinterConfig =
+		//////////
+
+		const printConfig = this.mergePrintConfig( printing, this.config )
+
+		if( printConfig.group )
 		{
-			...printing,
-			...this.config.defaultArgs
+			this.storage.group( printConfig.group )
+
+			if( printConfig.sort )
+				this.storage.order( printConfig.sort )
 		}
 
-		if( printConfig.groupBy )
-			this.storage.tasks.groupBy( printConfig.groupBy, printConfig.sort, this.config )
-
-		this.printer = new Printer( this.storage, this.config.states, printConfig )
+		this.printer = new Printer( this.storage, printConfig )
 	}
 
 	////////////////////
 
-	handleInit = () =>
+	private mergePrintConfig = ( fromArgs: PrinterConfig, fromConfig: PrinterConfig ) : PrinterConfig =>
+	{
+		let toReturn = { ...fromConfig }
+
+		for( const [ key, value ] of Object.entries( fromArgs ) )
+			if( fromArgs[ key ] !== undefined )
+				toReturn[ key ] = value
+
+		return toReturn
+	}
+
+	private handleInit = () =>
 	{
 		if( !this.config )
 		{

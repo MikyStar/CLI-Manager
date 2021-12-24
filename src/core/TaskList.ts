@@ -1,10 +1,10 @@
 import chalk from "chalk"
 import moment from "moment"
 
-import { ConfigState, Config } from "./Config"
 import { Task, ITask,TIMESTAMP_FORMAT } from "./Task"
 
 import { TaskIdDuplicatedError, TaskNotFoundError, TaskStateUnknownError } from "../errors/TaskErrors"
+import { Meta } from "./Storage"
 
 ////////////////////////////////////////
 
@@ -22,31 +22,21 @@ interface RetrieveTaskCallback
 	parentTaskID ?: number
 }
 
-export interface TaskActions
-{
-	addTask : ( task: Task, subTaskOf ?: number ) => number | number[]
-	editTask : ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) => number | number[]
-	incrementTask : ( tasksID: number | number[], configStates: string[], isRecurive ?: boolean ) => number | number[]
-	deleteTask : ( tasksID: number | number[] ) => number | number[]
-	moveTask : ( tasksID: number | number [], subTaskOf: number ) => number | number[]
-}
-
 ////////////////////////////////////////
 
-export class TaskList extends Array<Task> implements TaskActions
+export class TaskList extends Array<Task>
 {
 	allIDs: number[]
 
 	//////////
 
-	constructor( items?: ITask[])
+	constructor( items ?: ITask[] )
 	{
 		super()
 
 		this.allIDs = []
 
-		if( items )
-			this.push( ...items.map( item => new Task( item ) ) )
+		this.push( ...items.map( item => new Task( item ) ) )
 	}
 
 	//////////
@@ -137,28 +127,31 @@ export class TaskList extends Array<Task> implements TaskActions
 		return tasksID
 	}
 
-	incrementTask = ( tasksID: number | number[], configStates: string[], isRecurive ?: boolean ) =>
+	incrementTask = ( tasksID: number | number[], meta: Meta, isRecurive ?: boolean ) =>
 	{
 		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
+
+		const { states } = meta
+		const statesNames = states.map( state => state.name )
 
 		tasksID.forEach( id =>
 		{
 			this.retrieveTask( id, ({ task }) =>
 			{
-				const currentStateIndex = configStates.indexOf( task.state )
+				const currentStateIndex = statesNames.indexOf( task.state )
 
 				if( currentStateIndex === -1 )
 					throw new TaskStateUnknownError( id, task.state )
 
-				if( currentStateIndex !== configStates.length -1 )
-					task.state = configStates[ currentStateIndex + 1 ]
+				if( currentStateIndex !== statesNames.length -1 )
+					task.state = statesNames[ currentStateIndex + 1 ]
 
 				if( isRecurive )
 				{
 					const subtasksIDs = task.subtasks?.map( sub => sub.id ) || []
 
 					if( subtasksIDs.length !== 0 )
-						this.incrementTask( subtasksIDs, configStates, true )
+						this.incrementTask( subtasksIDs, meta, true )
 				}
 			})
 		});
@@ -292,17 +285,19 @@ export class TaskList extends Array<Task> implements TaskActions
 		return count
 	}
 
-	getStats = ( availableStates : ConfigState[] ) : string =>
+	getStats = ( meta: Meta ) : string =>
 	{
 		let toReturn = ''
 		const totalCount = this.countTaskAndSub()
 
-		availableStates.forEach( ( state, index ) =>
+		const { states } = meta
+
+		states.forEach( ( state, index ) =>
 		{
 			const count = this.search( 'state', state.name ).length
 			const percent = ( count / totalCount ) * 100
 
-			if( ( index !== 0 ) && ( index !== availableStates.length ) )
+			if( ( index !== 0 ) && ( index !== states.length ) )
 				toReturn += ' ► '
 
 			const text = `${ count } ${ state.name } (${ percent.toFixed(0) }%)`
@@ -315,7 +310,7 @@ export class TaskList extends Array<Task> implements TaskActions
 		return toReturn
 	}
 
-	groupBy = ( groupBy: GroupByType = 'state', order: Order = 'desc', config : Config ) =>
+	group = ( groupBy: GroupByType = 'state', meta: Meta ) =>
 	{
 		let sortFunction = ( a: Task, b: Task ) => 0
 
@@ -323,7 +318,7 @@ export class TaskList extends Array<Task> implements TaskActions
 		{
 			case 'state':
 			{
-				const stateNames = config.states.map( state => state.name )
+				const stateNames = meta.states.map( state => state.name )
 
 				sortFunction = ( a: Task, b: Task ) =>
 				{
@@ -335,8 +330,5 @@ export class TaskList extends Array<Task> implements TaskActions
 		}
 
 		this.sort( sortFunction )
-
-		if( order === 'desc' )
-			this.reverse()
 	}
 }

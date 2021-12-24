@@ -1,5 +1,5 @@
 import { ITask, Task } from './Task';
-import { TaskList, TaskActions } from './TaskList';
+import { GroupByType, Order, TaskList } from './TaskList';
 import { System } from './System'
 
 import { FileAlreadyExistsError } from '../errors/FileErrors';
@@ -19,14 +19,35 @@ export const DEFAULT_STORAGE_DATAS: TaskList = new TaskList(
 
 ////////////////////////////////////////
 
+export interface Meta
+{
+	states: TaskState[]
+}
+
+export interface TaskState
+{
+	name: string,
+	hexColor: string,
+	icon: string
+}
+
+interface StorageFile
+{
+	meta : Meta,
+	datas: ITask[]
+}
+
+////////////////////////////////////////
+
 /**
- * Expose and handle boards and tasks datas
+ * Expose and handle tasks datas and metadatas
  */
-export class Storage implements TaskActions
+export class Storage
 {
 	relativePath : string
 
 	tasks: TaskList
+	meta: Meta
 
 	////////////////////////////////////////
 
@@ -41,7 +62,10 @@ export class Storage implements TaskActions
 		}
 
 		this.relativePath = relativePath
-		this.tasks = new TaskList( System.readJSONFile( this.relativePath ) )
+
+		const { meta, datas } = System.readJSONFile( this.relativePath ) as StorageFile
+		this.tasks = new TaskList( datas )
+		this.meta = meta
 	}
 
 
@@ -61,9 +85,9 @@ export class Storage implements TaskActions
 		return id
 	}
 
-	incrementTask = ( tasksID: number | number[], configStates: string[], isRecurive ?: boolean ) =>
+	incrementTask = ( tasksID: number | number[], isRecurive ?: boolean ) =>
 	{
-		const id = this.tasks.incrementTask( tasksID, configStates, isRecurive )
+		const id = this.tasks.incrementTask( tasksID, this.meta, isRecurive )
 		this.save()
 		return id
 	}
@@ -81,6 +105,10 @@ export class Storage implements TaskActions
 		this.save()
 		return id
 	}
+
+	group = ( groupBy: GroupByType = 'state' ) => this.tasks.group( groupBy, this.meta )
+
+	order = ( order: Order ) => ( order === 'desc' ) && this.tasks.reverse()
 
 	////////////////////////////////////////
 

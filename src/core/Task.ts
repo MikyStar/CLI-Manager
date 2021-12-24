@@ -1,6 +1,7 @@
 import chalk from "chalk"
 
-import { ConfigState, DefaultArgs } from "./Config"
+import { PrinterConfig } from "./Printer"
+import { TaskState } from "./Storage"
 
 ////////////////////////////////////////
 
@@ -20,7 +21,7 @@ export interface ITask
 	priority ?: number
 }
 
-export interface StringifyArgs extends DefaultArgs
+export interface StringifyArgs extends PrinterConfig
 {
 	parentIndent ?: string,
 	subTaskLevel ?: number,
@@ -95,7 +96,7 @@ export class Task implements ITask
 	 *
 	 * TODO implement hide timestamp and sub counter
 	 */
-	stringify = ( availableStates : ConfigState[], options ?: StringifyArgs ) =>
+	stringify = ( availableStates : TaskState[], options ?: StringifyArgs ) =>
 	{
 		const INDENT_MARKER = '    '
 		const DEFAULT_SUBTASK_LEVEL = 1

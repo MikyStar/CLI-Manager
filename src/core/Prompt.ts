@@ -13,7 +13,7 @@ export namespace Prompt
 		const parseToChoice = ( str : string ) => { return { title: str, value: str } }
 
 		let stateChoices = []
-		config.states.forEach( state => stateChoices.push( parseToChoice( state.name ) ) )
+		storage.meta.states.forEach( state => stateChoices.push( parseToChoice( state.name ) ) )
 
 		try
 		{

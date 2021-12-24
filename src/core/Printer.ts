@@ -1,6 +1,5 @@
 import chalk from "chalk"
 
-import { ConfigState } from "./Config";
 import { TaskList, GroupByType, Order } from './TaskList';
 import { Storage } from './Storage';
 
@@ -15,7 +14,7 @@ export interface PrinterConfig
 	hideTree ?: boolean,
 
 	depth ?: number,
-	groupBy ?: GroupByType
+	group ?: GroupByType
 	sort ?: Order
 }
 
@@ -38,21 +37,17 @@ export class Printer
 	private feedback: string[]
 	private viewParams: ViewParams
 
-	tasks: TaskList
-	storagePath: string
-	states: ConfigState[]
+	storage: Storage
 	config ?: PrinterConfig
 
 	////////////////////
 
-	constructor( storage ?: Storage, states ?: ConfigState[], config ?: PrinterConfig )
+	constructor( storage ?: Storage, config ?: PrinterConfig )
 	{
 		this.feedback = []
 
-		this.tasks = storage.tasks
-		this.storagePath = storage.relativePath
+		this.storage = storage
 		this.config = config
-		this.states = states
 	}
 
 	////////////////////
@@ -83,16 +78,16 @@ export class Printer
 
 		theTasksID.forEach( ( id, index ) =>
 		{
-			this.tasks.retrieveTask( id, ({ task }) =>
+			this.storage.tasks.retrieveTask( id, ({ task }) =>
 			{
 				list.push( task )
 
-				toReturn = [ ...toReturn, ...task.stringify( this.states, this.config ), '' ]
+				toReturn = [ ...toReturn, ...task.stringify( this.storage.meta.states, this.config ), '' ]
 
 				if( index !== ( theTasksID.length - 1 ) )
 					toReturn.push( this.separator('-'), '' )
 				else
-					toReturn.push( list.getStats( this.states ), '' )
+					toReturn.push( list.getStats( this.storage.meta ), '' )
 			})
 		});
 
@@ -105,7 +100,7 @@ export class Printer
 	{
 		let toReturn : string[] = []
 
-		this.tasks.forEach( task => toReturn.push( ...task.stringify( this.states, this.config ) ) );
+		this.storage.tasks.forEach( task => toReturn.push( ...task.stringify( this.storage.meta.states, this.config ) ) );
 
 		toReturn.push( '', ...this.getFileStats() )
 
@@ -182,8 +177,8 @@ export class Printer
 
 	private getFileStats = () =>
 	{
-		const fileName = chalk.bold.underline( this.storagePath )
-		const stats = this.tasks.getStats( this.states )
+		const fileName = chalk.bold.underline( this.storage.relativePath )
+		const stats = this.storage.tasks.getStats( this.storage.meta )
 
 		return [ this.separator( '-' ) , '', ' ' + fileName, '', stats, '' ]
 	}

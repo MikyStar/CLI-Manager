@@ -1,25 +1,7 @@
 {
-	"defaultArgs":
-	{
-		"hideDescription": false,
-		"shouldNotPrintAfter": false,
-		"storageFile": "./tasks/v0.1.0.json"
-	},
-	"states": [
-		{
-			"name": "todo",
-			"hexColor": "#ff8f00",
-			"icon": "☐"
-		},
-		{
-			"name": "wip",
-			"hexColor": "#ab47bc",
-			"icon": "✹"
-		},
-		{
-			"name": "done",
-			"hexColor": "#66bb6a",
-			"icon": "✔"
-		}
-	]
+	"hideDescription": false,
+	"shouldNotPrintAfter": false,
+	"storageFile": "./tasks/v0.1.0.json",
+	"group": "state",
+	"sort": "desc"
 }

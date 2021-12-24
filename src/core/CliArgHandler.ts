@@ -141,7 +141,7 @@ export class CliArgHandler
 		const shouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
 
 		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
-		const groupBy = this.getValueFlag( ValueFlag.GROUPB_BY ) as GroupByType
+		const group = this.getValueFlag( ValueFlag.GROUPB_BY ) as GroupByType
 		const sort = this.getValueFlag( ValueFlag.SORT ) as Order
 
 		return	{
@@ -152,7 +152,7 @@ export class CliArgHandler
 					shouldNotPrintAfter,
 
 					depth,
-					groupBy,
+					group,
 					sort
 				}
 	}

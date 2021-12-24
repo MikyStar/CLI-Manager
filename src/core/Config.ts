@@ -1,54 +1,31 @@
 import { System } from './System'
 import { PrinterConfig } from './Printer'
-
-////////////////////////////////////////
-
-export interface ConfigState
-{
-	name: string,
-	hexColor: string,
-	icon: string
-}
-
-export interface DefaultArgs extends PrinterConfig
-{
-	storageFile ?: string,
-	configFile ?: string,
-}
+import { GroupByType, Order } from './TaskList'
 
 ////////////////////////////////////////
 
 export const DEFAULT_CONFIG_FILE_NAME = "task.config.json"
 
-export const DEFAULT_CONFIG_DATAS =
+export const DEFAULT_CONFIG_DATAS: ConfigFile =
 {
-	"defaultArgs":
-	{
-		"shouldNotPrintAfter": false,
-		"storageFile": "tasks.json"
-	},
-	"states": [
-		{
-			"name": "todo",
-			"hexColor": "#ff8f00",
-			"icon": "☐"
-		},
-		{
-			"name": "wip",
-			"hexColor": "#ab47bc",
-			"icon": "✹"
-		},
-		{
-			"name": "to test",
-			"hexColor": "#2196f3",
-			"icon": "♦"
-		},
-		{
-			"name": "done",
-			"hexColor": "#66bb6a",
-			"icon": "✔"
-		}
-	]
+	shouldNotPrintAfter: false,
+	storageFile: "tasks.json"
+}
+
+export interface ConfigFile extends PrinterConfig
+{
+	storageFile ?: string
+	configFile ?: string
+
+	shouldNotPrintAfter ?: boolean
+	hideDescription ?: boolean
+	hideTimestamp ?: boolean
+	hideSubCounter ?: boolean
+	hideTree ?: boolean
+
+	depth ?: number
+	groupBy ?: GroupByType
+	sort ?: Order
 }
 
 ////////////////////////////////////////
@@ -56,11 +33,21 @@ export const DEFAULT_CONFIG_DATAS =
 /**
  * Expose task.config.json is current working directory datas
  */
-export class Config
+export class Config implements PrinterConfig
 {
 	relativePath : string
-	defaultArgs : DefaultArgs
-	states : ConfigState[]
+	storageFile ?: string
+	configFile ?: string
+
+	shouldNotPrintAfter ?: boolean
+	hideDescription ?: boolean
+	hideTimestamp ?: boolean
+	hideSubCounter ?: boolean
+	hideTree ?: boolean
+
+	depth ?: number
+	group ?: GroupByType
+	sort ?: Order
 
 	////////////////////////////////////////
 
@@ -69,7 +56,6 @@ export class Config
 		this.relativePath = relativePath
 		const configDatas = System.readJSONFile( this.relativePath )
 
-		this.defaultArgs = configDatas.defaultArgs
-		this.states = configDatas.states
+		Object.assign( this, configDatas )
 	}
 }
