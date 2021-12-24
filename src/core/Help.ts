@@ -31,10 +31,6 @@ export interface ManEntries
 	checkingTask: ManPage
 	incrementingTask: ManPage
 	movingTask: ManPage
-
-	creatingBoard: ManPage
-	cleaningBoard: ManPage
-	extractingBoards: ManPage
 }
 
 ////////////////////////////////////////
@@ -109,10 +105,9 @@ class Help implements ManEntries
 		this.viewing =
 		{
 			title: 'Viewing',
-			prototype: 'task [@<board name>] [<task(s)>] [printing args]',
+			prototype: 'task [<task(s)>] [printing args]',
 			argDef:
 			[
-				"@<board name> : The board you want to display preceded by '@'",
 				"<task(s)> : The id of the task you want to display, you can pass multiple by separating the ids by ',' without space",
 				'',
 				underline( 'Printing arguments:' ),
@@ -130,10 +125,9 @@ class Help implements ManEntries
 		this.creatingTask =
 		{
 			title: 'Creating a task',
-			prototype: 'task a [@<board name>] [<task>] [<task name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
+			prototype: 'task a [<task>] [<task name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
 			argDef:
 			[
-				"@<board name> : The board you want to display preceded by '@'",
 				'<task> : Task id uppon which you want to add a child subtask',
 				'<name> : Task name',
 				'-d <description> : Task description',
@@ -150,11 +144,10 @@ class Help implements ManEntries
 		this.editing =
 		{
 			title: 'Editing',
-			prototype: 'task e (<task(s)>|<board name>) [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
+			prototype: 'task e <task(s)> [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to edit, you can pass multiple by separating the ids by ',' without space",
-				"<board name> : The name of the board you want to edit",
 				'<new name> : Edit task or board name',
 				'-d <description> : Edit task or board description',
 				'-s <state> : Edit task state defined by the config file',
@@ -202,11 +195,10 @@ class Help implements ManEntries
 		this.movingTask =
 		{
 			title: 'Moving task',
-			prototype: 'task mv <target task(s)> [@<existing board name dest>] [<task id dest>] [global args]',
+			prototype: 'task mv <target task(s)> [<task id dest>] [global args]',
 			argDef:
 			[
 				"<target task(s)> : The id of the task you want to move, you can pass multiple by separating the ids by ',' without space",
-				"@<existing board name dest> : The target board preceded by '@'",
 				"<task id dest> : The id of the target task",
 			],
 			furtherDescription:
@@ -221,50 +213,12 @@ class Help implements ManEntries
 		this.deleting =
 		{
 			title: 'Deleting',
-			prototype: 'task d [@<board name>] [<task(s)>]',
+			prototype: 'task d [<task(s)>]',
 			argDef:
 			[
-				"@<board name> : The target board preceded by '@'",
 				"<task(s)> : The id of the task you want to remove, you can pass multiple by separating the ids by ',' without space",
 			],
 			globalArgs: true,
-		}
-
-		//////////
-
-		this.creatingBoard =
-		{
-			title: 'Creating boad',
-			prototype: 'task b <board name> [-d <description>] [global args]',
-			argDef:
-			[
-				'<board name> : Board name',
-				'-d <description> : Board description',
-			],
-			globalArgs: true,
-		}
-
-		this.cleaningBoard =
-		{
-			title: 'Cleaning board',
-			prototype: 'task clean @<board name>',
-			argDef:
-			[
-				"@<board name> : The target board preceded by '@'",
-			],
-			globalArgs: true
-		}
-
-		this.extractingBoards =
-		{
-			title: 'Extracting board',
-			prototype: 'task x @<board name 1>,@<board name x> <relative path>',
-			argDef:
-			[
-				"@<board name 1...x> : Target board names preceded by '@' separated by ',' without space",
-				"relative path : The path where you want to make a new storage file"
-			],
-			globalArgs: true
 		}
 	}
 
@@ -277,8 +231,7 @@ class Help implements ManEntries
 		let toReturn = []
 
 		const entries = [ 'init', 'viewing', 'creatingTask', 'editingTask'
-			, 'checkingTask', 'incrementingTask', 'movingTask', 'creatingBoard'
-			, 'renamingBoard', 'cleaningBoard', 'extractingBoards', 'deleting' ]
+			, 'checkingTask', 'incrementingTask', 'movingTask', 'deleting' ]
 
 		entries.forEach( entry =>
 		{
@@ -302,9 +255,6 @@ class Help implements ManEntries
 			case Action.INIT:
 				toReturn = this.getMan( 'init' )
 				break;
-			case Action.ADD_BOARD:
-				toReturn = this.getMan( 'creatingBoard' )
-				break;
 			case Action.ADD_TASK:
 				toReturn = this.getMan( 'creatingTask' )
 				break;
@@ -319,9 +269,6 @@ class Help implements ManEntries
 				break;
 			case Action.EDIT:
 				toReturn = this.getMan( 'editing' )
-				break;
-			case Action.EXTRACT:
-				toReturn = this.getMan( 'extractingBoards' )
 				break;
 			case Action.MOVE:
 				toReturn = this.getMan( 'movingTask' )

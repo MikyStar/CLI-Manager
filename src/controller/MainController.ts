@@ -6,7 +6,6 @@ import { System } from "../core/System";
 
 import { FileNotFoundError } from '../errors/FileErrors'
 
-
 ////////////////////////////////////////
 
 export class MainController
@@ -27,8 +26,6 @@ export class MainController
 	 */
 	constructor()
 	{
-		this.printer = new Printer()
-
 		this.argHandler = new CliArgHandler()
 		const { flags, words } = this.argHandler
 		const { files, printing } = flags
@@ -57,6 +54,7 @@ export class MainController
 
 		if( !this.config )
 			throw new FileNotFoundError( this.configLocation )
+
 		if( !this.storage )
 			throw new FileNotFoundError( this.storageLocation )
 
