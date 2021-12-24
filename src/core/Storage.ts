@@ -7,15 +7,15 @@ import { FileAlreadyExistsError } from '../errors/FileErrors';
 ////////////////////////////////////////
 
 export const DEFAULT_STORAGE_FILE_NAME = "tasks.json"
-export const DEFAULT_STORAGE_DATAS =
+export const DEFAULT_STORAGE_DATAS: TaskList = new TaskList(
 [
 	{
-		"name": "Add more stuff",
-		"description": "There's a lot of things to do",
-		"state": "todo",
-		"id": 0,
+		name: "Add more stuff",
+		description: "There's a lot of things to do",
+		state: "todo",
+		id: 0,
 	}
-]
+])
 
 ////////////////////////////////////////
 

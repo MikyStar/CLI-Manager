@@ -6,7 +6,6 @@ import { System } from "../core/System";
 
 import { FileNotFoundError } from '../errors/FileErrors'
 
-
 ////////////////////////////////////////
 
 export class MainController

@@ -177,7 +177,7 @@ export class CliArgHandler
 		const description = this.getValueFlag( ValueFlag.DESCRIPTION ) as string
 
 		const unparsedLinked = this.getValueFlag( ValueFlag.LINK ) as number | number[]
-		const linked = Array.isArray( unparsedLinked ) ? unparsedLinked : [ unparsedLinked ]
+		const linked = unparsedLinked ? ( Array.isArray( unparsedLinked ) ? unparsedLinked : [ unparsedLinked ] ) : undefined
 
 		return	{
 					state,

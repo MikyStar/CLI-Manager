@@ -49,6 +49,12 @@ export class Task implements ITask
 	{
 		Object.assign( this, task )
 
+		if( !task.dependencies )
+			delete this.dependencies
+
+		if( !task.subtasks )
+			delete this.subtasks
+
 		this.subtasks = ( task.subtasks && ( task.subtasks.length > 0 ) ) && task.subtasks.map( sub => new Task( sub ))
 	}
 
@@ -85,6 +91,8 @@ export class Task implements ITask
 	}
 
 	/**
+	 * TODO this is not stringify, this is printify
+	 *
 	 * TODO implement hide timestamp and sub counter
 	 */
 	stringify = ( availableStates : ConfigState[], options ?: StringifyArgs ) =>

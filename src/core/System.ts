@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { FileNotFoundError, JSONParseError, SaveFileError } from '../errors/FileErrors';
+import { TaskList } from './TaskList';
 
 ////////////////////////////////////////
 
@@ -17,7 +18,7 @@ export namespace System
 	{
 		let file
 		let datas = {}
-	
+
 		try
 		{
 			file = fs.readFileSync( getAbsolutePath( relativePath ), { encoding: 'utf8', flag: 'r' } )
@@ -26,7 +27,7 @@ export namespace System
 		{
 			throw new FileNotFoundError( relativePath, error )
 		}
-	
+
 		try
 		{
 			datas = JSON.parse( file )
@@ -35,13 +36,13 @@ export namespace System
 		{
 			throw new JSONParseError( relativePath, error )
 		}
-	
+
 		return datas
 	}
 
 	export const doesFileExists = ( relativePath: string ) : boolean => fs.existsSync( getAbsolutePath( relativePath ) ) || false
 
-	export const writeJSONFile = ( relativePath: string, datas: any ) : any =>
+	export const writeJSONFile = ( relativePath: string, datas: TaskList | any ) : any =>
 	{
 		try
 		{
