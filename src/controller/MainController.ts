@@ -58,11 +58,9 @@ export class MainController
 		if( !this.storage )
 			throw new FileNotFoundError( this.storageLocation )
 
-		const printConfig: PrinterConfig =
-		{
-			...printing,
-			...this.config
-		}
+		//////////
+
+		const printConfig = this.mergePrintConfig( printing, this.config )
 
 		if( printConfig.group )
 		{
@@ -77,7 +75,18 @@ export class MainController
 
 	////////////////////
 
-	handleInit = () =>
+	private mergePrintConfig = ( fromArgs: PrinterConfig, fromConfig: PrinterConfig ) : PrinterConfig =>
+	{
+		let toReturn = { ...fromConfig }
+
+		for( const [ key, value ] of Object.entries( fromArgs ) )
+			if( fromArgs[ key ] !== undefined )
+				toReturn[ key ] = value
+
+		return toReturn
+	}
+
+	private handleInit = () =>
 	{
 		if( !this.config )
 		{

@@ -108,7 +108,7 @@ export class Storage
 
 	group = ( groupBy: GroupByType = 'state' ) => this.tasks.group( groupBy, this.meta )
 
-	order = ( order: Order ) => ( order === 'asc' ) && this.tasks.reverse()
+	order = ( order: Order ) => ( order === 'desc' ) && this.tasks.reverse()
 
 	////////////////////////////////////////
 
