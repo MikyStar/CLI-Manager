@@ -67,6 +67,9 @@ export class MainController
 		if( printConfig.groupBy )
 			this.storage.group( printConfig.groupBy )
 
+		if( printConfig.sort )
+			this.storage.order( printConfig.sort )
+
 		this.printer = new Printer( this.storage, printConfig )
 	}
 

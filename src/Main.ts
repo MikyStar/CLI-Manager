@@ -75,7 +75,7 @@ try
 					const task : Task = new Task(
 					{
 						name: argHandler.getFirstText(),
-						state: state || config.states[ 0 ].name,
+						state: state || storage.meta.states[ 0 ].name,
 						dependencies: linked,
 						description,
 					});
@@ -148,7 +148,7 @@ try
 
 				const ids = secondArg.value as number | number[]
 
-				const lastState = config.states[ config.states.length - 1 ].name
+				const lastState = storage.meta.states[ storage.meta.states.length - 1 ].name
 				const tasksID = storage.editTask( ids, { state: lastState }, isRecursive )
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
@@ -166,9 +166,7 @@ try
 
 				const ids = secondArg.value as number | number[]
 
-				const statesNames = config.states.map( state => state.name )
-
-				const tasksID = storage.incrementTask( ids, statesNames, isRecursive )
+				const tasksID = storage.incrementTask( ids, isRecursive )
 
 				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
 				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
