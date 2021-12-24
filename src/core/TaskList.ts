@@ -62,9 +62,9 @@ export class TaskList extends Array<Task> implements TaskActions
 			{
 				if( this.allIDs.includes( id ) )
 					throw new TaskIdDuplicatedError( id )
+				else
+					this.allIDs.push( id )
 			})
-
-			this.allIDs.push( task.id )
 
 			super.push( task )
 		})
