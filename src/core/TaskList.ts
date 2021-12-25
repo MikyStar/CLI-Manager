@@ -36,7 +36,7 @@ export class TaskList extends Array<Task>
 
 		this.allIDs = []
 
-		this.push( ...items.map( item => new Task( item ) ) )
+		items && this.push( ...items.map( item => new Task( item ) ) )
 	}
 
 	//////////
