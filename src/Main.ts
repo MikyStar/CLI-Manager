@@ -23,7 +23,7 @@ try
 	const { flags, words } = argHandler
 	const [ firstArg, secondArg, thirdArg, ...restSentence ] = words
 	const { dataAttributes, isHelpNeeded, isVersion, isRecursive, printing } = flags
-	const { state, description, linked } = dataAttributes
+	const { state, description } = dataAttributes
 
 	const isThereCLIArgs = words.length > 0
 	const isThereOnlyOneCLIArgs = words.length === 1
@@ -77,7 +77,6 @@ try
 					{
 						name: argHandler.getFirstText(),
 						state: state || storage.meta.states[ 0 ].name,
-						dependencies: linked,
 						description,
 					});
 
@@ -109,20 +108,15 @@ try
 
 				if( isTask( secondArg ) )
 				{
-					const dependencies = linked
-
 					const newAttributes: ITask =
 					{
 						name,
-						dependencies,
 						state,
 						description,
 					}
 
 					if( !name )
 						delete newAttributes.name
-					if( !dependencies )
-						delete newAttributes.dependencies
 					if( !state )
 						delete newAttributes.state
 					if( !description )

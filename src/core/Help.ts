@@ -123,14 +123,13 @@ class Help implements ManEntries
 		this.creatingTask =
 		{
 			title: 'Creating a task',
-			prototype: 'task a [<task>] [<task name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
+			prototype: 'task a [<task>] [<task name>] [-d <description>] [-s <state>] [global args]',
 			argDef:
 			[
 				'<task> : Task id uppon which you want to add a child subtask',
 				'<name> : Task name',
 				'-d <description> : Task description',
 				'-s <state> : Task state defined by the config file',
-				"-l <task(s)> : Task dependencies, you can pass multiple by separating the ids by ',' without space",
 			],
 			furtherDescription:
 			[
@@ -142,14 +141,13 @@ class Help implements ManEntries
 		this.editing =
 		{
 			title: 'Editing',
-			prototype: 'task e <task(s)> [<new name>] [-d <description>] [-s <state>] [-l <task(s)>] [global args]',
+			prototype: 'task e <task(s)> [<new name>] [-d <description>] [-s <state>] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to edit, you can pass multiple by separating the ids by ',' without space",
 				'<new name> : Edit task or board name',
 				'-d <description> : Edit task or board description',
 				'-s <state> : Edit task state defined by the config file',
-				"-l <task(s)> : Edit task dependencies, you can pass multiple by separating the ids by ',' without space",
 			],
 			furtherDescription:
 			[

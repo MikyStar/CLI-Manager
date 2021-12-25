@@ -15,7 +15,6 @@ export interface ITask
 	description ?: string,
 	id ?: number,
 	subtasks ?: ITask[],
-	dependencies ?: number[], // Tasks IDS
 	timestamp ?: string
 	state ?: string
 	priority ?: number
@@ -38,7 +37,6 @@ export class Task implements ITask
 	id ?: number
 	description ?: string
 	subtasks ?: Task[]
-	dependencies ?: number[]
 	timestamp ?: string
 	state ?: string
 	priority ?: number
@@ -49,9 +47,6 @@ export class Task implements ITask
 	constructor( task: Partial<ITask> )
 	{
 		Object.assign( this, task )
-
-		if( !task.dependencies || ( task.dependencies.length === 0 ) )
-			delete this.dependencies
 
 		if( !task.subtasks || ( task.subtasks.length === 0 ) )
 			delete this.subtasks
