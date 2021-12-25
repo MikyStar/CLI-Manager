@@ -1,7 +1,7 @@
-import { Action, isTask, isAction } from "./core/CliArgHandler";
+import { Action, isTask, isAction, isText } from "./core/CliArgHandler";
 import { Prompt } from "./core/Prompt";
 import { ITask, Task } from "./core/Task";
-import { printError, printMessage } from "./core/Printer";
+import { PrinterFactory, printError, printMessage } from "./core/Printer";
 import { System } from './core/System'
 
 import Help from './core/Help'
@@ -9,8 +9,9 @@ import Help from './core/Help'
 import { MainController } from "./controller/MainController";
 
 import { CLISyntaxError, DeletingTaskSyntaxError, EditingSyntaxError, CheckingTaskSyntaxError
-	, IncrementingTaskSyntaxError, MovingTaskSyntaxError } from './errors/CLISyntaxErrors';
+	, IncrementingTaskSyntaxError, MovingTaskSyntaxError, ExtractSyntaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
+import { StorageFactory } from "./core/Storage";
 
 ////////////////////////////////////////
 
@@ -240,6 +241,47 @@ try
 				}
 				else
 					throw new MovingTaskSyntaxError( `Please provide a Task ID for destination as second arg istead of '${ thirdArg }'` )
+
+				break;
+			}
+
+			case Action.EXTRACT:
+			{
+				if( !isTask( secondArg ) )
+					throw new ExtractSyntaxError( `Second arg '${ secondArg.value }' should be one or more task id` )
+
+				if( !isText( thirdArg ) )
+					throw new ExtractSyntaxError( `Thrid arg '${ thirdArg.value }' should be text` )
+
+				const involvedTasks: Task[] = []
+				let textTask = '', textID = ''
+
+				if( Array.isArray( secondArg.value ) )
+				{
+					const ids = secondArg.value as number[]
+					ids.map( id =>
+					{
+						involvedTasks.push( storage.get( id ) )
+						textID += `${ id }`
+					})
+
+					textTask = 'Tasks'
+				}
+				else
+				{
+					const id = secondArg.value as number
+					involvedTasks.push( storage.get( id ) )
+
+					textID = `${ id }`
+					textTask = 'Task'
+				}
+
+				const destination = thirdArg.value as string
+				const newStorage = StorageFactory.extract( destination, storage, involvedTasks )
+				const newPrinter = PrinterFactory.create( argHandler, config, newStorage )
+
+				newPrinter.setView( 'full' )
+				newPrinter.addFeedback( `${ textTask } '${ textID }' extracted to ${ destination }` ).print()
 
 				break;
 			}

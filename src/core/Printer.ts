@@ -2,6 +2,8 @@ import chalk from "chalk"
 
 import { TaskList, GroupByType, Order } from './TaskList';
 import { Storage } from './Storage';
+import { CliArgHandler } from "./CliArgHandler";
+import { Config } from "./Config";
 
 ////////////////////////////////////////
 
@@ -37,8 +39,8 @@ export class Printer
 	private feedback: string[]
 	private viewParams: ViewParams
 
-	storage: Storage
-	config ?: PrinterConfig
+	private storage: Storage
+	private config ?: PrinterConfig
 
 	////////////////////
 
@@ -218,6 +220,33 @@ export class Printer
 		const availableSpace = ( process.stdout.columns - 2 ) - space.length
 
 		// TODO
+	}
+}
+
+////////////////////////////////////////
+
+export const PrinterFactory =
+{
+	create : ( argHander: CliArgHandler, config: Config, storage: Storage ) : Printer =>
+	{
+		const { flags } = argHander
+		const { printing } = flags
+
+		let finalConfig = { ...config }
+
+		for( const [ key, value ] of Object.entries( printing ) )
+			if( printing[ key ] !== undefined )
+				finalConfig[ key ] = value
+
+		if( finalConfig.group )
+		{
+			storage.group( finalConfig.group )
+
+			if( finalConfig.sort )
+				storage.order( finalConfig.sort )
+		}
+
+		return new Printer( storage, finalConfig )
 	}
 }
 
