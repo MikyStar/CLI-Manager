@@ -1,5 +1,8 @@
 import { PrinterConfig } from './Printer'
+import { GroupByType, handledGroupings, Order } from './TaskList'
+
 import { MultipleValuesMismatchError } from '../errors'
+import { GroupBySyntaxError } from '../errors/CLISyntaxErrors'
 
 ////////////////////////////////////////
 
@@ -7,14 +10,11 @@ export enum Action
 {
 	ADD_TASK = 'a',
 	INIT = 'init',
-	ADD_BOARD = 'b',
 	CHECK = 'c',
 	DELETE = 'd',
 	EDIT = 'e',
 	INCREMENT = 'i',
 	MOVE = 'mv',
-	RENAME = 'rn',
-	EXTRACT = 'x'
 }
 
 export enum BooleanFlag
@@ -36,9 +36,12 @@ export enum ValueFlag
 	STORAGE_FILE = '--storage',
 	CONFIG_FILE = '--config',
 	DEPTH = '--depth',
+	GROUPB_BY = '--group',
+	SORT = '--sort',
 	STATE = '-s',
 	DESCRIPTION = '-d',
 	LINK = '-l',
+	TAG = '-t',
 }
 
 export interface RawArg
@@ -70,6 +73,7 @@ export interface HandledFlags
 	isHelpNeeded ?: boolean
 	isVersion ?: boolean
 }
+
 ////////////////////////////////////////
 
 export class CliArgHandler
@@ -137,6 +141,8 @@ export class CliArgHandler
 		const shouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
 
 		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
+		const group = this.getValueFlag( ValueFlag.GROUPB_BY ) as GroupByType
+		const sort = this.getValueFlag( ValueFlag.SORT ) as Order
 
 		return	{
 					hideDescription,
@@ -146,6 +152,8 @@ export class CliArgHandler
 					shouldNotPrintAfter,
 
 					depth,
+					group,
+					sort
 				}
 	}
 
@@ -155,7 +163,7 @@ export class CliArgHandler
 		const description = this.getValueFlag( ValueFlag.DESCRIPTION ) as string
 
 		const unparsedLinked = this.getValueFlag( ValueFlag.LINK ) as number | number[]
-		const linked = Array.isArray( unparsedLinked ) ? unparsedLinked : [ unparsedLinked ]
+		const linked = unparsedLinked ? ( Array.isArray( unparsedLinked ) ? unparsedLinked : [ unparsedLinked ] ) : undefined
 
 		return	{
 					state,
@@ -177,45 +185,37 @@ export class CliArgHandler
 			const containsSpace = /\s/.test( theArg )
 			if( theArg.includes( ',' ) && !containsSpace )
 			{
-				const splitted = theArg.split( ',' )
-				const subParsed = this.rawParse( splitted )
-
-				let argType : ArgType | undefined = undefined
-				subParsed.forEach( arg =>
-				{
-					if( argType === undefined )
-						argType = arg.type
-					else if( arg.type !== argType )
-						throw new MultipleValuesMismatchError( argType, arg.type )
-				});
+				const { subParsed, argType } = this.handleMultipleValuesType( theArg )
 
 				const values = subParsed.map( sub => sub.value ) as string[] | number[]
 				parsedArgs.push({ value: values, type: argType })
 			}
 			else
 			{
-				const isBoard = theArg[0] === '@'
 				const isTask = isNumber( theArg )
 				const isAction = Object.values( Action ).includes( theArg as Action )
 				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
-				const isValueVlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
+				const isValueFlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
+				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUPB_BY
 
-				if( isBoard )
-					parsedArgs.push( { value: theArg.slice( 1 ), type: 'board' } )
-				else if( isTask )
+				if( isTask )
 					parsedArgs.push( { value: Number.parseInt( theArg ), type: 'task' } )
 				else if( isAction )
 					parsedArgs.push( { value: theArg, type: 'action' } )
 				else if( isBooleanFlag )
 					parsedArgs.push( { value: true, type: 'flag', flagType: theArg as BooleanFlag } )
-				else if( isValueVlag )
+				else if( isValueFlag )
 				{
-					let followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
-					if( isNumber( followingValue ) )
-						followingValue = Number.parseInt( followingValue )
+					const followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
 
-					parsedArgs.push({ value: followingValue, type: 'flag', flagType: theArg as ValueFlag })
+					let value : string | number
+					if( isGroupBy && !handledGroupings.includes( followingValue as GroupByType ) )
+						throw new GroupBySyntaxError( `'--group' following attribute should be from '${ handledGroupings.map( str => str ) }'` )
+					else
+						value = isNumber( followingValue ) ? Number.parseInt( followingValue ) : followingValue
 
+
+					parsedArgs.push({ value, type: 'flag', flagType: theArg as ValueFlag })
 					i++ // Because we used the next value
 				}
 				else
@@ -224,6 +224,29 @@ export class CliArgHandler
 		}
 
 		return parsedArgs
+	}
+
+	/**
+	 * @param multipleArg string containing a comma
+	 *
+	 * @throws {MultipleValuesMismatchError}
+	 */
+	private handleMultipleValuesType = ( multipleArg: string ) =>
+	{
+		const splitted = multipleArg.split( ',' )
+		const subParsed = this.rawParse( splitted )
+
+		let argType : ArgType | undefined = undefined
+
+		subParsed.forEach( arg =>
+		{
+			if( argType === undefined )
+				argType = arg.type
+			else if( arg.type !== argType )
+				throw new MultipleValuesMismatchError( argType, arg.type )
+		});
+
+		return { subParsed, argType }
 	}
 
 	private getBoolFlag = ( flag: BooleanFlag ) =>
@@ -259,6 +282,5 @@ export class CliArgHandler
 ////////////////////
 
 export const isTask = ( arg: RawArg ) => arg.type === 'task'
-export const isBoard = ( arg: RawArg ) => arg.type === 'board'
 export const isAction = ( arg: RawArg ) => arg.type === 'action'
 export const isText = ( arg: RawArg ) => arg.type === 'text'

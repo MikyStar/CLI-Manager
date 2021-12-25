@@ -2,7 +2,7 @@ import prompts from 'prompts'
 
 import { Config } from './Config'
 import { Storage } from './Storage'
-import { ITask } from './Task'
+import { ITask, Task } from './Task'
 
 ////////////////////////////////////////
 
@@ -12,11 +12,8 @@ export namespace Prompt
 	{
 		const parseToChoice = ( str : string ) => { return { title: str, value: str } }
 
-		let boardChoices = []
-		storage.boards.forEach( board => boardChoices.push( parseToChoice( board.name ) ) )
-
 		let stateChoices = []
-		config.states.forEach( state => stateChoices.push( parseToChoice( state.name ) ) )
+		storage.meta.states.forEach( state => stateChoices.push( parseToChoice( state.name ) ) )
 
 		try
 		{
@@ -26,12 +23,6 @@ export namespace Prompt
 					type: 'text',
 					name: 'name',
 					message: 'Task name'
-				},
-				{
-					type: 'select',
-					name: 'board',
-					message: 'Board',
-					choices: boardChoices
 				},
 				{
 					type: 'select',
@@ -46,14 +37,14 @@ export namespace Prompt
 				}
 			]);
 
-			const task : ITask =
+			const task : Task = new Task(
 			{
 				name: inputs.name,
 				state: inputs.state,
 				description: inputs.description
-			}
+			});
 
-			const id = storage.addTask(task, inputs.board )
+			const id = storage.addTask( task )
 
 			return id
 		}

@@ -18,11 +18,15 @@
 		"start": "NODE_ENV=dev npm run tsc && node dist/Main.js",
 		"tsc": "tsc",
 		"test": "echo 'No jest tests written yet'",
+
 		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
+
 		"dependencies:check": "ncu -e 2",
 		"dependencies:update": "ncu -u && npm run clear && npm install && npm run test",
+
 		"build": "webpack-cli",
+
 		"clear": "rm -rf node_modules dist"
 	},
 	"devDependencies": {

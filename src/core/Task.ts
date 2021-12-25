@@ -1,7 +1,7 @@
-import chalk from 'chalk'
-import { DefaultArgs } from './Config'
+import chalk from "chalk"
 
-import { ConfigState } from './Config'
+import { PrinterConfig } from "./Printer"
+import { TaskState } from "./Storage"
 
 ////////////////////////////////////////
 
@@ -16,11 +16,12 @@ export interface ITask
 	id ?: number,
 	subtasks ?: ITask[],
 	dependencies ?: number[], // Tasks IDS
-	timestamp ?: string,
-	state ?: string,
+	timestamp ?: string
+	state ?: string
+	priority ?: number
 }
 
-export interface StringifyArgs extends DefaultArgs
+export interface StringifyArgs extends PrinterConfig
 {
 	parentIndent ?: string,
 	subTaskLevel ?: number,
@@ -31,42 +32,69 @@ export interface StringifyArgs extends DefaultArgs
 
 ////////////////////////////////////////
 
-export namespace Task
+export class Task implements ITask
 {
+	name ?: string
+	id ?: number
+	description ?: string
+	subtasks ?: Task[]
+	dependencies ?: number[]
+	timestamp ?: string
+	state ?: string
+	priority ?: number
+	tags ?: string[]
+
+	/////
+
+	constructor( task: Partial<ITask> )
+	{
+		Object.assign( this, task )
+
+		if( !task.dependencies || ( task.dependencies.length === 0 ) )
+			delete this.dependencies
+
+		if( !task.subtasks || ( task.subtasks.length === 0 ) )
+			delete this.subtasks
+		else
+			this.subtasks = task.subtasks.map( sub => new Task( sub ) )
+	}
+
+	/////
+
 	/**
 	 * Transform the tree of tasks and subtasks to an array of tasks
 	 */
-	export const straightTask = ( task: ITask ) =>
+	straightTask = () =>
 	{
-		let toReturn : ITask[] = []
+		let toReturn : Task[] = []
 
-		if( !task.subtasks || task.subtasks.length === 0 )
+		if( !this.subtasks || this.subtasks.length === 0 )
 		{
-			toReturn.push( task )
+			toReturn.push( this )
 
 			return toReturn
 		}
 		else
 		{
-			task.subtasks.forEach( sub =>
+			this.subtasks.forEach( sub =>
 			{
-				const result = straightTask( sub )
+				const result = sub.straightTask()
 
-				toReturn = [ ...toReturn, ...result ]
+				toReturn.push( ...result )
 			})
 
-			const taskCopy = { ...task }
-			delete taskCopy.subtasks
-			toReturn.push( taskCopy )
+			toReturn.push( this )
 
 			return toReturn
 		}
 	}
 
 	/**
+	 * TODO this is not stringify, this is printify
+	 *
 	 * TODO implement hide timestamp and sub counter
 	 */
-	export const stringify = ( task : ITask, availableStates : ConfigState[], options ?: StringifyArgs ) =>
+	stringify = ( availableStates : TaskState[], options ?: StringifyArgs ) =>
 	{
 		const INDENT_MARKER = '    '
 		const DEFAULT_SUBTASK_LEVEL = 1
@@ -96,10 +124,10 @@ export namespace Task
 
 		////////////////////
 
-		const isFinalState = task.state === availableStates[ availableStates.length - 1 ].name
-		const taskState = availableStates.filter( state => task.state === state.name )[0]
+		const isFinalState = this.state === availableStates[ availableStates.length - 1 ].name
+		const taskState = availableStates.filter( state => this.state === state.name )[0]
 
-		const coloredID = chalk.hex( taskState.hexColor )( `${ task.id }.` )
+		const coloredID = chalk.hex( taskState.hexColor )( `${ this.id }.` )
 
 		if( isSubTask )
 		{
@@ -123,7 +151,7 @@ export namespace Task
 		}
 
 		const coloredIcon = chalk.hex( taskState.hexColor )( taskState.icon )
-		const coloredName = isFinalState ? chalk.strikethrough.grey( task.name ) : task.name
+		const coloredName = isFinalState ? chalk.strikethrough.grey( this.name ) : this.name
 
 		const fullLine = `${ coloredID }${ MARGIN }${ indentation }${ coloredIcon } ${ coloredName }`
 		toReturn.push( fullLine )
@@ -134,12 +162,12 @@ export namespace Task
 		{
 			const parseDescriptionLines = () =>
 			{
-				if( !task.description )
+				if( !this.description )
 					return []
 
 				let toReturn : string[] = []
 
-				const descExploded = task.description.split( LINE_BREAK )
+				const descExploded = this.description.split( LINE_BREAK )
 
 				descExploded.forEach( line =>
 				{
@@ -173,16 +201,16 @@ export namespace Task
 
 		////////////////////
 
-		if( !task.subtasks || task.subtasks.length === 0 )
+		if( !this.subtasks || this.subtasks.length === 0 )
 			return toReturn
 		else
 		{
-			task.subtasks.forEach( ( sub, index ) =>
+			this.subtasks.forEach( ( sub, index ) =>
 			{
 				const shallNotPrint = ( depth !== undefined ) && ( subTaskLevel >= depth + 1 )
 				if( !shallNotPrint )
 				{
-					const willBeLastChild = index === ( task.subtasks.length - 1 )
+					const willBeLastChild = index === ( this.subtasks.length - 1 )
 					const childOptions: StringifyArgs =
 					{
 						...options,
@@ -192,7 +220,7 @@ export namespace Task
 						isSubTask: true,
 						isLastParent: isLastChild
 					}
-					const result = Task.stringify( sub, availableStates, childOptions )
+					const result = sub.stringify( availableStates, childOptions )
 
 					toReturn = [ ...toReturn, ...result ]
 				}
@@ -200,67 +228,5 @@ export namespace Task
 
 			return toReturn
 		}
-	}
-
-	/**
-	 * Use recursion to return all tasks matching value
-	 */
-	export const search = <K extends keyof ITask>( taskList: ITask[], taskAttribute: K, value: any ) =>
-	{
-		const tasks : ITask[] = []
-
-		 // @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		taskList.forEach( function iter( task )
-		{
-			if( task[ taskAttribute ] === value )
-			{
-				tasks.push( task )
-			}
-
-			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
-		})
-
-		return tasks
-	}
-
-	/**
-	 * Use recursion to return a count of every tasks and subtasks included in list
-	 */
-	export const countTaskAndSub = ( list: ITask[] ) =>
-	{
-		let count = 0
-
-		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		list.forEach( function iter( task )
-		{
-			count++
-
-			Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
-		})
-
-		return count
-	}
-
-	export const getStats = ( tasks : ITask[], availableStates : ConfigState[] ) : string =>
-	{
-		let toReturn = ''
-		const totalCount = countTaskAndSub( tasks )
-
-		availableStates.forEach( ( state, index ) =>
-		{
-			const count = search( tasks, 'state', state.name ).length
-			const percent = ( count / totalCount ) * 100
-
-			if( ( index !== 0 ) && ( index !== availableStates.length ) )
-				toReturn += ' ► '
-
-			const text = `${ count } ${ state.name } (${ percent.toFixed(0) }%)`
-
-			toReturn += chalk.hex( state.hexColor )( text )
-		});
-
-		toReturn += ` ❯ ${ totalCount }`
-
-		return toReturn
 	}
 }

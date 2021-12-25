@@ -1,6 +1,6 @@
 import { CatchableError } from './CatchableError';
 
-import { ManEntries } from '../utils/Help';
+import { ManEntries } from '../core/Help';
 
 ////////////////////////////////////////
 
@@ -17,7 +17,7 @@ export class CLISyntaxError extends CatchableError
 
 ////////////////////////////////////////
 
-export class AddingTaskSytaxError extends CLISyntaxError
+export class AddingTaskSyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
@@ -27,7 +27,7 @@ export class AddingTaskSytaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class CheckingTaskSytaxError extends CLISyntaxError
+export class CheckingTaskSyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
@@ -37,7 +37,7 @@ export class CheckingTaskSytaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class IncrementingTaskSytaxError extends CLISyntaxError
+export class IncrementingTaskSyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
@@ -47,7 +47,7 @@ export class IncrementingTaskSytaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class EditingSytaxError extends CLISyntaxError
+export class EditingSyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
@@ -57,7 +57,7 @@ export class EditingSytaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class DeletingTaskSytaxError extends CLISyntaxError
+export class DeletingTaskSyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
@@ -67,7 +67,7 @@ export class DeletingTaskSytaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class MovingTaskSytaxError extends CLISyntaxError
+export class MovingTaskSyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
@@ -77,10 +77,10 @@ export class MovingTaskSytaxError extends CLISyntaxError
 
 ////////////////////////////////////////
 
-export class ExtractingBoardSytaxError extends CLISyntaxError
+export class GroupBySyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )
 	{
-		super( message, 'extractingBoards', details )
+		super( message, 'viewing', details )
 	}
 }

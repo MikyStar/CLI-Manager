@@ -1,8 +1,6 @@
 import chalk from "chalk"
 
-import { Board } from "./Board";
-import { ConfigState } from "./Config";
-import { Task } from './Task';
+import { TaskList, GroupByType, Order } from './TaskList';
 import { Storage } from './Storage';
 
 ////////////////////////////////////////
@@ -16,6 +14,8 @@ export interface PrinterConfig
 	hideTree ?: boolean,
 
 	depth ?: number,
+	group ?: GroupByType
+	sort ?: Order
 }
 
 export interface ViewParams
@@ -24,7 +24,7 @@ export interface ViewParams
 	target ?: ViewTargetType
 }
 
-type ViewType = 'file' | 'board' | 'task'
+type ViewType = 'full' | 'specific'
 type ViewTargetType = string | string[] | number | number[]
 
 ////////////////////////////////////////
@@ -38,17 +38,15 @@ export class Printer
 	private viewParams: ViewParams
 
 	storage: Storage
-	states: ConfigState[]
 	config ?: PrinterConfig
 
 	////////////////////
 
-	constructor( storage ?: Storage, states ?: ConfigState[], config ?: PrinterConfig )
+	constructor( storage ?: Storage, config ?: PrinterConfig )
 	{
 		this.feedback = []
 
 		this.storage = storage
-		this.states = states
 		this.config = config
 	}
 
@@ -71,25 +69,25 @@ export class Printer
 
 	////////////////////
 
-	private getTaskView = ( taskID: number | number[] ) =>
+	private getSpecificView = ( taskID: number | number[] ) =>
 	{
 		let toReturn : string[] = []
 
 		const theTasksID = Array.isArray( taskID ) ? taskID : [ taskID ]
-		const tasks = []
+		const list: TaskList = new TaskList()
 
 		theTasksID.forEach( ( id, index ) =>
 		{
-			this.storage.retrieveTask( id, ({ task }) =>
+			this.storage.tasks.retrieveTask( id, ({ task }) =>
 			{
-				tasks.push( task )
+				list.push( task )
 
-				toReturn = [ ...toReturn, ...Task.stringify( task, this.states, this.config ), '' ]
+				toReturn = [ ...toReturn, ...task.stringify( this.storage.meta.states, this.config ), '' ]
 
 				if( index !== ( theTasksID.length - 1 ) )
 					toReturn.push( this.separator('-'), '' )
 				else
-					toReturn.push( Task.getStats( tasks, this.states ), '' )
+					toReturn.push( list.getStats( this.storage.meta ), '' )
 			})
 		});
 
@@ -98,28 +96,16 @@ export class Printer
 		return toReturn
 	}
 
-	private getBoardView = ( boardName: string | string[] ) =>
+	private getFullView = () =>
 	{
 		let toReturn : string[] = []
-		const theBoards = Array.isArray( boardName ) ? boardName : [ boardName ]
 
-		theBoards.forEach( ( name, index ) =>
-		{
-			this.storage.retrieveBoard( name, board =>
-			{
-				toReturn = [ ...toReturn, ...Board.stringify( board, this.states, this.config ), '' ]
+		this.storage.tasks.forEach( task => toReturn.push( ...task.stringify( this.storage.meta.states, this.config ) ) );
 
-				if( index !== ( theBoards.length - 1 ) )
-					toReturn.push( this.separator('-'), '' )
-			})
-		});
-
-		toReturn = [ ...toReturn, ...this.getFileStats() ]
+		toReturn.push( '', ...this.getFileStats() )
 
 		return toReturn
 	}
-
-	private getFileView = () => this.getBoardView( this.storage.boards.map( board => board.name ) )
 
 	private getView = () =>
 	{
@@ -128,12 +114,10 @@ export class Printer
 
 		switch( this.viewParams.view )
 		{
-			case 'file':
-				return this.getFileView()
-			case 'board':
-				return this.getBoardView( this.viewParams.target as string | string[] )
-			case 'task':
-				return this.getTaskView( this.viewParams.target as number | number[] )
+			case 'full':
+				return this.getFullView()
+			case 'specific':
+				return this.getSpecificView( this.viewParams.target as number | number[] )
 		}
 	}
 
@@ -193,11 +177,8 @@ export class Printer
 
 	private getFileStats = () =>
 	{
-		let allTasks = []
-		this.storage.boards.forEach( board => allTasks = [ ...allTasks, ...Board.straightBoard( board ) ] )
-
 		const fileName = chalk.bold.underline( this.storage.relativePath )
-		const stats = Task.getStats( allTasks, this.states )
+		const stats = this.storage.tasks.getStats( this.storage.meta )
 
 		return [ this.separator( '-' ) , '', ' ' + fileName, '', stats, '' ]
 	}

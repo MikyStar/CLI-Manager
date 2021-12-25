@@ -6,7 +6,6 @@ import { System } from "../core/System";
 
 import { FileNotFoundError } from '../errors/FileErrors'
 
-
 ////////////////////////////////////////
 
 export class MainController
@@ -27,8 +26,6 @@ export class MainController
 	 */
 	constructor()
 	{
-		this.printer = new Printer()
-
 		this.argHandler = new CliArgHandler()
 		const { flags, words } = this.argHandler
 		const { files, printing } = flags
@@ -40,7 +37,7 @@ export class MainController
 		if( System.doesFileExists( this.configLocation ) )
 		{
 			this.config = new Config( this.configLocation )
-			this.storageLocation =  this.storageLocation || this.config.defaultArgs.storageFile
+			this.storageLocation =  this.storageLocation || this.config.storageFile
 		}
 
 		if( !this.storageLocation )
@@ -57,20 +54,39 @@ export class MainController
 
 		if( !this.config )
 			throw new FileNotFoundError( this.configLocation )
+
 		if( !this.storage )
 			throw new FileNotFoundError( this.storageLocation )
 
-		const printConfig: PrinterConfig =
+		//////////
+
+		const printConfig = this.mergePrintConfig( printing, this.config )
+
+		if( printConfig.group )
 		{
-			...printing,
-			...this.config.defaultArgs
+			this.storage.group( printConfig.group )
+
+			if( printConfig.sort )
+				this.storage.order( printConfig.sort )
 		}
-		this.printer = new Printer( this.storage, this.config.states, printConfig )
+
+		this.printer = new Printer( this.storage, printConfig )
 	}
 
 	////////////////////
 
-	handleInit = () =>
+	private mergePrintConfig = ( fromArgs: PrinterConfig, fromConfig: PrinterConfig ) : PrinterConfig =>
+	{
+		let toReturn = { ...fromConfig }
+
+		for( const [ key, value ] of Object.entries( fromArgs ) )
+			if( fromArgs[ key ] !== undefined )
+				toReturn[ key ] = value
+
+		return toReturn
+	}
+
+	private handleInit = () =>
 	{
 		if( !this.config )
 		{
