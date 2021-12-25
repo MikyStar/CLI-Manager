@@ -41,7 +41,6 @@ export enum ValueFlag
 	SORT = '--sort',
 	STATE = '-s',
 	DESCRIPTION = '-d',
-	LINK = '-l',
 	TAG = '-t',
 }
 
@@ -58,7 +57,6 @@ export interface DataAttributes
 {
 	description ?: string
 	state ?: string
-	linked ?: number[]
 }
 
 export interface HandledFlags
@@ -163,13 +161,9 @@ export class CliArgHandler
 		const state = this.getValueFlag( ValueFlag.STATE ) as string
 		const description = this.getValueFlag( ValueFlag.DESCRIPTION ) as string
 
-		const unparsedLinked = this.getValueFlag( ValueFlag.LINK ) as number | number[]
-		const linked = unparsedLinked ? ( Array.isArray( unparsedLinked ) ? unparsedLinked : [ unparsedLinked ] ) : undefined
-
 		return	{
 					state,
-					description,
-					linked
+					description
 				}
 	}
 
