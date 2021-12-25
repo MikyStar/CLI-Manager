@@ -159,6 +159,29 @@ export class TaskList extends Array<Task>
 		return tasksID
 	}
 
+	/** @see: https://stackoverflow.com/questions/49349195/using-splice-method-in-subclass-of-array-in-javascript -> Exact same problem */
+	private remove = ( task: Task ) =>
+	{
+		const idIndex = this.allIDs.findIndex( anId => anId === task.id )
+		this.allIDs.splice( idIndex, 1 )
+
+		let index = this.indexOf( task );
+
+		if( index > -1 )
+		{
+			const newLength = this.length - 1;
+			while( index < newLength )
+			{
+				this[index] = this[index + 1];
+				++index;
+			}
+			this.length = newLength;
+
+			return [ task ];
+		}
+		return [];
+	}
+
 	deleteTask = ( tasksID: number | number[] ) =>
 	{
 		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
@@ -174,13 +197,13 @@ export class TaskList extends Array<Task>
 				{
 					wasTaskFound = true
 
-					this.splice( taskIndex, 1 )
+					this.remove( task )
 				}
 				else
 				{
 					if( Array.isArray( task.subtasks ) && ( task.subtasks.length !== 0 ) )
 					{
-						task.subtasks.forEach( function iter( sub, subIndex )
+						const iter = ( sub: Task, subIndex: number ) =>
 						{
 							if( sub.id === id )
 							{
@@ -190,7 +213,9 @@ export class TaskList extends Array<Task>
 							}
 							else if( Array.isArray( sub.subtasks ) &&  ( sub.subtasks.length !== 0 ) )
 								sub.subtasks.forEach( iter )
-						})
+						}
+
+						task.subtasks.forEach( iter)
 					}
 				}
 			});
@@ -232,12 +257,17 @@ export class TaskList extends Array<Task>
 			{
 				wasTaskFound = true
 
-				callback( { task, taskIndex, parentTaskID: lastParentTaskId })
+				return callback( { task, taskIndex, parentTaskID: lastParentTaskId })
 			}
-			else if( !wasTaskFound )
+			else
 			{
-				lastParentTaskId = task.id
-				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
+				if( Array.isArray( task.subtasks ) )
+				{
+					lastParentTaskId = task.id
+					task.subtasks.forEach( iter );
+				}
+				else
+					lastParentTaskId = undefined
 			}
 		}
 

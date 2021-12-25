@@ -204,7 +204,6 @@ try
 
 					storage.deleteTask( ids )
 
-
 					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
 				}
 				else
