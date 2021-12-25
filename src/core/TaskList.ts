@@ -111,16 +111,10 @@ export class TaskList extends Array<Task>
 		{
 			this.retrieveTask( id, ({ task }) =>
 			{
+				const impactedTasks = isRecurive ? task.straightTask() : [ task ]
+
 				for( const [k, v] of Object.entries( newAttributes ) )
-					task[ k ] = v
-
-				if( isRecurive )
-				{
-					const flatten = task.straightTask()
-
-					for( const [k, v] of Object.entries( newAttributes ) )
-						flatten.forEach( aTask => aTask[ k ] = v )
-				}
+					impactedTasks.forEach( aTask => aTask[ k ] = v )
 			});
 		});
 
@@ -153,7 +147,7 @@ export class TaskList extends Array<Task>
 			{
 				handleIncrement( task )
 
-				if( isRecurive )
+				if( isRecurive && task.subtasks )
 				{
 					const flatten = task.straightTask()
 
@@ -232,8 +226,7 @@ export class TaskList extends Array<Task>
 		let wasTaskFound = false
 		let lastParentTaskId = undefined
 
-		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		this.forEach( function iter( task, taskIndex )
+		const iter = ( task : Task, taskIndex: number ) =>
 		{
 			if( task.id === taskID )
 			{
@@ -246,7 +239,10 @@ export class TaskList extends Array<Task>
 				lastParentTaskId = task.id
 				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
 			}
-		});
+		}
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.forEach( iter );
 
 		if( !wasTaskFound )
 			throw new TaskNotFoundError( taskID )

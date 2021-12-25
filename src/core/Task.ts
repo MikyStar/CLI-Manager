@@ -83,7 +83,7 @@ export class Task implements ITask
 				toReturn = [ ...toReturn, ...result ]
 			})
 
-			const taskCopy = { ...this }
+			const taskCopy: Task = { ...this }
 			delete taskCopy.subtasks
 			toReturn.push( taskCopy )
 

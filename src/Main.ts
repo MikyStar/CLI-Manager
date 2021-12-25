@@ -1,6 +1,6 @@
 import { Action, isTask, isAction } from "./core/CliArgHandler";
 import { Prompt } from "./core/Prompt";
-import { Task } from "./core/Task";
+import { ITask, Task } from "./core/Task";
 import { printError, printMessage } from "./core/Printer";
 import { System } from './core/System'
 
@@ -110,13 +110,13 @@ try
 				{
 					const dependencies = linked
 
-					const newAttributes: Task = new Task(
+					const newAttributes: ITask =
 					{
 						name,
 						dependencies,
 						state,
 						description,
-					});
+					}
 
 					if( !name )
 						delete newAttributes.name
