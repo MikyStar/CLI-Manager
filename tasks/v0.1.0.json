@@ -20,6 +20,20 @@
     },
     "datas": [
         {
+            "name": "--sort flag",
+            "state": "done",
+            "id": 30,
+            "timestamp": "28/07/2021",
+            "subtasks": [
+                {
+                    "name": "in config file too",
+                    "state": "done",
+                    "id": 31,
+                    "timestamp": "28/07/2021"
+                }
+            ]
+        },
+        {
             "name": "in the retrieve nested task, i might want to access the parent board id from the callback",
             "state": "done",
             "id": 71,
@@ -99,7 +113,7 @@
         },
         {
             "name": "extraction",
-            "state": "done",
+            "state": "wip",
             "id": 1,
             "timestamp": "25/07/2021"
         },
@@ -220,12 +234,6 @@
             "timestamp": "09/10/2021"
         },
         {
-            "name": "add in readme that icon can be simple string too",
-            "state": "todo",
-            "id": 41,
-            "timestamp": "06/08/2021"
-        },
-        {
             "name": "if only text arg, make a task",
             "state": "todo",
             "id": 74,
@@ -289,20 +297,6 @@
                     "state": "todo",
                     "id": 39,
                     "timestamp": "29/07/2021"
-                }
-            ]
-        },
-        {
-            "name": "--sort flag",
-            "state": "todo",
-            "id": 30,
-            "timestamp": "28/07/2021",
-            "subtasks": [
-                {
-                    "name": "in config file too",
-                    "state": "todo",
-                    "id": 31,
-                    "timestamp": "28/07/2021"
                 }
             ]
         },
