@@ -25,3 +25,11 @@ export class TaskIdDuplicatedError extends CatchableError
 		super( `Multiple task has the id '${ taskID }'`, error )
 	}
 }
+
+export class NoFurtherStateError extends CatchableError
+{
+	constructor( taskID: number, error ?: any )
+	{
+		super( `Final state already reached for task '${ taskID }'`, error )
+	}
+}
