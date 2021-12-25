@@ -189,7 +189,10 @@ task i 11,14 -r	# Pass tasks 11 and 14 and their subtasks to next state, "Increm
 task mv 9,7,11 3	# Move multiple tasks and subtasks to task as subtasks (maintining tree structure)
 
 # Deleting tasks
-task d 9,7,11	# Delting task 9, 7 and 11
+task d 9,7,11	# Delting tasks 9, 7 and 11
+
+# Extracting to new file
+task x 9,7,11 newFile.json	# Move tasks 9, 7 and 11 to a new storage file ./newFile.json
 ```
 
 # Intended Workflow

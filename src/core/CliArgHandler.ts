@@ -15,6 +15,7 @@ export enum Action
 	EDIT = 'e',
 	INCREMENT = 'i',
 	MOVE = 'mv',
+	EXTRACT = 'x',
 }
 
 export enum BooleanFlag

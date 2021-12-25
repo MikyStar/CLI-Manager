@@ -1,6 +1,6 @@
 import { CliArgHandler, Action, isAction } from "../core/CliArgHandler";
-import { Printer, PrinterConfig } from "../core/Printer";
-import { Storage, DEFAULT_STORAGE_FILE_NAME, DEFAULT_STORAGE_DATAS } from "../core/Storage";
+import { Printer, PrinterFactory } from "../core/Printer";
+import { Storage, DEFAULT_STORAGE_FILE_NAME, StorageFactory } from "../core/Storage";
 import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "../core/Config";
 import { System } from "../core/System";
 
@@ -60,47 +60,28 @@ export class MainController
 
 		//////////
 
-		const printConfig = this.mergePrintConfig( printing, this.config )
-
-		if( printConfig.group )
-		{
-			this.storage.group( printConfig.group )
-
-			if( printConfig.sort )
-				this.storage.order( printConfig.sort )
-		}
-
-		this.printer = new Printer( this.storage, printConfig )
+		this.printer = PrinterFactory.create( this.argHandler, this.config, this.storage )
 	}
 
 	////////////////////
 
-	private mergePrintConfig = ( fromArgs: PrinterConfig, fromConfig: PrinterConfig ) : PrinterConfig =>
-	{
-		let toReturn = { ...fromConfig }
-
-		for( const [ key, value ] of Object.entries( fromArgs ) )
-			if( fromArgs[ key ] !== undefined )
-				toReturn[ key ] = value
-
-		return toReturn
-	}
-
 	private handleInit = () =>
 	{
+		const printer = new Printer()
+
 		if( !this.config )
 		{
 			System.writeJSONFile( this.configLocation, DEFAULT_CONFIG_DATAS )
-			this.printer.addFeedback( `Config file '${ this.configLocation }' created` )
+			printer.addFeedback( `Config file '${ this.configLocation }' created` )
 		}
 
 		if( !this.storage )
 		{
-			System.writeJSONFile( this.storageLocation, DEFAULT_STORAGE_DATAS )
-			this.printer.addFeedback( `Storage file '${ this.storageLocation }' created` )
+			StorageFactory.init( this.storageLocation )
+			printer.addFeedback( `Storage file '${ this.storageLocation }' created` )
 		}
 
-		this.printer.printFeedback()
+		printer.printFeedback()
 		System.exit()
 	}
 }

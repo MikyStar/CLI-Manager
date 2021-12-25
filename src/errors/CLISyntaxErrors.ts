@@ -84,3 +84,13 @@ export class GroupBySyntaxError extends CLISyntaxError
 		super( message, 'viewing', details )
 	}
 }
+
+////////////////////////////////////////
+
+export class ExtractSyntaxError extends CLISyntaxError
+{
+	constructor( message: string, details ?: any )
+	{
+		super( message, 'extracting', details )
+	}
+}

@@ -3,6 +3,8 @@ import { GroupByType, Order, TaskList } from './TaskList';
 import { System } from './System'
 
 import { FileAlreadyExistsError } from '../errors/FileErrors';
+import { ExtractSyntaxError } from '../errors/CLISyntaxErrors';
+import { TaskNotFoundError } from '../errors/TaskErrors';
 
 ////////////////////////////////////////
 
@@ -76,16 +78,8 @@ export class Storage
 
 	////////////////////////////////////////
 
-	constructor( relativePath : string, isCreation ?: boolean )
+	constructor( relativePath : string )
 	{
-		if( isCreation )
-		{
-			if( System.doesFileExists( relativePath ) )
-				throw new FileAlreadyExistsError( relativePath )
-			else
-				System.writeJSONFile( relativePath, DEFAULT_STORAGE_DATAS )
-		}
-
 		this.relativePath = relativePath
 
 		const { meta, datas } = System.readJSONFile( this.relativePath ) as StorageFile
@@ -135,7 +129,52 @@ export class Storage
 
 	order = ( order: Order ) => ( order === 'desc' ) && this.tasks.reverse()
 
+	get = ( id: number ): Task =>
+	{
+		let toReturn : Task = undefined
+
+		this.tasks.retrieveTask( id, ({ task }) => toReturn = task )
+
+		if( toReturn === undefined )
+			throw new TaskNotFoundError( id )
+
+		return toReturn
+	}
+
 	////////////////////////////////////////
 
 	save = () => System.writeJSONFile( this.relativePath, { meta: this.meta, datas: this.tasks } )
+}
+
+////////////////////////////////////////
+
+export const StorageFactory =
+{
+	init : ( relativePath: string ): Storage =>
+	{
+		if( System.doesFileExists( relativePath ) )
+			throw new FileAlreadyExistsError( relativePath )
+
+		System.writeJSONFile( relativePath, DEFAULT_STORAGE_DATAS )
+
+		return new Storage( relativePath )
+	},
+
+	extract : ( newFilePath: string, originStorage: Storage, tasks: Task[] ): Storage =>
+	{
+		if( System.doesFileExists( newFilePath ) )
+			throw new FileAlreadyExistsError( newFilePath )
+
+		const newFile: StorageFile =
+		{
+			meta: originStorage.meta,
+			datas: tasks
+		}
+
+		System.writeJSONFile( newFilePath, newFile )
+
+		tasks.forEach( task => originStorage.deleteTask( task.id ) )
+
+		return new Storage( newFilePath )
+	}
 }

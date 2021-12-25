@@ -31,6 +31,8 @@ export interface ManEntries
 	checkingTask: ManPage
 	incrementingTask: ManPage
 	movingTask: ManPage
+
+	extracting: ManPage
 }
 
 ////////////////////////////////////////
@@ -53,11 +55,7 @@ class Help implements ManEntries
 	checkingTask: ManPage
 	incrementingTask: ManPage
 	movingTask: ManPage
-
-	creatingBoard: ManPage
-	cleaningBoard: ManPage
-	extractingBoards: ManPage
-
+	extracting: ManPage
 	deleting: ManPage
 
 	////////////////////
@@ -213,10 +211,22 @@ class Help implements ManEntries
 		this.deleting =
 		{
 			title: 'Deleting',
-			prototype: 'task d [<task(s)>]',
+			prototype: 'task d <task(s)>',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to remove, you can pass multiple by separating the ids by ',' without space",
+			],
+			globalArgs: true,
+		}
+
+		this.extracting =
+		{
+			title: 'Extracting',
+			prototype: 'task x <task(s)> <relative path>',
+			argDef:
+			[
+				"<task(s)> : The id of the task you want to extract, you can pass multiple by separating the ids by ',' without space",
+				"<relative path> : Path of the new storage file",
 			],
 			globalArgs: true,
 		}
