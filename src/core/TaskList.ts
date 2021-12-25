@@ -3,7 +3,7 @@ import moment from "moment"
 
 import { Task, ITask,TIMESTAMP_FORMAT } from "./Task"
 
-import { TaskIdDuplicatedError, TaskNotFoundError, TaskStateUnknownError } from "../errors/TaskErrors"
+import { NoFurtherStateError, TaskIdDuplicatedError, TaskNotFoundError, TaskStateUnknownError } from "../errors/TaskErrors"
 import { Meta } from "./Storage"
 
 ////////////////////////////////////////
@@ -36,7 +36,7 @@ export class TaskList extends Array<Task>
 
 		this.allIDs = []
 
-		this.push( ...items.map( item => new Task( item ) ) )
+		items && this.push( ...items.map( item => new Task( item ) ) )
 	}
 
 	//////////
@@ -111,16 +111,10 @@ export class TaskList extends Array<Task>
 		{
 			this.retrieveTask( id, ({ task }) =>
 			{
+				const impactedTasks = isRecurive ? task.straightTask() : [ task ]
+
 				for( const [k, v] of Object.entries( newAttributes ) )
-					task[ k ] = v
-
-				if( isRecurive )
-				{
-					const subtasksIDs = task.subtasks?.map( sub => sub.id ) || []
-
-					if( subtasksIDs.length !== 0 )
-						this.editTask( subtasksIDs, newAttributes, true )
-				}
+					impactedTasks.forEach( aTask => aTask[ k ] = v )
 			});
 		});
 
@@ -134,24 +128,30 @@ export class TaskList extends Array<Task>
 		const { states } = meta
 		const statesNames = states.map( state => state.name )
 
+		const handleIncrement = ( task: Task ) =>
+		{
+			const currentStateIndex = statesNames.indexOf( task.state )
+
+			if( currentStateIndex === -1 )
+				throw new TaskStateUnknownError( task.id, task.state )
+
+			if( currentStateIndex !== statesNames.length -1 )
+				task.state = statesNames[ currentStateIndex + 1 ]
+			else
+				throw new NoFurtherStateError( task.id )
+		}
+
 		tasksID.forEach( id =>
 		{
 			this.retrieveTask( id, ({ task }) =>
 			{
-				const currentStateIndex = statesNames.indexOf( task.state )
+				handleIncrement( task )
 
-				if( currentStateIndex === -1 )
-					throw new TaskStateUnknownError( id, task.state )
-
-				if( currentStateIndex !== statesNames.length -1 )
-					task.state = statesNames[ currentStateIndex + 1 ]
-
-				if( isRecurive )
+				if( isRecurive && task.subtasks )
 				{
-					const subtasksIDs = task.subtasks?.map( sub => sub.id ) || []
+					const flatten = task.straightTask()
 
-					if( subtasksIDs.length !== 0 )
-						this.incrementTask( subtasksIDs, meta, true )
+					flatten.forEach( aTask => handleIncrement( aTask ) )
 				}
 			})
 		});
@@ -226,8 +226,7 @@ export class TaskList extends Array<Task>
 		let wasTaskFound = false
 		let lastParentTaskId = undefined
 
-		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
-		this.forEach( function iter( task, taskIndex )
+		const iter = ( task : Task, taskIndex: number ) =>
 		{
 			if( task.id === taskID )
 			{
@@ -240,7 +239,10 @@ export class TaskList extends Array<Task>
 				lastParentTaskId = task.id
 				Array.isArray( task.subtasks ) && task.subtasks.forEach( iter );
 			}
-		});
+		}
+
+		// @see: https://stackoverflow.com/questions/43612046/how-to-update-value-of-nested-array-of-objects
+		this.forEach( iter );
 
 		if( !wasTaskFound )
 			throw new TaskNotFoundError( taskID )

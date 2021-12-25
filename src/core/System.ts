@@ -2,7 +2,8 @@ import fs from 'fs'
 import path from 'path'
 
 import { FileNotFoundError, JSONParseError, SaveFileError } from '../errors/FileErrors';
-import { TaskList } from './TaskList';
+import { StorageFile } from './Storage';
+import { ConfigFile } from './Config';
 
 ////////////////////////////////////////
 
@@ -42,7 +43,7 @@ export namespace System
 
 	export const doesFileExists = ( relativePath: string ) : boolean => fs.existsSync( getAbsolutePath( relativePath ) ) || false
 
-	export const writeJSONFile = ( relativePath: string, datas: TaskList | any ) : any =>
+	export const writeJSONFile = ( relativePath: string, datas: StorageFile | ConfigFile ) : any =>
 	{
 		try
 		{

@@ -7,15 +7,40 @@ import { FileAlreadyExistsError } from '../errors/FileErrors';
 ////////////////////////////////////////
 
 export const DEFAULT_STORAGE_FILE_NAME = "tasks.json"
-export const DEFAULT_STORAGE_DATAS: TaskList = new TaskList(
-[
+export const DEFAULT_STORAGE_DATAS: StorageFile =
+{
+	meta:
 	{
-		name: "Add more stuff",
-		description: "There's a lot of things to do",
-		state: "todo",
-		id: 0,
-	}
-])
+		states:
+		[
+			{
+				name: "todo",
+				hexColor: "#ff8f00",
+				icon: "☐"
+			},
+			{
+				name: "wip",
+				hexColor: "#ab47bc",
+				icon: "✹"
+			},
+			{
+				name: "done",
+				hexColor: "#66bb6a",
+				icon: "✔"
+			}
+		]
+	},
+	datas:
+	[
+		{
+			name: "Add more stuff",
+			description: "There's a lot of things to do",
+			state: "todo",
+			id: 0,
+		}
+	]
+}
+
 
 ////////////////////////////////////////
 
@@ -31,7 +56,7 @@ export interface TaskState
 	icon: string
 }
 
-interface StorageFile
+export interface StorageFile
 {
 	meta : Meta,
 	datas: ITask[]
@@ -112,5 +137,5 @@ export class Storage
 
 	////////////////////////////////////////
 
-	save = () => System.writeJSONFile( this.relativePath, this.tasks )
+	save = () => System.writeJSONFile( this.relativePath, { meta: this.meta, datas: this.tasks } )
 }
