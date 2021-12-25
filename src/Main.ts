@@ -196,14 +196,13 @@ try
 						taskPluralHandled = 'Task'
 						stringifyiedIDS = ids
 
-						let parentTask = undefined
-						storage.tasks.retrieveTask( ids as number, ({ parentTaskID }) => parentTask = parentTaskID )
+						let parent: Task = undefined
+						storage.tasks.retrieveTask( ids as number, ({ parentTask }) => parent = parentTask )
 
-						printer.setView( parentTask ? 'specific' : 'full', parentTask )
+						printer.setView( parent ? 'specific' : 'full', parent.id )
 					}
 
 					storage.deleteTask( ids )
-
 
 					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
 				}

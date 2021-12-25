@@ -186,12 +186,6 @@
             ]
         },
         {
-            "name": "add a way to print only boards names with their stats as on overview of available boards",
-            "state": "todo",
-            "id": 57,
-            "timestamp": "19/12/2021"
-        },
-        {
             "name": "gitlike vim edition",
             "state": "todo",
             "id": 46,
@@ -218,12 +212,6 @@
                     "timestamp": "19/12/2021"
                 }
             ]
-        },
-        {
-            "name": "every task should have a real unique id and the id provided by user is only to make a relatioship with the real hash id",
-            "state": "todo",
-            "id": 42,
-            "timestamp": "19/12/2021"
         },
         {
             "name": "clickabke",
@@ -315,18 +303,6 @@
                     "state": "todo",
                     "id": 31,
                     "timestamp": "28/07/2021"
-                },
-                {
-                    "name": "can be state(s), time range, deadline(s), tag(s)",
-                    "state": "todo",
-                    "id": 32,
-                    "timestamp": "28/07/2021"
-                },
-                {
-                    "name": "the function should return a IBoard",
-                    "state": "todo",
-                    "id": 26,
-                    "timestamp": "29/07/2021"
                 }
             ]
         },
@@ -407,18 +383,6 @@
             ]
         },
         {
-            "name": "refactor init with better file classes like the creation arg in storage constructor",
-            "state": "todo",
-            "id": 0,
-            "timestamp": "06/08/2021"
-        },
-        {
-            "name": "duplicated task index -> N°72",
-            "state": "todo",
-            "id": 80,
-            "timestamp": "05/08/2021"
-        },
-        {
             "name": "a description flag as empty string should remove the description",
             "state": "todo",
             "id": 78,
@@ -443,38 +407,6 @@
             "state": "todo",
             "id": 70,
             "timestamp": "04/08/2021"
-        },
-        {
-            "name": "Refactor default args",
-            "state": "todo",
-            "id": 47,
-            "timestamp": "01/08/2021",
-            "subtasks": [
-                {
-                    "name": "change parent attribute name",
-                    "state": "todo",
-                    "id": 48,
-                    "timestamp": "29/07/2021"
-                },
-                {
-                    "name": "separate printing args from others",
-                    "state": "todo",
-                    "id": 49,
-                    "timestamp": "29/07/2021"
-                },
-                {
-                    "name": "have separated args for task view and agenda view",
-                    "state": "todo",
-                    "id": 50,
-                    "timestamp": "29/07/2021"
-                }
-            ]
-        },
-        {
-            "name": "if no board provided for add task, neither task id, use the default board name from the default config datas",
-            "state": "todo",
-            "id": 34,
-            "timestamp": "28/07/2021"
         }
     ]
 }
