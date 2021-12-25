@@ -259,10 +259,10 @@ try
 				if( Array.isArray( secondArg.value ) )
 				{
 					const ids = secondArg.value as number[]
-					ids.map( id =>
+					ids.map( ( id, index ) =>
 					{
 						involvedTasks.push( storage.get( id ) )
-						textID += `${ id }`
+						textID += `${ id }${ ( index !== ( ids.length -1 ) ? ',' : '' ) }`
 					})
 
 					textTask = 'Tasks'
