@@ -80,12 +80,10 @@ export class Task implements ITask
 			{
 				const result = sub.straightTask()
 
-				toReturn = [ ...toReturn, ...result ]
+				toReturn.push( ...result )
 			})
 
-			const taskCopy: Task = { ...this }
-			delete taskCopy.subtasks
-			toReturn.push( taskCopy )
+			toReturn.push( this )
 
 			return toReturn
 		}
