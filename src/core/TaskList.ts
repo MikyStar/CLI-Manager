@@ -19,7 +19,7 @@ interface RetrieveTaskCallback
 {
 	task: Task,
 	taskIndex: number,
-	parentTaskID ?: number
+	parentTask: Task,
 }
 
 ////////////////////////////////////////
@@ -249,7 +249,7 @@ export class TaskList extends Array<Task>
 	retrieveTask = ( taskID: number, callback: ( cbParams : RetrieveTaskCallback ) => void ) =>
 	{
 		let wasTaskFound = false
-		let lastParentTaskId = undefined
+		let parentTask = undefined
 
 		const iter = ( task : Task, taskIndex: number ) =>
 		{
@@ -257,17 +257,15 @@ export class TaskList extends Array<Task>
 			{
 				wasTaskFound = true
 
-				return callback( { task, taskIndex, parentTaskID: lastParentTaskId })
+				return callback( { task, taskIndex, parentTask })
 			}
 			else
 			{
 				if( Array.isArray( task.subtasks ) )
 				{
-					lastParentTaskId = task.id
+					parentTask = task
 					task.subtasks.forEach( iter );
 				}
-				else
-					lastParentTaskId = undefined
 			}
 		}
 
