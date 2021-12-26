@@ -12,6 +12,7 @@ import { CLISyntaxError, DeletingTaskSyntaxError, EditingSyntaxError, CheckingTa
 	, IncrementingTaskSyntaxError, MovingTaskSyntaxError, ExtractSyntaxError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
 import { StorageFactory } from "./core/Storage";
+import { idsController } from "./controller/IDSController";
 
 ////////////////////////////////////////
 
@@ -122,12 +123,11 @@ try
 					if( !description )
 						delete newAttributes.description
 
-					const ids = secondArg.value as number | number[]
-					const tasksID = storage.editTask( ids, newAttributes, isRecursive )
+					const { ids, textID, textTask } = idsController( storage, secondArg.value as number | number[] )
 
-					const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
-					const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' edited` ).setView( 'specific', ids )
+					storage.editTask( ids, newAttributes, isRecursive )
+
+					printer.addFeedback( `${ textTask } '${ textID }' edited` ).setView( 'specific', ids )
 				}
 
 				printer.print()
