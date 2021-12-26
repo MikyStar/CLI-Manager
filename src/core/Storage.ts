@@ -97,28 +97,28 @@ export class Storage
 		return id
 	}
 
-	editTask = ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) =>
+	editTask = ( tasksID: number[], newAttributes: ITask, isRecurive ?: boolean ) =>
 	{
 		const id = this.tasks.editTask( tasksID, newAttributes, isRecurive )
 		this.save()
 		return id
 	}
 
-	incrementTask = ( tasksID: number | number[], isRecurive ?: boolean ) =>
+	incrementTask = ( tasksID: number[], isRecurive ?: boolean ) =>
 	{
 		const id = this.tasks.incrementTask( tasksID, this.meta, isRecurive )
 		this.save()
 		return id
 	}
 
-	deleteTask = ( tasksID: number | number[] ) =>
+	deleteTask = ( tasksID: number[] ) =>
 	{
 		const id = this.tasks.deleteTask( tasksID )
 		this.save()
 		return id
 	}
 
-	moveTask = ( tasksID: number | number [], subTaskOf: number ) =>
+	moveTask = ( tasksID: number [], subTaskOf: number ) =>
 	{
 		const id = this.tasks.moveTask( tasksID, subTaskOf )
 		this.save()
@@ -173,7 +173,7 @@ export const StorageFactory =
 
 		System.writeJSONFile( newFilePath, newFile )
 
-		tasks.forEach( task => originStorage.deleteTask( task.id ) )
+		tasks.forEach( task => originStorage.deleteTask( [ task.id ] ) )
 
 		return new Storage( newFilePath )
 	}
