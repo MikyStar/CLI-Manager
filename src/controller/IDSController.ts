@@ -16,6 +16,7 @@ type TextTask = 'Task' | 'Tasks'
 
 ////////////////////////////////////////
 
+// TODO change argIDVal to rawArg type and check if number or number[]
 export const idsController = ( storage: Storage, argIDVal: number | number[] ): IDControllerReturn =>
 {
 	const ids: number [] = []
@@ -26,7 +27,7 @@ export const idsController = ( storage: Storage, argIDVal: number | number[] ): 
 	if( Array.isArray( argIDVal ) )
 	{
 		textTask = 'Tasks'
-		argIDVal.forEach( ( id, index ) => textID += `${ id }${ ( index !== ( ids.length -1 ) ? ',' : '' ) }` )
+		argIDVal.forEach( ( id, index ) => textID += `${ id }${ ( index !== ( argIDVal.length -1 ) ? ',' : '' ) }` )
 		ids.push( ...argIDVal )
 	}
 	else

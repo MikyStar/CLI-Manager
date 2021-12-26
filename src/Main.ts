@@ -141,14 +141,12 @@ try
 				if( !isTask( secondArg ) )
 					throw new CheckingTaskSyntaxError( "Your second arguments should be a number or numbers join by ','" )
 
-				const ids = secondArg.value as number | number[]
+				const { ids, textID, textTask } = idsController( storage, secondArg.value as number | number[] )
 
 				const lastState = storage.meta.states[ storage.meta.states.length - 1 ].name
-				const tasksID = storage.editTask( ids, { state: lastState }, isRecursive )
+				storage.editTask( ids, { state: lastState }, isRecursive )
 
-				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
-				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' checked` ).setView( 'specific', ids ).print()
+				printer.addFeedback( `${ textTask } '${ textID }' checked` ).setView( 'specific', ids ).print()
 				break;
 			}
 
@@ -157,15 +155,13 @@ try
 			case Action.INCREMENT:
 			{
 				if( !isTask( secondArg ) )
-					throw new IncrementingTaskSyntaxError( "Your second arguments should be a number or numbers join by ','" )
+					throw new IncrementingTaskSyntaxError( `Second arg '${ secondArg.value }' should be one or more task` )
 
-				const ids = secondArg.value as number | number[]
+				const { ids, textID, textTask } = idsController( storage, secondArg.value as number | number[] )
 
-				const tasksID = storage.incrementTask( ids, isRecursive )
+				storage.incrementTask( ids, isRecursive )
 
-				const taskPluralHandled = ( tasksID.length > 1 ) ? 'Tasks' : 'Task'
-				const stringifyiedIDS = ( tasksID.length > 1 ) ? ( tasksID.join(',') ) : tasksID
-				printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' incremented` ).setView( 'specific', ids ).print()
+				printer.addFeedback( `${ textTask } '${ textID }' incremented` ).setView( 'specific', ids ).print()
 				break;
 			}
 
@@ -173,37 +169,26 @@ try
 
 			case Action.DELETE:
 			{
-				if( isTask( secondArg ) )
-				{
-					const ids = secondArg.value as number | number[]
-
-					let taskPluralHandled, stringifyiedIDS
-
-					if( Array.isArray( ids ) && ids.length > 1 )
-					{
-						taskPluralHandled = 'Tasks'
-						stringifyiedIDS = ids.join(',')
-
-						printer.setView( 'full' )
-					}
-					else
-					{
-						taskPluralHandled = 'Task'
-						stringifyiedIDS = ids
-
-						let parent: Task = undefined
-						storage.tasks.retrieveTask( ids as number, ({ parentTask }) => parent = parentTask )
-
-						printer.setView( parent ? 'specific' : 'full', parent.id )
-					}
-
-					storage.deleteTask( ids )
-
-					printer.addFeedback( `${ taskPluralHandled } '${ stringifyiedIDS }' deleted` )
-				}
-				else
+				if( !isTask( secondArg ) )
 					throw new DeletingTaskSyntaxError( `Second arg '${ secondArg.value }' should be one or more task` )
 
+				const { ids, textID, textTask } = idsController( storage, secondArg.value as number | number[] )
+
+				if( Array.isArray( ids ) && ids.length > 1 )
+				{
+					printer.setView( 'full' )
+				}
+				else
+				{
+					let parent: Task = undefined
+					storage.tasks.retrieveTask( ids[ 0 ], ({ parentTask }) => parent = parentTask )
+
+					printer.setView( parent ? 'specific' : 'full', parent.id )
+				}
+
+				storage.deleteTask( ids )
+
+				printer.addFeedback( `${ textTask } '${ textID }' deleted` )
 				printer.print()
 				break;
 			}
@@ -218,23 +203,16 @@ try
 				if( !isTask( thirdArg ) )
 					throw new MovingTaskSyntaxError( `Third arg '${ thirdArg.value }' should be one task id` )
 
-				const targetIDs = secondArg.value as number | number[]
+				if( Array.isArray( thirdArg.value ) )
+					throw new MovingTaskSyntaxError( `Please provide only one destination task id` )
 
-				let destFeedback = ''
-				if( isTask( thirdArg ) )
-				{
-					if( Array.isArray( thirdArg.value ) )
-						throw new MovingTaskSyntaxError( `Please provide only one destination task id` )
+				const { ids, textID, textTask } = idsController( storage, secondArg.value as number | number[] )
 
-					const destTaskID = thirdArg.value as number
-					destFeedback = `task n°${ destTaskID }`
+				const destTaskID = thirdArg.value as number
 
-					storage.moveTask( targetIDs, destTaskID )
-					printer.setView( 'specific', destTaskID )
-					printer.addFeedback( `Tasks '${ targetIDs }' moved to ${ destFeedback }` ).print()
-				}
-				else
-					throw new MovingTaskSyntaxError( `Please provide a Task ID for destination as second arg istead of '${ thirdArg }'` )
+				storage.moveTask( ids, destTaskID )
+				printer.setView( 'specific', destTaskID )
+				printer.addFeedback( `${ textTask } '${ textID }' moved to task n°${ destTaskID }` ).print()
 
 				break;
 			}
@@ -247,31 +225,10 @@ try
 				if( !isText( thirdArg ) )
 					throw new ExtractSyntaxError( `Thrid arg '${ thirdArg.value }' should be text` )
 
-				const involvedTasks: Task[] = []
-				let textTask = '', textID = ''
-
-				if( Array.isArray( secondArg.value ) )
-				{
-					const ids = secondArg.value as number[]
-					ids.map( ( id, index ) =>
-					{
-						involvedTasks.push( storage.get( id ) )
-						textID += `${ id }${ ( index !== ( ids.length -1 ) ? ',' : '' ) }`
-					})
-
-					textTask = 'Tasks'
-				}
-				else
-				{
-					const id = secondArg.value as number
-					involvedTasks.push( storage.get( id ) )
-
-					textID = `${ id }`
-					textTask = 'Task'
-				}
-
+				const { tasks, textID, textTask } = idsController( storage, secondArg.value as number | number[] )
 				const destination = thirdArg.value as string
-				const newStorage = StorageFactory.extract( destination, storage, involvedTasks )
+
+				const newStorage = StorageFactory.extract( destination, storage, tasks )
 				const newPrinter = PrinterFactory.create( argHandler, config, newStorage )
 
 				newPrinter.setView( 'full' )

@@ -41,6 +41,31 @@ export class TaskList extends Array<Task>
 
 	//////////
 
+	/** @see: https://stackoverflow.com/questions/49349195/using-splice-method-in-subclass-of-array-in-javascript -> Exact same problem */
+	private remove = ( task: Task ) =>
+	{
+		const idIndex = this.allIDs.findIndex( anId => anId === task.id )
+		this.allIDs.splice( idIndex, 1 )
+
+		let index = this.indexOf( task );
+
+		if( index > -1 )
+		{
+			const newLength = this.length - 1;
+			while( index < newLength )
+			{
+				this[index] = this[index + 1];
+				++index;
+			}
+			this.length = newLength;
+
+			return [ task ];
+		}
+		return [];
+	}
+
+	//////////
+
 	/** @override */
 	push = ( ...tasks: Task[] ) =>
 	{
@@ -103,10 +128,8 @@ export class TaskList extends Array<Task>
 		return taskID
 	}
 
-	editTask = ( tasksID: number | number[], newAttributes: ITask, isRecurive ?: boolean ) =>
+	editTask = ( tasksID: number[], newAttributes: ITask, isRecurive ?: boolean ) =>
 	{
-		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
-
 		tasksID.forEach( id =>
 		{
 			this.retrieveTask( id, ({ task }) =>
@@ -121,10 +144,8 @@ export class TaskList extends Array<Task>
 		return tasksID
 	}
 
-	incrementTask = ( tasksID: number | number[], meta: Meta, isRecurive ?: boolean ) =>
+	incrementTask = ( tasksID: number[], meta: Meta, isRecurive ?: boolean ) =>
 	{
-		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
-
 		const { states } = meta
 		const statesNames = states.map( state => state.name )
 
@@ -136,7 +157,7 @@ export class TaskList extends Array<Task>
 				throw new TaskStateUnknownError( task.id, task.state )
 
 			if( currentStateIndex !== statesNames.length -1 )
-				task.state = statesNames[ currentStateIndex + 1 ]
+				this.editTask( [ task.id ], { state: statesNames[ currentStateIndex + 1 ] }, isRecurive )
 			else
 				throw new NoFurtherStateError( task.id )
 		}
@@ -146,46 +167,14 @@ export class TaskList extends Array<Task>
 			this.retrieveTask( id, ({ task }) =>
 			{
 				handleIncrement( task )
-
-				if( isRecurive && task.subtasks )
-				{
-					const flatten = task.straightTask()
-
-					flatten.forEach( aTask => handleIncrement( aTask ) )
-				}
 			})
 		});
 
 		return tasksID
 	}
 
-	/** @see: https://stackoverflow.com/questions/49349195/using-splice-method-in-subclass-of-array-in-javascript -> Exact same problem */
-	private remove = ( task: Task ) =>
+	deleteTask = ( tasksID: number[] ) =>
 	{
-		const idIndex = this.allIDs.findIndex( anId => anId === task.id )
-		this.allIDs.splice( idIndex, 1 )
-
-		let index = this.indexOf( task );
-
-		if( index > -1 )
-		{
-			const newLength = this.length - 1;
-			while( index < newLength )
-			{
-				this[index] = this[index + 1];
-				++index;
-			}
-			this.length = newLength;
-
-			return [ task ];
-		}
-		return [];
-	}
-
-	deleteTask = ( tasksID: number | number[] ) =>
-	{
-		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
-
 		tasksID.forEach( id =>
 		{
 			let wasTaskFound = false
@@ -227,13 +216,11 @@ export class TaskList extends Array<Task>
 		return tasksID
 	}
 
-	moveTask = ( tasksID: number | number [], subTaskOf: number ) =>
+	moveTask = ( tasksID: number [], subTaskOf: number ) =>
 	{
-		tasksID = Array.isArray( tasksID ) ? tasksID : [ tasksID ]
-
 		tasksID.forEach( id => this.retrieveTask( id, ({ task }) =>
 		{
-			this.deleteTask( id )
+			this.deleteTask( [ id ] )
 
 			this.addTask( task, subTaskOf )
 		}));
