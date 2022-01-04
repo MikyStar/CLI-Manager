@@ -24,7 +24,7 @@ try
 	const { flags, words } = argHandler
 	const [ firstArg, secondArg, thirdArg, ...restSentence ] = words
 	const { dataAttributes, isHelpNeeded, isVersion, isRecursive, printing } = flags
-	const { state, description } = dataAttributes
+	const { state, description, priority } = dataAttributes
 
 	const isThereCLIArgs = words.length > 0
 	const isThereOnlyOneCLIArgs = words.length === 1
@@ -79,6 +79,7 @@ try
 						name: argHandler.getFirstText(),
 						state: state || storage.meta.states[ 0 ].name,
 						description,
+						priority
 					});
 
 					let subTaskOf = undefined
@@ -114,6 +115,7 @@ try
 						name,
 						state,
 						description,
+						priority
 					}
 
 					if( !name )
@@ -122,6 +124,8 @@ try
 						delete newAttributes.state
 					if( !description )
 						delete newAttributes.description
+					if( !priority )
+						delete newAttributes.priority
 
 					const { ids, textID, textTask } = idsController( storage, secondArg.value as number | number[] )
 
