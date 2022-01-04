@@ -188,8 +188,8 @@ try
 
 				storage.deleteTask( ids )
 
-				printer.addFeedback( `${ textTask } '${ textID }' deleted` )
-				printer.print()
+				printer.addFeedback( `${ textTask } '${ textID }' deleted` ).print()
+
 				break;
 			}
 
@@ -217,6 +217,8 @@ try
 				break;
 			}
 
+			////////////////////
+
 			case Action.EXTRACT:
 			{
 				if( !isTask( secondArg ) )
@@ -237,6 +239,9 @@ try
 				break;
 			}
 		}
+
+		////////////////////
+		////////////////////
 
 		System.exit()
 	}
