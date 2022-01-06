@@ -89,7 +89,7 @@ class Help implements ManEntries
 			'--hide-timestamp : No timestamp',
 			'--hide-sub-counter : No subtask counter in parent task',
 			'--no-print : Prevent printing your tasks after having ran your command',
-			`--group (${ handledGroupings.map( ( str, i ) => ( i !== handledGroupings.length ) ? ( `${ str }|` ) : str ) }) : Group by attribute`
+			`--group (${ handledGroupings.map( str => str ) }) : Group by attribute`
 		]
 
 		//////////

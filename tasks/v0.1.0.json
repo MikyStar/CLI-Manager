@@ -206,6 +206,48 @@
             "timestamp": "04/08/2021"
         },
         {
+            "name": "add priority",
+            "state": "done",
+            "id": 63,
+            "timestamp": "03/08/2021",
+            "subtasks": [
+                {
+                    "name": "can sort by it",
+                    "state": "done",
+                    "id": 64,
+                    "timestamp": "03/08/2021"
+                },
+                {
+                    "name": "with !!!",
+                    "state": "done",
+                    "id": 65,
+                    "timestamp": "04/08/2021",
+                    "priority": 2
+                },
+                {
+                    "name": "can de undefined",
+                    "state": "done",
+                    "id": 66,
+                    "timestamp": "04/08/2021",
+                    "subtasks": [
+                        {
+                            "name": "if undefined dont add it in storage",
+                            "state": "done",
+                            "id": 67,
+                            "timestamp": "04/08/2021"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "fix double error printing when not providing a group attribute",
+            "state": "todo",
+            "id": 32,
+            "timestamp": "06/01/2022",
+            "priority": 2
+        },
+        {
             "name": "can add default task view in config file",
             "state": "todo",
             "id": 0,
@@ -250,40 +292,6 @@
             "state": "todo",
             "id": 74,
             "timestamp": "04/08/2021"
-        },
-        {
-            "name": "add priority",
-            "state": "wip",
-            "id": 63,
-            "timestamp": "03/08/2021",
-            "subtasks": [
-                {
-                    "name": "can sort by it",
-                    "state": "wip",
-                    "id": 64,
-                    "timestamp": "03/08/2021"
-                },
-                {
-                    "name": "with !!!",
-                    "state": "wip",
-                    "id": 65,
-                    "timestamp": "04/08/2021"
-                },
-                {
-                    "name": "can de undefined",
-                    "state": "wip",
-                    "id": 66,
-                    "timestamp": "04/08/2021",
-                    "subtasks": [
-                        {
-                            "name": "if undefined dont add it in storage",
-                            "state": "wip",
-                            "id": 67,
-                            "timestamp": "04/08/2021"
-                        }
-                    ]
-                }
-            ]
         },
         {
             "name": "flag --no-completed to hide tasks at final state",
@@ -407,6 +415,13 @@
                     "timestamp": "05/08/2021"
                 }
             ]
+        },
+        {
+            "name": "dont order the writed JSON (simpler to follow in git)",
+            "state": "todo",
+            "priority": 3,
+            "id": 26,
+            "timestamp": "06/01/2022"
         }
     ]
 }
