@@ -8,7 +8,7 @@ import { Meta } from "./Storage"
 
 ////////////////////////////////////////
 
-export const handledGroupings = [ 'state', 'priority', 'tag', 'deadline', 'load', 'linked' ] as const
+export const handledGroupings = [ 'state', 'priority', 'tag', 'deadline', 'load' ] as const
 export type GroupByType = typeof handledGroupings[ number ]
 
 export type Order = 'asc' | 'desc'
@@ -327,8 +327,13 @@ export class TaskList extends Array<Task>
 		return toReturn
 	}
 
-	group = ( groupBy: GroupByType = 'state', meta: Meta ) =>
+	group = ( groupBy: GroupByType, meta: Meta ) =>
 	{
+		/**
+		 * a < b = -1 \
+		 * a > b = 1 \
+		 * a == b = 0
+		 * */
 		let sortFunction = ( a: Task, b: Task ) => 0
 
 		switch( groupBy )
@@ -343,6 +348,34 @@ export class TaskList extends Array<Task>
 
 					return ( stateNames.indexOf( a.state ) < stateNames.indexOf( b.state ) ) ? -1 : 1
 				}
+
+				break;
+			}
+
+			//////////
+
+			case 'priority':
+			{
+				sortFunction = ( a: Task, b: Task ) =>
+				{
+					if( ( a.priority !== undefined ) && ( b.priority !== undefined ) )
+					{
+						if( a.priority === b.priority ) return 0
+
+						return a.priority < b.priority ? -1 : 1
+					}
+					else
+					{
+						if( ( a.priority === undefined ) && ( b.priority !== undefined ) )
+							return -1
+						else if( ( a.priority !== undefined ) && ( b.priority === undefined ) )
+							return 1
+						else
+							return 0
+					}
+				}
+
+				break;
 			}
 		}
 

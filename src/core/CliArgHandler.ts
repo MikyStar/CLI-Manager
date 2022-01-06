@@ -51,12 +51,13 @@ export interface RawArg
 	flagType ?: ValueFlag | BooleanFlag
 }
 
-type ArgType = 'action' | 'task' | 'board' | 'text' | 'flag'
+type ArgType = 'action' | 'task' | 'text' | 'flag' | 'priority'
 
 export interface DataAttributes
 {
 	description ?: string
-	state ?: string
+	state ?: string,
+	priority ?: number
 }
 
 export interface HandledFlags
@@ -160,10 +161,12 @@ export class CliArgHandler
 	{
 		const state = this.getValueFlag( ValueFlag.STATE ) as string
 		const description = this.getValueFlag( ValueFlag.DESCRIPTION ) as string
+		const priority = this.getPriority()
 
 		return	{
 					state,
-					description
+					description,
+					priority
 				}
 	}
 
@@ -192,6 +195,7 @@ export class CliArgHandler
 				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
 				const isValueFlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
 				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUPB_BY
+				const isPriority = ( theArg.match( /^!+$/ )?.length === 1 ) || false
 
 				if( isTask )
 					parsedArgs.push( { value: Number.parseInt( theArg ), type: 'task' } )
@@ -213,6 +217,8 @@ export class CliArgHandler
 					parsedArgs.push({ value, type: 'flag', flagType: theArg as ValueFlag })
 					i++ // Because we used the next value
 				}
+				else if( isPriority )
+					parsedArgs.push( { value: theArg.length, type: 'priority' })
 				else
 					parsedArgs.push( { value: theArg, type: 'text' } )
 			}
@@ -270,6 +276,21 @@ export class CliArgHandler
 			this.untreatedArgs.splice( index, 1 )
 
 			return value
+		}
+	}
+
+	private getPriority = () : number =>
+	{
+		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'priority' ) && ( arg.value !== undefined ) )
+
+		if( index === -1 )
+			return undefined
+		else
+		{
+			const value = this.untreatedArgs[ index ].value
+			this.untreatedArgs.splice( index, 1 )
+
+			return value as number
 		}
 	}
 }

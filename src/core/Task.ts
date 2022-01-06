@@ -145,10 +145,21 @@ export class Task implements ITask
 			}
 		}
 
+		const getPriorityText = () =>
+		{
+			let text = ''
+
+			for( let i = 0; i < this.priority; i++ )
+				text += '!'
+
+			return text
+		}
+
 		const coloredIcon = chalk.hex( taskState.hexColor )( taskState.icon )
 		const coloredName = isFinalState ? chalk.strikethrough.grey( this.name ) : this.name
+		const coloredPriority = this.priority ? chalk.bold.red( ' ' + getPriorityText() ) : ''
 
-		const fullLine = `${ coloredID }${ MARGIN }${ indentation }${ coloredIcon } ${ coloredName }`
+		const fullLine = `${ coloredID }${ MARGIN }${ indentation }${ coloredIcon }` + coloredPriority + ` ${ coloredName }`
 		toReturn.push( fullLine )
 
 		////////////////////

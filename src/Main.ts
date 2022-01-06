@@ -23,18 +23,27 @@ try
 
 	const { flags, words } = argHandler
 	const [ firstArg, secondArg, thirdArg, ...restSentence ] = words
-	const { dataAttributes, isHelpNeeded, isVersion, isRecursive, printing } = flags
-	const { state, description } = dataAttributes
+	const { dataAttributes, isHelpNeeded, isVersion, isRecursive } = flags
+	const { state, description, priority } = dataAttributes
 
+	const isThereCliFlagCommand = isHelpNeeded || isVersion
 	const isThereCLIArgs = words.length > 0
 	const isThereOnlyOneCLIArgs = words.length === 1
-	const isThereOnlyTwoCLIArgs = words.length === 2
 
 	//////////
 
 	if( !isThereCLIArgs )
 	{
-		printer.setView( 'full' ).printView()
+		if( isThereCliFlagCommand )
+		{
+			if( isHelpNeeded )
+				printer.addFeedback( Help.fullMan() ).printFeedback()
+			else if( isVersion )
+				printer.addFeedback( Help.version ).printFeedback()
+		}
+		else
+			printer.setView( 'full' ).printView()
+
 		System.exit()
 	}
 
@@ -46,17 +55,9 @@ try
 
 			printer.setView( 'specific', tasksId ).printView()
 		}
-		else if( isHelpNeeded )
-			printer.addFeedback( Help.fullMan() ).printFeedback()
-		else if( isVersion )
-			printer.addFeedback( Help.version ).printFeedback()
+		else if( isAction( firstArg ) && isHelpNeeded )
+			printer.addFeedback( Help.handleAction( firstArg.value as Action ) ).printFeedback()
 
-		System.exit()
-	}
-
-	if( isThereOnlyTwoCLIArgs && isAction( firstArg ) && isHelpNeeded )
-	{
-		printer.addFeedback( Help.handleAction( firstArg.value as Action ) ).printFeedback()
 		System.exit()
 	}
 
@@ -79,6 +80,7 @@ try
 						name: argHandler.getFirstText(),
 						state: state || storage.meta.states[ 0 ].name,
 						description,
+						priority
 					});
 
 					let subTaskOf = undefined
@@ -114,6 +116,7 @@ try
 						name,
 						state,
 						description,
+						priority
 					}
 
 					if( !name )
@@ -122,6 +125,8 @@ try
 						delete newAttributes.state
 					if( !description )
 						delete newAttributes.description
+					if( !priority )
+						delete newAttributes.priority
 
 					const { ids, textID, textTask } = idsController( storage, secondArg.value as number | number[] )
 
@@ -188,8 +193,8 @@ try
 
 				storage.deleteTask( ids )
 
-				printer.addFeedback( `${ textTask } '${ textID }' deleted` )
-				printer.print()
+				printer.addFeedback( `${ textTask } '${ textID }' deleted` ).print()
+
 				break;
 			}
 
@@ -217,6 +222,8 @@ try
 				break;
 			}
 
+			////////////////////
+
 			case Action.EXTRACT:
 			{
 				if( !isTask( secondArg ) )
@@ -237,6 +244,9 @@ try
 				break;
 			}
 		}
+
+		////////////////////
+		////////////////////
 
 		System.exit()
 	}
