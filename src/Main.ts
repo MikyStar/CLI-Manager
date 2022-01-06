@@ -26,10 +26,9 @@ try
 	const { dataAttributes, isHelpNeeded, isVersion, isRecursive } = flags
 	const { state, description, priority } = dataAttributes
 
-	const isThereCliFlagCommand = ( isHelpNeeded !== undefined ) || ( isVersion !== undefined )
+	const isThereCliFlagCommand = isHelpNeeded || isVersion
 	const isThereCLIArgs = words.length > 0
 	const isThereOnlyOneCLIArgs = words.length === 1
-	const isThereOnlyTwoCLIArgs = words.length === 2
 
 	//////////
 
