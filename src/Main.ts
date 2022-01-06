@@ -23,9 +23,10 @@ try
 
 	const { flags, words } = argHandler
 	const [ firstArg, secondArg, thirdArg, ...restSentence ] = words
-	const { dataAttributes, isHelpNeeded, isVersion, isRecursive, printing } = flags
+	const { dataAttributes, isHelpNeeded, isVersion, isRecursive } = flags
 	const { state, description, priority } = dataAttributes
 
+	const isThereCliFlagCommand = ( isHelpNeeded !== undefined ) || ( isVersion !== undefined )
 	const isThereCLIArgs = words.length > 0
 	const isThereOnlyOneCLIArgs = words.length === 1
 	const isThereOnlyTwoCLIArgs = words.length === 2
@@ -34,7 +35,16 @@ try
 
 	if( !isThereCLIArgs )
 	{
-		printer.setView( 'full' ).printView()
+		if( isThereCliFlagCommand )
+		{
+			if( isHelpNeeded )
+				printer.addFeedback( Help.fullMan() ).printFeedback()
+			else if( isVersion )
+				printer.addFeedback( Help.version ).printFeedback()
+		}
+		else
+			printer.setView( 'full' ).printView()
+
 		System.exit()
 	}
 
@@ -46,17 +56,9 @@ try
 
 			printer.setView( 'specific', tasksId ).printView()
 		}
-		else if( isHelpNeeded )
-			printer.addFeedback( Help.fullMan() ).printFeedback()
-		else if( isVersion )
-			printer.addFeedback( Help.version ).printFeedback()
+		else if( isAction( firstArg ) && isHelpNeeded )
+			printer.addFeedback( Help.handleAction( firstArg.value as Action ) ).printFeedback()
 
-		System.exit()
-	}
-
-	if( isThereOnlyTwoCLIArgs && isAction( firstArg ) && isHelpNeeded )
-	{
-		printer.addFeedback( Help.handleAction( firstArg.value as Action ) ).printFeedback()
 		System.exit()
 	}
 

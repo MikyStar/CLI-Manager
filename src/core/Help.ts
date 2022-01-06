@@ -1,4 +1,4 @@
-import { bold, underline } from "chalk"
+import { bold, underline, italic } from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
@@ -6,6 +6,7 @@ import { Action } from "./CliArgHandler"
 
 import { DEFAULT_CONFIG_FILE_NAME } from './Config'
 import { DEFAULT_STORAGE_FILE_NAME } from './Storage'
+import { handledGroupings } from './TaskList'
 
 ////////////////////////////////////////
 
@@ -34,6 +35,8 @@ export interface ManEntries
 
 	extracting: ManPage
 }
+
+type ManEntryKey = keyof ManEntries
 
 ////////////////////////////////////////
 
@@ -76,9 +79,17 @@ class Help implements ManEntries
 			'',
 			underline( 'Global arguments:' ),
 			'',
-			'--print : Print your tasks or boards after having ran your command',
+			italic( 'They can either be passed by CLI arguments, or set through the config file' ),
+			'',
 			'--storage <relative path> : The specific storage file to use',
 			'--config <relative path> : The specific configuration file to use',
+			'--depth n : Print every tasks and also n levels of subtasks',
+			'--hide-description : Hide tasks descriptions',
+			'--hide-tree : Hide tree branches',
+			'--hide-timestamp : No timestamp',
+			'--hide-sub-counter : No subtask counter in parent task',
+			'--no-print : Prevent printing your tasks after having ran your command',
+			`--group (${ handledGroupings.map( ( str, i ) => ( i !== handledGroupings.length ) ? ( `${ str }|` ) : str ) }) : Group by attribute`
 		]
 
 		//////////
@@ -103,21 +114,12 @@ class Help implements ManEntries
 		this.viewing =
 		{
 			title: 'Viewing',
-			prototype: 'task [<task(s)>] [printing args]',
+			prototype: 'task [<task(s)>] [global args]',
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to display, you can pass multiple by separating the ids by ',' without space",
-				'',
-				underline( 'Printing arguments:' ),
-				'',
-				'--depth n : Print every tasks and also n levels of subtasks',
-				'--hide-description : Hide boards and tasks descriptions',
-				'--hide-tree : Hide tree branches',
-				'--hide-timestamp : No timestamp',
-				'--hide-sub-counter : No subtask counter in parent task',
-				'--print : Print your tasks or boards after having ran your command',
-				`--group (state|linked|priority|tag|deadline|load|linked) : Group by attribute, ${ bold( 'you can use this flag more than once' ) }`
 			],
+			globalArgs: true
 		}
 
 		this.creatingTask =
@@ -145,8 +147,8 @@ class Help implements ManEntries
 			argDef:
 			[
 				"<task(s)> : The id of the task you want to edit, you can pass multiple by separating the ids by ',' without space",
-				'<new name> : Edit task or board name',
-				'-d <description> : Edit task or board description',
+				'<new name> : Edit task name',
+				'-d <description> : Edit task description',
 				'-s <state> : Edit task state defined by the config file',
 			],
 			furtherDescription:
@@ -197,12 +199,6 @@ class Help implements ManEntries
 				"<target task(s)> : The id of the task you want to move, you can pass multiple by separating the ids by ',' without space",
 				"<task id dest> : The id of the target task",
 			],
-			furtherDescription:
-			[
-				"If no destination board or task provided, will create a new board out of the task"
-					+ ", use task name as board name and subtasks as task",
-				"Tree structure will be maintained"
-			],
 			globalArgs: true,
 		}
 
@@ -232,14 +228,14 @@ class Help implements ManEntries
 
 	////////////////////
 
-	getMan = <K extends keyof ManEntries>( action: K ) => this.makeMan( { ...this[ action ], footer: true } )
+	getMan = ( action: ManEntryKey ) => this.makeMan( { ...this[ action ], footer: true } )
 
 	fullMan = () =>
 	{
 		let toReturn = []
 
-		const entries = [ 'init', 'viewing', 'creatingTask', 'editingTask'
-			, 'checkingTask', 'incrementingTask', 'movingTask', 'deleting' ]
+		const entries: ManEntryKey[] = [ 'init', 'viewing', 'creatingTask', 'editing',
+			'checkingTask', 'incrementingTask', 'movingTask', 'deleting', 'extracting' ]
 
 		entries.forEach( entry =>
 		{

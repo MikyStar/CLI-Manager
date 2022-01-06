@@ -28,7 +28,7 @@ export class MainController
 	{
 		this.argHandler = new CliArgHandler()
 		const { flags, words } = this.argHandler
-		const { files, printing } = flags
+		const { files } = flags
 		const [ firstArg ] = words
 
 		this.configLocation = files.configLocation || DEFAULT_CONFIG_FILE_NAME
