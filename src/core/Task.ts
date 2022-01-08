@@ -112,7 +112,8 @@ export class Task implements ITask
 		////////////////////
 
 		const { parentIndent, subTaskLevel = DEFAULT_SUBTASK_LEVEL, isSubTask,
-			isLastChild, hideDescription, depth, isLastParent, hideTimestamp, hideSubCounter, hideTree } = options
+			isLastChild, hideDescription, depth, isLastParent, hideTimestamp, hideSubCounter,
+			hideCompleted, hideTree } = options
 
 		let toReturn : string[] = []
 		let indentation = parentIndent || ''
@@ -123,6 +124,9 @@ export class Task implements ITask
 		const taskState = availableStates.filter( state => this.state === state.name )[0]
 
 		const coloredID = chalk.hex( taskState.hexColor )( `${ this.id }.` )
+
+		if( hideCompleted && isFinalState )
+			return toReturn
 
 		if( isSubTask )
 		{
@@ -144,6 +148,8 @@ export class Task implements ITask
 				indentation += ( isLastChild ? TREE_MARKER.lastNode : TREE_MARKER.node )
 			}
 		}
+
+		////////////////////
 
 		const getPriorityText = () =>
 		{

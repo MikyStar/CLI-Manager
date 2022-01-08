@@ -366,7 +366,7 @@
         },
         {
             "name": "flag --no-completed to hide tasks at final state",
-            "state": "todo",
+            "state": "done",
             "id": 55,
             "timestamp": "31/07/2021"
         },
@@ -422,6 +422,12 @@
             "id": 32,
             "timestamp": "06/01/2022",
             "priority": 2
+        },
+        {
+            "name": "have an 'anti' bool flag to bypass print args of config from cli, like --show-completed, --print ...",
+            "state": "todo",
+            "id": 34,
+            "timestamp": "09/01/2022"
         }
     ]
 }

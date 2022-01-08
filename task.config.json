@@ -3,5 +3,6 @@
 	"shouldNotPrintAfter": false,
 	"storageFile": "./tasks/v0.1.0.json",
 	"group": "state",
-	"sort": "desc"
+	"sort": "desc",
+	"hideCompleted": true
 }
