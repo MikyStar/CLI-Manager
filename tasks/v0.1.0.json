@@ -301,31 +301,31 @@
         },
         {
             "name": "add deadline",
-            "state": "todo",
+            "state": "wip",
             "id": 8,
             "timestamp": "27/07/2021",
             "subtasks": [
                 {
                     "name": "change timestamp into deadline",
-                    "state": "todo",
+                    "state": "wip",
                     "id": 9,
                     "timestamp": "27/07/2021"
                 },
                 {
                     "name": "print remaining time aligned to the right with color code",
-                    "state": "todo",
+                    "state": "wip",
                     "id": 10,
                     "timestamp": "27/07/2021"
                 },
                 {
                     "name": "new flag --sort asc desc to print flatlisted",
-                    "state": "todo",
+                    "state": "wip",
                     "id": 11,
                     "timestamp": "27/07/2021"
                 },
                 {
                     "name": "new flag to hide deadline",
-                    "state": "todo",
+                    "state": "wip",
                     "id": 12,
                     "timestamp": "27/07/2021"
                 }
