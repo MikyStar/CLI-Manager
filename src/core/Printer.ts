@@ -48,8 +48,9 @@ export class Printer
 	{
 		this.feedback = []
 
-		this.storage = storage
 		this.config = config
+		this.storage = storage
+		// this.storage = Object.assign( Object.create( Object.getPrototypeOf( storage ) ), storage ) // @see: https://stackoverflow.com/a/44782052
 	}
 
 	////////////////////
@@ -71,6 +72,28 @@ export class Printer
 
 	////////////////////
 
+	/**
+	 * @description Need to use a brand new instance of Storage for grouping and sorting
+	 * so the original file tasks' instances order stay preserved
+	 */
+	private cloneStorage = () =>
+	{
+		const { group, sort } = this.config
+
+		// Didn't managed to make a proper deep nested cloning of the original this.storage instance without the new constructor
+		const storageCopy = new Storage( this.storage.relativePath )
+
+		if( group )
+		{
+			storageCopy.group( group )
+
+			if( sort )
+				storageCopy.order( sort )
+		}
+
+		return storageCopy
+	}
+
 	private getSpecificView = ( taskID: number | number[] ) =>
 	{
 		let toReturn : string[] = []
@@ -80,7 +103,7 @@ export class Printer
 
 		theTasksID.forEach( ( id, index ) =>
 		{
-			this.storage.tasks.retrieveTask( id, ({ task }) =>
+			this.cloneStorage().tasks.retrieveTask( id, ({ task }) =>
 			{
 				list.push( task )
 
@@ -102,7 +125,7 @@ export class Printer
 	{
 		let toReturn : string[] = []
 
-		this.storage.tasks.forEach( task => toReturn.push( ...task.stringify( this.storage.meta.states, this.config ) ) );
+		this.cloneStorage().tasks.forEach( task => toReturn.push( ...task.stringify( this.storage.meta.states, this.config ) ) );
 
 		toReturn.push( '', ...this.getFileStats() )
 
@@ -232,19 +255,11 @@ export const PrinterFactory =
 		const { flags } = argHander
 		const { printing } = flags
 
-		let finalConfig = { ...config }
+		const finalConfig = { ...config }
 
 		for( const [ key, value ] of Object.entries( printing ) )
 			if( printing[ key ] !== undefined )
 				finalConfig[ key ] = value
-
-		if( finalConfig.group )
-		{
-			storage.group( finalConfig.group )
-
-			if( finalConfig.sort )
-				storage.order( finalConfig.sort )
-		}
 
 		return new Printer( storage, finalConfig )
 	}
