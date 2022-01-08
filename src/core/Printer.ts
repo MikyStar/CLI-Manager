@@ -108,7 +108,7 @@ export class Printer
 			{
 				list.push( task )
 
-				toReturn = [ ...toReturn, ...task.stringify( this.storage.meta.states, this.config ), '' ]
+				toReturn = [ ...toReturn, ...task.stringify( this.storage.meta.states, { ...this.config, hideCompleted: false } ), '' ]
 
 				if( index !== ( theTasksID.length - 1 ) )
 					toReturn.push( this.separator('-'), '' )
