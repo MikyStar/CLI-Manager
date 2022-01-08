@@ -25,7 +25,7 @@
 		"dependencies:check": "ncu -e 2",
 		"dependencies:update": "ncu -u && npm run clear && npm install && npm run test",
 
-		"build": "webpack-cli",
+		"build": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli",
 
 		"clear": "rm -rf node_modules dist"
 	},
