@@ -242,7 +242,7 @@
         },
         {
             "name": "dont order the writed JSON (simpler to follow in git)",
-            "state": "wip",
+            "state": "done",
             "priority": 3,
             "id": 26,
             "timestamp": "06/01/2022"
@@ -301,31 +301,31 @@
         },
         {
             "name": "add deadline",
-            "state": "wip",
+            "state": "todo",
             "id": 8,
             "timestamp": "27/07/2021",
             "subtasks": [
                 {
                     "name": "change timestamp into deadline",
-                    "state": "wip",
+                    "state": "todo",
                     "id": 9,
                     "timestamp": "27/07/2021"
                 },
                 {
                     "name": "print remaining time aligned to the right with color code",
-                    "state": "wip",
+                    "state": "todo",
                     "id": 10,
                     "timestamp": "27/07/2021"
                 },
                 {
                     "name": "new flag --sort asc desc to print flatlisted",
-                    "state": "wip",
+                    "state": "todo",
                     "id": 11,
                     "timestamp": "27/07/2021"
                 },
                 {
                     "name": "new flag to hide deadline",
-                    "state": "wip",
+                    "state": "todo",
                     "id": 12,
                     "timestamp": "27/07/2021"
                 }
