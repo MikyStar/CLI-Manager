@@ -366,7 +366,7 @@
         },
         {
             "name": "flag --no-completed to hide tasks at final state",
-            "state": "wip",
+            "state": "done",
             "id": 55,
             "timestamp": "31/07/2021"
         },
