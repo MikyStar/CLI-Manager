@@ -8,7 +8,7 @@ import { Meta } from "./Storage"
 
 ////////////////////////////////////////
 
-export const handledGroupings = [ 'state', 'priority', 'tag', 'deadline', 'load' ] as const
+export const handledGroupings = [ 'state', 'priority', 'id' ] as const
 export type GroupByType = typeof handledGroupings[ number ]
 
 export type Order = 'asc' | 'desc'
@@ -373,6 +373,21 @@ export class TaskList extends Array<Task>
 						else
 							return 0
 					}
+				}
+
+				break;
+			}
+
+			//////////
+
+			case 'id':
+			{
+				sortFunction = ( a: Task, b: Task ) =>
+				{
+					if( a.id === b.id )
+						throw new Error( 'Impossible case : A task id should be unique' )
+
+					return a.id < b.id ? -1 : 1
 				}
 
 				break;
