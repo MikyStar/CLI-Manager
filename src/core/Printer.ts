@@ -48,8 +48,19 @@ export class Printer
 	{
 		this.feedback = []
 
-		this.storage = storage
 		this.config = config
+		// this.storage = storage
+		this.storage = Object.assign( Object.create( Object.getPrototypeOf( storage ) ), storage ) // @see: https://stackoverflow.com/a/44782052
+
+		/////
+
+		if( config.group )
+		{
+			this.storage.group( config.group )
+
+			if( config.sort )
+				this.storage.order( config.sort )
+		}
 	}
 
 	////////////////////
@@ -232,19 +243,11 @@ export const PrinterFactory =
 		const { flags } = argHander
 		const { printing } = flags
 
-		let finalConfig = { ...config }
+		const finalConfig = { ...config }
 
 		for( const [ key, value ] of Object.entries( printing ) )
 			if( printing[ key ] !== undefined )
 				finalConfig[ key ] = value
-
-		if( finalConfig.group )
-		{
-			storage.group( finalConfig.group )
-
-			if( finalConfig.sort )
-				storage.order( finalConfig.sort )
-		}
 
 		return new Printer( storage, finalConfig )
 	}
