@@ -9,13 +9,14 @@ import { Config } from "./Config";
 
 export interface PrinterConfig
 {
-	shouldNotPrintAfter ?: boolean,
-	hideDescription ?: boolean,
-	hideTimestamp ?: boolean,
-	hideSubCounter ?: boolean,
-	hideTree ?: boolean,
+	shouldNotPrintAfter ?: boolean
+	hideDescription ?: boolean
+	hideTimestamp ?: boolean
+	hideSubCounter ?: boolean
+	hideTree ?: boolean
+	hideCompleted ?: boolean
 
-	depth ?: number,
+	depth ?: number
 	group ?: GroupByType
 	sort ?: Order
 }

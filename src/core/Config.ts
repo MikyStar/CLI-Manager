@@ -22,6 +22,7 @@ export interface ConfigFile extends PrinterConfig
 	hideTimestamp ?: boolean
 	hideSubCounter ?: boolean
 	hideTree ?: boolean
+	hideCompleted ?: boolean
 
 	depth ?: number
 	groupBy ?: GroupByType
@@ -44,6 +45,7 @@ export class Config implements PrinterConfig
 	hideTimestamp ?: boolean
 	hideSubCounter ?: boolean
 	hideTree ?: boolean
+	hideCompleted?: boolean;
 
 	depth ?: number
 	group ?: GroupByType

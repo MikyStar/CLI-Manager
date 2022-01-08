@@ -27,6 +27,7 @@ export enum BooleanFlag
 	HIDE_TREE = '--hide-tree',
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
+	HIDE_COMPLETED = '--hide-completed',
 	DONT_PRINT_AFTER = '--no-print',
 
 	RECURSIVE = '-r'
@@ -37,7 +38,7 @@ export enum ValueFlag
 	STORAGE_FILE = '--storage',
 	CONFIG_FILE = '--config',
 	DEPTH = '--depth',
-	GROUPB_BY = '--group',
+	GROUP_BY = '--group',
 	SORT = '--sort',
 	STATE = '-s',
 	DESCRIPTION = '-d',
@@ -139,9 +140,10 @@ export class CliArgHandler
 		const hideTree = this.getBoolFlag( BooleanFlag.HIDE_TREE )
 		const hideSubCounter = this.getBoolFlag( BooleanFlag.HIDE_SUB_COUNTER )
 		const shouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
+		const hideCompleted = this.getBoolFlag( BooleanFlag.HIDE_COMPLETED )
 
 		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
-		const group = this.getValueFlag( ValueFlag.GROUPB_BY ) as GroupByType
+		const group = this.getValueFlag( ValueFlag.GROUP_BY ) as GroupByType
 		const sort = this.getValueFlag( ValueFlag.SORT ) as Order
 
 		return	{
@@ -149,6 +151,7 @@ export class CliArgHandler
 					hideTimestamp,
 					hideSubCounter,
 					hideTree,
+					hideCompleted,
 					shouldNotPrintAfter,
 
 					depth,
@@ -194,7 +197,7 @@ export class CliArgHandler
 				const isAction = Object.values( Action ).includes( theArg as Action )
 				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
 				const isValueFlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
-				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUPB_BY
+				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUP_BY
 				const isPriority = ( theArg.match( /^!+$/ )?.length === 1 ) || false
 
 				if( isTask )
