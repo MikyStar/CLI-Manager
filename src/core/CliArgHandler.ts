@@ -258,7 +258,7 @@ export class CliArgHandler
 		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value === true ) )
 
 		if( index === -1 )
-			return false
+			return undefined
 		else
 		{
 			this.untreatedArgs.splice( index, 1 )
