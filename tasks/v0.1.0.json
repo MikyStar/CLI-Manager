@@ -20,192 +20,6 @@
     },
     "datas": [
         {
-            "name": "extraction",
-            "state": "done",
-            "id": 1,
-            "timestamp": "25/07/2021"
-        },
-        {
-            "name": "--sort flag",
-            "state": "done",
-            "id": 30,
-            "timestamp": "28/07/2021",
-            "subtasks": [
-                {
-                    "name": "in config file too",
-                    "state": "done",
-                    "id": 31,
-                    "timestamp": "28/07/2021"
-                }
-            ]
-        },
-        {
-            "name": "in the retrieve nested task, i might want to access the parent board id from the callback",
-            "state": "done",
-            "id": 71,
-            "timestamp": "04/08/2021"
-        },
-        {
-            "name": "stats for the total of all the boards in file and printed even in only print board view",
-            "state": "done",
-            "id": 27,
-            "timestamp": "29/07/2021",
-            "description": "so we cant forget that theres more",
-            "subtasks": [
-                {
-                    "name": "refactor actual stats to return on exploitable object so I can simply add the values",
-                    "state": "done",
-                    "id": 36,
-                    "timestamp": "29/07/2021"
-                },
-                {
-                    "name": "maybe the full file printing stats should be preceeded by its location",
-                    "state": "done",
-                    "id": 37,
-                    "timestamp": "29/07/2021",
-                    "subtasks": [
-                        {
-                            "name": "maybe the small sperator just before",
-                            "state": "done",
-                            "id": 38,
-                            "timestamp": "29/07/2021"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "moving task",
-            "state": "done",
-            "id": 24,
-            "timestamp": "29/07/2021"
-        },
-        {
-            "name": "check",
-            "state": "done",
-            "id": 22,
-            "timestamp": "28/07/2021"
-        },
-        {
-            "name": "increment",
-            "state": "done",
-            "id": 18,
-            "timestamp": "28/07/2021"
-        },
-        {
-            "name": "printing action documentation",
-            "state": "done",
-            "id": 6,
-            "timestamp": "25/07/2021"
-        },
-        {
-            "name": "improve doc for commands",
-            "state": "done",
-            "description": "Bash like doc with optional arguments, examples ...",
-            "id": 4,
-            "timestamp": "25/07/2021"
-        },
-        {
-            "name": "edit",
-            "state": "done",
-            "id": 3,
-            "timestamp": "25/07/2021"
-        },
-        {
-            "name": "delete",
-            "state": "done",
-            "id": 2,
-            "timestamp": "25/07/2021"
-        },
-        {
-            "name": "Printer should be a class",
-            "state": "done",
-            "id": 51,
-            "timestamp": "01/08/2021",
-            "subtasks": [
-                {
-                    "name": "I can append one or more line with params",
-                    "state": "done",
-                    "id": 52,
-                    "timestamp": "29/07/2021",
-                    "subtasks": [
-                        {
-                            "name": "maybe an other object with align, print at end, wrap, shorten with \"...\", indent level",
-                            "state": "done",
-                            "id": 53,
-                            "timestamp": "29/07/2021"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "refactor controller printer to be able to handle every kind of print",
-            "state": "done",
-            "id": 33,
-            "timestamp": "01/08/2021",
-            "subtasks": [
-                {
-                    "name": "it should handle the separators, datas and the stats",
-                    "state": "done",
-                    "id": 40,
-                    "timestamp": "29/07/2021"
-                }
-            ]
-        },
-        {
-            "name": "change the print flag to no print so by default it always prints",
-            "state": "done",
-            "description": "More appropriate way",
-            "id": 35,
-            "timestamp": "28/07/2021"
-        },
-        {
-            "name": "refactor argcli, i really should make a phrase out of args, being able to access second arg like first arg ...",
-            "state": "done",
-            "id": 5,
-            "timestamp": "28/07/2021"
-        },
-        {
-            "name": "--group flag",
-            "state": "done",
-            "description": "to display with grouped state recursively",
-            "id": 19,
-            "timestamp": "28/07/2021",
-            "subtasks": [
-                {
-                    "name": "can be combined with --sort asc desc",
-                    "state": "done",
-                    "id": 20,
-                    "timestamp": "28/07/2021"
-                },
-                {
-                    "name": "can be added in config file",
-                    "state": "done",
-                    "id": 29,
-                    "timestamp": "28/07/2021"
-                },
-                {
-                    "name": "the function should return a IBoard",
-                    "state": "done",
-                    "id": 25,
-                    "timestamp": "29/07/2021"
-                },
-                {
-                    "name": "there can be multiple times this flag -> raw arg should make it a a single value with array of GroubyInterface",
-                    "state": "done",
-                    "id": 16,
-                    "timestamp": "06/08/2021"
-                }
-            ]
-        },
-        {
-            "name": "when moved to subtask, the newly added task(s) is not printed, only the previous value",
-            "state": "done",
-            "id": 70,
-            "timestamp": "04/08/2021"
-        },
-        {
             "name": "add priority",
             "state": "done",
             "id": 63,
@@ -241,128 +55,217 @@
             ]
         },
         {
-            "name": "fix double error printing when not providing a group attribute",
-            "state": "todo",
-            "id": 32,
-            "timestamp": "06/01/2022",
-            "priority": 2
-        },
-        {
-            "name": "can add default task view in config file",
-            "state": "todo",
-            "id": 0,
-            "timestamp": "26/12/2021"
-        },
-        {
-            "name": "gitlike vim edition",
-            "state": "todo",
-            "id": 46,
-            "timestamp": "19/12/2021",
-            "subtasks": [
-                {
-                    "name": "like for editing a task -> would only bring a temp file in yaml with current task attributes ready to be modified EXCEPT the id hash key wich will be present in the temp file as a comment with a side text saying not modifyable",
-                    "state": "todo",
-                    "id": 56,
-                    "timestamp": "19/12/2021"
-                }
-            ]
-        },
-        {
-            "name": "using yaml rather than JSON",
-            "state": "todo",
-            "id": 44,
-            "timestamp": "19/12/2021",
-            "subtasks": [
-                {
-                    "name": "need to properly remove empty arrays like for dependencies, subtasks ... from the final file",
-                    "state": "todo",
-                    "id": 45,
-                    "timestamp": "19/12/2021"
-                }
-            ]
-        },
-        {
-            "name": "clickabke",
-            "state": "todo",
-            "id": 43,
-            "timestamp": "09/10/2021"
-        },
-        {
-            "name": "if only text arg, make a task",
-            "state": "todo",
-            "id": 74,
+            "name": "when moved to subtask, the newly added task(s) is not printed, only the previous value",
+            "state": "done",
+            "id": 70,
             "timestamp": "04/08/2021"
         },
         {
-            "name": "flag --no-completed to hide tasks at final state",
-            "state": "todo",
-            "id": 55,
-            "timestamp": "31/07/2021"
-        },
-        {
-            "name": "no tree indicator if description but no subtask",
-            "state": "todo",
-            "id": 54,
-            "timestamp": "30/07/2021"
-        },
-        {
-            "name": "if depth hide some tasks there should be an indicator",
-            "state": "todo",
-            "id": 28,
-            "timestamp": "29/07/2021",
-            "description": "like ...x",
+            "name": "--group flag",
+            "state": "done",
+            "description": "to display with grouped state recursively",
+            "id": 19,
+            "timestamp": "28/07/2021",
             "subtasks": [
                 {
-                    "name": "or the actual full recurive subtasks lenght",
-                    "state": "todo",
-                    "id": 39,
+                    "name": "can be combined with --sort asc desc",
+                    "state": "done",
+                    "id": 20,
+                    "timestamp": "28/07/2021"
+                },
+                {
+                    "name": "can be added in config file",
+                    "state": "done",
+                    "id": 29,
+                    "timestamp": "28/07/2021"
+                },
+                {
+                    "name": "the function should return a IBoard",
+                    "state": "done",
+                    "id": 25,
+                    "timestamp": "29/07/2021"
+                },
+                {
+                    "name": "there can be multiple times this flag -> raw arg should make it a a single value with array of GroubyInterface",
+                    "state": "done",
+                    "id": 16,
+                    "timestamp": "06/08/2021"
+                }
+            ]
+        },
+        {
+            "name": "refactor argcli, i really should make a phrase out of args, being able to access second arg like first arg ...",
+            "state": "done",
+            "id": 5,
+            "timestamp": "28/07/2021"
+        },
+        {
+            "name": "change the print flag to no print so by default it always prints",
+            "state": "done",
+            "description": "More appropriate way",
+            "id": 35,
+            "timestamp": "28/07/2021"
+        },
+        {
+            "name": "refactor controller printer to be able to handle every kind of print",
+            "state": "done",
+            "id": 33,
+            "timestamp": "01/08/2021",
+            "subtasks": [
+                {
+                    "name": "it should handle the separators, datas and the stats",
+                    "state": "done",
+                    "id": 40,
                     "timestamp": "29/07/2021"
                 }
             ]
         },
         {
-            "name": "Action only <state | deadline | deadline range> to view only specifics",
-            "state": "todo",
-            "id": 23,
-            "timestamp": "28/07/2021"
-        },
-        {
-            "name": "clean board",
-            "state": "todo",
-            "id": 21,
-            "timestamp": "28/07/2021"
-        },
-        {
-            "name": "add deadline",
-            "state": "todo",
-            "id": 8,
-            "timestamp": "27/07/2021",
+            "name": "Printer should be a class",
+            "state": "done",
+            "id": 51,
+            "timestamp": "01/08/2021",
             "subtasks": [
                 {
-                    "name": "change timestamp into deadline",
-                    "state": "todo",
-                    "id": 9,
-                    "timestamp": "27/07/2021"
-                },
-                {
-                    "name": "print remaining time aligned to the right with color code",
-                    "state": "todo",
-                    "id": 10,
-                    "timestamp": "27/07/2021"
-                },
-                {
-                    "name": "new flag --sort asc desc to print flatlisted",
-                    "state": "todo",
-                    "id": 11,
-                    "timestamp": "27/07/2021"
-                },
-                {
-                    "name": "new flag to hide deadline",
-                    "state": "todo",
-                    "id": 12,
-                    "timestamp": "27/07/2021"
+                    "name": "I can append one or more line with params",
+                    "state": "done",
+                    "id": 52,
+                    "timestamp": "29/07/2021",
+                    "subtasks": [
+                        {
+                            "name": "maybe an other object with align, print at end, wrap, shorten with \"...\", indent level",
+                            "state": "done",
+                            "id": 53,
+                            "timestamp": "29/07/2021"
+                        }
+                    ]
                 }
             ]
+        },
+        {
+            "name": "delete",
+            "state": "done",
+            "id": 2,
+            "timestamp": "25/07/2021"
+        },
+        {
+            "name": "edit",
+            "state": "done",
+            "id": 3,
+            "timestamp": "25/07/2021"
+        },
+        {
+            "name": "improve doc for commands",
+            "state": "done",
+            "description": "Bash like doc with optional arguments, examples ...",
+            "id": 4,
+            "timestamp": "25/07/2021"
+        },
+        {
+            "name": "printing action documentation",
+            "state": "done",
+            "id": 6,
+            "timestamp": "25/07/2021"
+        },
+        {
+            "name": "increment",
+            "state": "done",
+            "id": 18,
+            "timestamp": "28/07/2021"
+        },
+        {
+            "name": "check",
+            "state": "done",
+            "id": 22,
+            "timestamp": "28/07/2021"
+        },
+        {
+            "name": "moving task",
+            "state": "done",
+            "id": 24,
+            "timestamp": "29/07/2021"
+        },
+        {
+            "name": "stats for the total of all the boards in file and printed even in only print board view",
+            "state": "done",
+            "id": 27,
+            "timestamp": "29/07/2021",
+            "description": "so we cant forget that theres more",
+            "subtasks": [
+                {
+                    "name": "refactor actual stats to return on exploitable object so I can simply add the values",
+                    "state": "done",
+                    "id": 36,
+                    "timestamp": "29/07/2021"
+                },
+                {
+                    "name": "maybe the full file printing stats should be preceeded by its location",
+                    "state": "done",
+                    "id": 37,
+                    "timestamp": "29/07/2021",
+                    "subtasks": [
+                        {
+                            "name": "maybe the small sperator just before",
+                            "state": "done",
+                            "id": 38,
+                            "timestamp": "29/07/2021"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "in the retrieve nested task, i might want to access the parent board id from the callback",
+            "state": "done",
+            "id": 71,
+            "timestamp": "04/08/2021"
+        },
+        {
+            "name": "--sort flag",
+            "state": "done",
+            "id": 30,
+            "timestamp": "28/07/2021",
+            "subtasks": [
+                {
+                    "name": "in config file too",
+                    "state": "done",
+                    "id": 31,
+                    "timestamp": "28/07/2021"
+                }
+            ]
+        },
+        {
+            "name": "extraction",
+            "state": "done",
+            "id": 1,
+            "timestamp": "25/07/2021"
+        },
+        {
+            "name": "dont order the writed JSON (simpler to follow in git)",
+            "state": "wip",
+            "priority": 3,
+            "id": 26,
+            "timestamp": "06/01/2022"
+        },
+        {
+            "name": "print problem for description of last subtask child",
+            "state": "todo",
+            "id": 77,
+            "timestamp": "05/08/2021",
+            "subtasks": [
+                {
+                    "name": "maybe no | for description if no subtasks",
+                    "state": "todo",
+                    "id": 79,
+                    "timestamp": "05/08/2021"
+                }
+            ]
+        },
+        {
+            "name": "a description flag as empty string should remove the description",
+            "state": "todo",
+            "id": 78,
+            "timestamp": "05/08/2021"
         },
         {
             "name": "add taggs with #",
@@ -397,31 +300,128 @@
             ]
         },
         {
-            "name": "a description flag as empty string should remove the description",
+            "name": "add deadline",
             "state": "todo",
-            "id": 78,
-            "timestamp": "05/08/2021"
-        },
-        {
-            "name": "print problem for description of last subtask child",
-            "state": "todo",
-            "id": 77,
-            "timestamp": "05/08/2021",
+            "id": 8,
+            "timestamp": "27/07/2021",
             "subtasks": [
                 {
-                    "name": "maybe no | for description if no subtasks",
+                    "name": "change timestamp into deadline",
                     "state": "todo",
-                    "id": 79,
-                    "timestamp": "05/08/2021"
+                    "id": 9,
+                    "timestamp": "27/07/2021"
+                },
+                {
+                    "name": "print remaining time aligned to the right with color code",
+                    "state": "todo",
+                    "id": 10,
+                    "timestamp": "27/07/2021"
+                },
+                {
+                    "name": "new flag --sort asc desc to print flatlisted",
+                    "state": "todo",
+                    "id": 11,
+                    "timestamp": "27/07/2021"
+                },
+                {
+                    "name": "new flag to hide deadline",
+                    "state": "todo",
+                    "id": 12,
+                    "timestamp": "27/07/2021"
                 }
             ]
         },
         {
-            "name": "dont order the writed JSON (simpler to follow in git)",
+            "name": "clean board",
             "state": "todo",
-            "priority": 3,
-            "id": 26,
-            "timestamp": "06/01/2022"
+            "id": 21,
+            "timestamp": "28/07/2021"
+        },
+        {
+            "name": "Action only <state | deadline | deadline range> to view only specifics",
+            "state": "todo",
+            "id": 23,
+            "timestamp": "28/07/2021"
+        },
+        {
+            "name": "if depth hide some tasks there should be an indicator",
+            "state": "todo",
+            "id": 28,
+            "timestamp": "29/07/2021",
+            "description": "like ...x",
+            "subtasks": [
+                {
+                    "name": "or the actual full recurive subtasks lenght",
+                    "state": "todo",
+                    "id": 39,
+                    "timestamp": "29/07/2021"
+                }
+            ]
+        },
+        {
+            "name": "no tree indicator if description but no subtask",
+            "state": "todo",
+            "id": 54,
+            "timestamp": "30/07/2021"
+        },
+        {
+            "name": "flag --no-completed to hide tasks at final state",
+            "state": "todo",
+            "id": 55,
+            "timestamp": "31/07/2021"
+        },
+        {
+            "name": "if only text arg, make a task",
+            "state": "todo",
+            "id": 74,
+            "timestamp": "04/08/2021"
+        },
+        {
+            "name": "clickabke",
+            "state": "todo",
+            "id": 43,
+            "timestamp": "09/10/2021"
+        },
+        {
+            "name": "using yaml rather than JSON",
+            "state": "todo",
+            "id": 44,
+            "timestamp": "19/12/2021",
+            "subtasks": [
+                {
+                    "name": "need to properly remove empty arrays like for dependencies, subtasks ... from the final file",
+                    "state": "todo",
+                    "id": 45,
+                    "timestamp": "19/12/2021"
+                }
+            ]
+        },
+        {
+            "name": "gitlike vim edition",
+            "state": "todo",
+            "id": 46,
+            "timestamp": "19/12/2021",
+            "subtasks": [
+                {
+                    "name": "like for editing a task -> would only bring a temp file in yaml with current task attributes ready to be modified EXCEPT the id hash key wich will be present in the temp file as a comment with a side text saying not modifyable",
+                    "state": "todo",
+                    "id": 56,
+                    "timestamp": "19/12/2021"
+                }
+            ]
+        },
+        {
+            "name": "can add default task view in config file",
+            "state": "todo",
+            "id": 0,
+            "timestamp": "26/12/2021"
+        },
+        {
+            "name": "fix double error printing when not providing a group attribute",
+            "state": "todo",
+            "id": 32,
+            "timestamp": "06/01/2022",
+            "priority": 2
         }
     ]
 }
