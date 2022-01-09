@@ -17,6 +17,8 @@ export interface ConfigFile extends PrinterConfig
 	storageFile ?: string
 	configFile ?: string
 
+	/////
+
 	shouldNotPrintAfter ?: boolean
 	hideDescription ?: boolean
 	hideTimestamp ?: boolean
@@ -34,11 +36,14 @@ export interface ConfigFile extends PrinterConfig
 /**
  * Expose task.config.json is current working directory datas
  */
-export class Config implements PrinterConfig
+export class Config implements ConfigFile
 {
 	relativePath : string
+
 	storageFile ?: string
 	configFile ?: string
+
+	/////
 
 	shouldNotPrintAfter ?: boolean
 	hideDescription ?: boolean
