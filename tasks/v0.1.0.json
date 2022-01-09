@@ -411,12 +411,6 @@
             ]
         },
         {
-            "name": "can add default task view in config file",
-            "state": "todo",
-            "id": 0,
-            "timestamp": "26/12/2021"
-        },
-        {
             "name": "fix double error printing when not providing a group attribute",
             "state": "todo",
             "id": 32,
@@ -494,7 +488,7 @@
         },
         {
             "name": "fix retrieve parent task",
-            "state": "wip",
+            "state": "done",
             "id": 60,
             "timestamp": "09/01/2022"
         }
