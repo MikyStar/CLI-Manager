@@ -188,7 +188,7 @@ try
 					let parent: Task = undefined
 					storage.tasks.retrieveTask( ids[ 0 ], ({ parentTask }) => parent = parentTask )
 
-					printer.setView( parent ? 'specific' : 'full', parent.id )
+					printer.setView( parent ? 'specific' : 'full', parent ? parent.id : undefined )
 				}
 
 				storage.deleteTask( ids )

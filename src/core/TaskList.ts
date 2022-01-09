@@ -253,6 +253,8 @@ export class TaskList extends Array<Task>
 					parentTask = task
 					task.subtasks.forEach( iter );
 				}
+				else
+					parentTask = undefined
 			}
 		}
 
