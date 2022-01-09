@@ -428,6 +428,48 @@
             "state": "wip",
             "id": 34,
             "timestamp": "09/01/2022"
+        },
+        {
+            "name": "fix group by id",
+            "state": "todo",
+            "priority": 2,
+            "id": 41,
+            "timestamp": "09/01/2022"
+        },
+        {
+            "name": "can chain groupbu with ,",
+            "state": "todo",
+            "id": 42,
+            "timestamp": "09/01/2022",
+            "subtasks": [
+                {
+                    "name": "see thenBy.js",
+                    "state": "todo",
+                    "id": 47,
+                    "timestamp": "09/01/2022"
+                },
+                {
+                    "name": "default the group value and put it in the conf file",
+                    "state": "todo",
+                    "id": 48,
+                    "timestamp": "09/01/2022"
+                }
+            ]
+        },
+        {
+            "name": "The conf file use should de optional",
+            "state": "todo",
+            "priority": 3,
+            "id": 49,
+            "timestamp": "09/01/2022",
+            "subtasks": [
+                {
+                    "name": "Like default grouping, default sort, default storage file location",
+                    "state": "todo",
+                    "id": 50,
+                    "timestamp": "09/01/2022"
+                }
+            ]
         }
     ]
 }
