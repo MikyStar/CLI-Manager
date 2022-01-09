@@ -33,6 +33,7 @@ export enum BooleanFlag
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
 	DONT_PRINT_AFTER = '--no-print',
+	DO_PRINT_AFTER = '--print',
 	HIDE_COMPLETED = '--hide-completed',
 	SHOW_COMPLETED = '--show-completed',
 }
@@ -142,7 +143,6 @@ export class CliArgHandler
 		const hideTimestamp = this.getBoolFlag( BooleanFlag.HIDE_TIMESTAMP )
 		const hideTree = this.getBoolFlag( BooleanFlag.HIDE_TREE )
 		const hideSubCounter = this.getBoolFlag( BooleanFlag.HIDE_SUB_COUNTER )
-		const shouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
 
 		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
 		const group = this.getValueFlag( ValueFlag.GROUP_BY ) as GroupByType
@@ -156,15 +156,19 @@ export class CliArgHandler
 		const flagHideCompleted = this.getBoolFlag( BooleanFlag.HIDE_COMPLETED )
 		const flagShowCompleted = this.getBoolFlag( BooleanFlag.SHOW_COMPLETED )
 
+		const flagShouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
+		const flagShouldPrintAfter = this.getBoolFlag( BooleanFlag.DO_PRINT_AFTER )
+
 		const hideDescription = flagHideDescription || ( flagShowDescription ? !flagShowDescription : undefined )
 		const hideCompleted = flagHideCompleted || ( flagShowCompleted ? !flagShowCompleted : undefined )
+		const shouldNotPrintAfter = flagShouldNotPrintAfter || ( flagShouldPrintAfter ? !flagShouldPrintAfter : undefined )
 
 		return	{
-					hideDescription: hideDescription,
+					hideDescription,
 					hideTimestamp,
 					hideSubCounter,
 					hideTree,
-					hideCompleted: hideCompleted,
+					hideCompleted,
 					shouldNotPrintAfter,
 
 					depth,
