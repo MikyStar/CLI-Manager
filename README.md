@@ -29,6 +29,7 @@ Requires [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 npm i -g # TODO
 
 task --version # Print installed version
+task --help # Print the manuel
 ```
 
 ---
@@ -67,17 +68,16 @@ An object defining default behaviour, such as [printing options](#printing-argum
 _Example:_
 ```json
 {
-	"defaultArgs": {
-		"hideDescription": true,
-		"hideTimestamp": true,
-		"hideSubCounter": true,
-		"hideTree": true,
-		"shouldNotPrintAfter": false,
+	"hideDescription": true,
+	"hideTimestamp": true,
+	"hideSubCounter": true,
+	"hideTree": true,
+	"shouldNotPrintAfter": false,
+	"hideCompleted": true,
 
-		"depth" : 3,
+	"depth" : 3,
 
-		"storageFile": "./tasks/v0.1.0.json",
-	}
+	"storageFile": "./tasks/v0.1.0.json",
 }
 ```
 

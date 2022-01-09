@@ -23,14 +23,19 @@ export enum BooleanFlag
 	HELP = '--help',
 	VERSION = '--version',
 
+	RECURSIVE = '-r',
+
+	/////
+
 	HIDE_DESCRIPTION = '--hide-description',
+	SHOW_DESCRIPTION = '--show-description',
 	HIDE_TREE = '--hide-tree',
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
-	HIDE_COMPLETED = '--hide-completed',
 	DONT_PRINT_AFTER = '--no-print',
-
-	RECURSIVE = '-r'
+	DO_PRINT_AFTER = '--print',
+	HIDE_COMPLETED = '--hide-completed',
+	SHOW_COMPLETED = '--show-completed',
 }
 
 export enum ValueFlag
@@ -135,16 +140,28 @@ export class CliArgHandler
 
 	private getPrinterConfig = () : PrinterConfig =>
 	{
-		const hideDescription = this.getBoolFlag( BooleanFlag.HIDE_DESCRIPTION )
 		const hideTimestamp = this.getBoolFlag( BooleanFlag.HIDE_TIMESTAMP )
 		const hideTree = this.getBoolFlag( BooleanFlag.HIDE_TREE )
 		const hideSubCounter = this.getBoolFlag( BooleanFlag.HIDE_SUB_COUNTER )
-		const shouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
-		const hideCompleted = this.getBoolFlag( BooleanFlag.HIDE_COMPLETED )
 
 		const depth = this.getValueFlag( ValueFlag.DEPTH ) as number
 		const group = this.getValueFlag( ValueFlag.GROUP_BY ) as GroupByType
 		const sort = this.getValueFlag( ValueFlag.SORT ) as Order
+
+		/////
+
+		const flagHideDescription = this.getBoolFlag( BooleanFlag.HIDE_DESCRIPTION )
+		const flagShowDescription = this.getBoolFlag( BooleanFlag.SHOW_DESCRIPTION )
+
+		const flagHideCompleted = this.getBoolFlag( BooleanFlag.HIDE_COMPLETED )
+		const flagShowCompleted = this.getBoolFlag( BooleanFlag.SHOW_COMPLETED )
+
+		const flagShouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
+		const flagShouldPrintAfter = this.getBoolFlag( BooleanFlag.DO_PRINT_AFTER )
+
+		const hideDescription = flagHideDescription || ( flagShowDescription ? !flagShowDescription : undefined )
+		const hideCompleted = flagHideCompleted || ( flagShowCompleted ? !flagShowCompleted : undefined )
+		const shouldNotPrintAfter = flagShouldNotPrintAfter || ( flagShouldPrintAfter ? !flagShouldPrintAfter : undefined )
 
 		return	{
 					hideDescription,
@@ -253,7 +270,7 @@ export class CliArgHandler
 		return { subParsed, argType }
 	}
 
-	private getBoolFlag = ( flag: BooleanFlag ) =>
+	private getBoolFlag = ( flag: BooleanFlag ) : boolean | undefined =>
 	{
 		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value === true ) )
 
