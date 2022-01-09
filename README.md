@@ -167,7 +167,7 @@ Can either be passed as CLI arguments or stored in the `defaultArgs` object in t
 # Adding tasks
 task a	# Create a new task with interactive prompt
 task a 'refactor logs'	# Create a task 'refactor logs'
-task a 'better interface' -t IHM	# Create 1 task 'better interface' with tag 'IHM'
+task a 'better interface' '!!'	# Create 1 task 'better interface' with a priority of 2
 task a 'long task' -d 'Some description'	# Create a task with a Description
 task a 'a statefull task' -s 'to test'	# Create a task with the State 'to test'
 task a 12 'first sub task'	# Add sub-task to the task n° 12

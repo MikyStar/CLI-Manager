@@ -14,7 +14,7 @@ export class TaskStateUnknownError extends CatchableError
 {
 	constructor( taskID: number, state: string, error ?: any )
 	{
-		super( `Task's n°${ taskID } state '${ state }' is not defined in your configuration file`, error )
+		super( `Task's n°${ taskID } state '${ state }' is not defined, you can add it under the 'meta.states' in your tasks data file`, error )
 	}
 }
 
