@@ -23,7 +23,8 @@ interface ManPage
 
 export interface ManEntries
 {
-	init: ManPage
+	createStorage: ManPage
+	createConfig: ManPage
 
 	viewing: ManPage
 	editing: ManPage
@@ -51,7 +52,9 @@ class Help implements ManEntries
 
 	version: string[]
 
-	init: ManPage
+	createStorage: ManPage
+	createConfig: ManPage
+
 	viewing: ManPage
 
 	creatingTask: ManPage
@@ -74,7 +77,6 @@ class Help implements ManEntries
 			italic( 'They can either be passed by CLI arguments, or set through the config file' ),
 			'',
 			`--storage <relative path> : The specific storage file to use if path different than default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }`,
-			`--config <relative path> : The configuration file to use if path different than default ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
 			'--depth <n> : Print every tasks and also n levels of subtasks',
 			`--group <(${ handledGroupings.map( str => str ) })> : Group by attribute`,
 			`--sort <(${ handledOrder.map( str => str ) })> : Sort order`,
@@ -102,32 +104,23 @@ class Help implements ManEntries
 
 		this.version = [ `${ pkg.version }` ]
 
-		this.init =
+		this.createStorage =
 		{
-			title: 'Creating required files',
-			prototype: 'task init [--config <relative path>] [--storage <relative path>]',
+			title: 'Creating storage file',
+			prototype: 'task storage [<relative path>]',
 			argDef:
 			[
-				`--config : If you want to create a configuration file, default ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
-				`--storage : If you want to create a storage file, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }, `
-					+ 'could be used to create a new storage file',
-			],
+				`<relative path> : If you want to change the path, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }`,
+			]
+		}
+
+		this.createConfig =
+		{
+			title: 'Creating the config file',
+			prototype: 'task config',
 			furtherDescription:
 			[
 				`You don't need to have a configuration file, it's used to pass default ${ bold( 'global arguments' ) } to the CLI, see section below.`,
-			],
-			examples:
-			[
-				'task init --config . --storage .',
-				'Create both a config file and a storage file using default paths',
-				'',
-				"task init --config myConfig.json ",
-				"Create a config file and change it's name ; As you changed the default name, you will need to provide",
-				" the '--config myConfig.json' flag each time you want to apply it to the CLI",
-				'',
-				"task init --storage ./tasks/v0.2.0.json",
-				"Create a new storage file and change it's name ; As you changed the default name, you will need to provide",
-				` the '--storage ./tasks/v0.2.0.json' flag each time you want to use the CLI with it, ${ bold( "or use the 'storageFile' attribute in your config file" ) }`
 			],
 			globalArgs: true
 		}
@@ -255,7 +248,7 @@ class Help implements ManEntries
 	{
 		let toReturn = []
 
-		const entries: ManEntryKey[] = [ 'init', 'viewing', 'creatingTask', 'editing',
+		const entries: ManEntryKey[] = [ 'createStorage', 'createConfig', 'viewing', 'creatingTask', 'editing',
 			'incrementingTask', 'checkingTask', 'movingTask', 'deleting', 'extracting' ]
 
 		entries.forEach( entry =>
@@ -277,8 +270,11 @@ class Help implements ManEntries
 
 		switch( action )
 		{
-			case Action.INIT:
-				toReturn = this.getMan( 'init' )
+			case Action.CREATE_STORAGE:
+				toReturn = this.getMan( 'createStorage' )
+				break;
+			case Action.CREATE_CONFIG:
+				toReturn = this.getMan( 'createConfig' )
 				break;
 			case Action.ADD_TASK:
 				toReturn = this.getMan( 'creatingTask' )
