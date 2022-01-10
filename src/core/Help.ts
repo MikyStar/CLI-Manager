@@ -12,12 +12,13 @@ import { handledGroupings, handledOrder } from './TaskList'
 
 interface ManPage
 {
-	title ?: string,
-	prototype ?: string,
-	argDef ?: string[],
-	furtherDescription ?: string[],
-	globalArgs ?: boolean,
-	footer ?: boolean,
+	title ?: string
+	prototype ?: string
+	argDef ?: string[]
+	furtherDescription ?: string[]
+	globalArgs ?: boolean
+	footer ?: boolean
+	examples ?: string[]
 }
 
 export interface ManEntries
@@ -107,14 +108,26 @@ class Help implements ManEntries
 			prototype: 'task init [--config <relative path>] [--storage <relative path>]',
 			argDef:
 			[
-				`--config : If you want to change the configuration file path, default ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
-				`--storage : If you want to change the storage file, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }, `
-					+ 'could be used to create a new storage file for an existing configuration',
+				`--config : If you want to create a configuration file, default ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
+				`--storage : If you want to create a storage file, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }, `
+					+ 'could be used to create a new storage file',
 			],
 			furtherDescription:
 			[
 				`You don't need to have a configuration file, it's used to pass default ${ bold( 'global arguments' ) } to the CLI, see section below.`,
-
+			],
+			examples:
+			[
+				'task init --config . --storage .',
+				'Create both a config file and a storage file using default paths',
+				'',
+				"task init --config myConfig.json ",
+				"Create a config file and change it's name ; As you changed the default name, you will need to provide",
+				" the '--config myConfig.json' flag each time you want to apply it to the CLI",
+				'',
+				"task init --storage ./tasks/v0.2.0.json",
+				"Create a new storage file and change it's name ; As you changed the default name, you will need to provide",
+				` the '--storage ./tasks/v0.2.0.json' flag each time you want to use the CLI with it, ${ bold( "or use the 'storageFile' attribute in your config file" ) }`
 			],
 			globalArgs: true
 		}
@@ -248,7 +261,7 @@ class Help implements ManEntries
 		entries.forEach( entry =>
 		{
 			const man = this.makeMan({ ...this[ entry ], footer: false, globalArgs: false })
-			toReturn = [ ...toReturn, ...man, , '', '-----' ]
+			toReturn = [ ...toReturn, ...man, '', '-----' ]
 		});
 
 		return	[
@@ -307,6 +320,9 @@ class Help implements ManEntries
 
 		if( manPage.furtherDescription )
 			toReturn = [ ...toReturn, '' , ...manPage.furtherDescription ]
+
+		if( manPage.examples )
+			toReturn = [ ...toReturn, '' , underline( 'Examples :' ), '', ...manPage.examples ]
 
 		if( manPage.globalArgs )
 			toReturn = [ ...toReturn, ...this.globalArgs ]
