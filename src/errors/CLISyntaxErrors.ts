@@ -17,6 +17,26 @@ export class CLISyntaxError extends CatchableError
 
 ////////////////////////////////////////
 
+export class StorageError extends CLISyntaxError
+{
+	constructor( message: string, details ?: any )
+	{
+		super( message, 'createStorage', details )
+	}
+}
+
+////////////////////////////////////////
+
+export class ConfigError extends CLISyntaxError
+{
+	constructor( message: string, details ?: any )
+	{
+		super( message, 'createConfig', details )
+	}
+}
+
+////////////////////////////////////////
+
 export class AddingTaskSyntaxError extends CLISyntaxError
 {
 	constructor( message: string, details ?: any )

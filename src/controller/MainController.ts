@@ -4,7 +4,7 @@ import { Storage, DEFAULT_STORAGE_FILE_NAME, StorageFactory } from "../core/Stor
 import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "../core/Config";
 import { System } from "../core/System";
 
-import { FileAlreadyExistsError, FileNotFoundError } from '../errors/FileErrors'
+import { StorageError, ConfigError } from "../errors/CLISyntaxErrors";
 
 ////////////////////////////////////////
 
@@ -36,12 +36,12 @@ export class MainController
 
 		this.handleCreatingFiles()
 
-		const finalStorageLocation = storageLocation || this.config.storageFile || DEFAULT_STORAGE_FILE_NAME
+		const finalStorageLocation = storageLocation || this.config?.storageFile || DEFAULT_STORAGE_FILE_NAME
 
 		if( System.doesFileExists( finalStorageLocation ) )
 			this.storage = new Storage( finalStorageLocation )
 		else
-			throw new FileNotFoundError( finalStorageLocation )
+			throw new StorageError( `Can't find the task storage file '${ finalStorageLocation }'` )
 
 
 		this.printer = PrinterFactory.create( this.argHandler, this.config, this.storage )
@@ -64,7 +64,7 @@ export class MainController
 			if( isConfigCreate )
 			{
 				if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
-					throw new FileAlreadyExistsError( DEFAULT_CONFIG_FILE_NAME )
+					throw new ConfigError( `Config file '${ DEFAULT_CONFIG_FILE_NAME }' already exists` )
 
 				System.writeJSONFile( DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS )
 				printer.addFeedback( `Config file '${ DEFAULT_CONFIG_FILE_NAME }' created` )
@@ -74,7 +74,7 @@ export class MainController
 				const storagePath = ( secondArg.value as string ) || DEFAULT_STORAGE_FILE_NAME
 
 				if( System.doesFileExists( storagePath ) )
-					throw new FileAlreadyExistsError( storagePath )
+					throw new StorageError( `Storage file '${ storagePath }' already exists` )
 
 				StorageFactory.init( storagePath )
 				printer.addFeedback( `Storage file '${ storagePath }' created` )
