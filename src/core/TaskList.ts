@@ -11,7 +11,8 @@ import { Meta } from "./Storage"
 export const handledGroupings = [ 'state', 'priority', 'id' ] as const
 export type GroupByType = typeof handledGroupings[ number ]
 
-export type Order = 'asc' | 'desc'
+export const handledOrder = [ 'asc', 'desc' ] as const
+export type Order = typeof handledOrder[ number ]
 
 ////////////////////////////////////////
 

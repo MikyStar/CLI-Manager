@@ -6,7 +6,7 @@ import { Action } from "./CliArgHandler"
 
 import { DEFAULT_CONFIG_FILE_NAME } from './Config'
 import { DEFAULT_STORAGE_FILE_NAME } from './Storage'
-import { handledGroupings } from './TaskList'
+import { handledGroupings, handledOrder } from './TaskList'
 
 ////////////////////////////////////////
 
@@ -65,6 +65,29 @@ class Help implements ManEntries
 
 	constructor()
 	{
+		this.globalArgs =
+		[
+			'',
+			underline( 'Global arguments:' ),
+			'',
+			italic( 'They can either be passed by CLI arguments, or set through the config file' ),
+			'',
+			`--storage <relative path> : The specific storage file to use if path different than default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }`,
+			`--config <relative path> : The configuration file to use if path different than default ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
+			'--depth <n> : Print every tasks and also n levels of subtasks',
+			`--group <(${ handledGroupings.map( str => str ) })> : Group by attribute`,
+			`--sort <(${ handledOrder.map( str => str ) })> : Sort order`,
+			`--hide-description : Hide tasks descriptions ; ${ bold( "'hideDescription' in the config file" ) }`,
+			`--show-description : Bypass the 'hideDescription' argument in config file`,
+			`--hide-tree : Hide tree branches ; ${ bold( "'hideTree' in the config file" ) }`,
+			`--hide-timestamp : No timestamp ; ${ bold( "'hideTimestamp' in the config file" ) }`,
+			`--hide-completed : Don\'t display completed tasks ; ${ bold( "'hideCompleted' in the config file" ) }`,
+			`--show-completed : Bypass the 'shouldNotPrintAfter' argument in config file`,
+			'--hide-sub-counter : No subtask counter in parent task',
+			`--no-print : Prevent printing your tasks after having ran your command ; ${ bold( "'shouldNotPrintAfter' in the config file" ) }`,
+			`--print : Bypass the 'shouldNotPrintAfter' argument in config file`,
+		]
+
 		this.footer =
 		[
 			'',
@@ -74,30 +97,9 @@ class Help implements ManEntries
 			`More informations and examples at ${ bold( pkg.repository.url )}`
 		]
 
-		this.globalArgs =
-		[
-			'',
-			underline( 'Global arguments:' ),
-			'',
-			italic( 'They can either be passed by CLI arguments, or set through the config file' ),
-			'',
-			'--storage <relative path> : The specific storage file to use',
-			'--config <relative path> : The specific configuration file to use',
-			'--depth n : Print every tasks and also n levels of subtasks',
-			'--hide-description : Hide tasks descriptions',
-			'--hide-tree : Hide tree branches',
-			'--hide-timestamp : No timestamp',
-			'--hide-sub-counter : No subtask counter in parent task',
-			'--no-print : Prevent printing your tasks after having ran your command',
-			`--group (${ handledGroupings.map( str => str ) }) : Group by attribute`
-		]
-
 		//////////
 
-		this.version =
-		[
-			`${ pkg.version }`,
-		]
+		this.version = [ `${ pkg.version }` ]
 
 		this.init =
 		{
@@ -105,10 +107,16 @@ class Help implements ManEntries
 			prototype: 'task init [--config <relative path>] [--storage <relative path>]',
 			argDef:
 			[
-				`--config : The configuration file, default ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
-				`--storage : The storage file, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }, `
+				`--config : If you want to change the configuration file path, default ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
+				`--storage : If you want to change the storage file, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }, `
 					+ 'could be used to create a new storage file for an existing configuration',
 			],
+			furtherDescription:
+			[
+				`You don't need to have a configuration file, it's used to pass default ${ bold( 'global arguments' ) } to the CLI, see section below.`,
+
+			],
+			globalArgs: true
 		}
 
 		this.viewing =
@@ -235,7 +243,7 @@ class Help implements ManEntries
 		let toReturn = []
 
 		const entries: ManEntryKey[] = [ 'init', 'viewing', 'creatingTask', 'editing',
-			'checkingTask', 'incrementingTask', 'movingTask', 'deleting', 'extracting' ]
+			'incrementingTask', 'checkingTask', 'movingTask', 'deleting', 'extracting' ]
 
 		entries.forEach( entry =>
 		{
