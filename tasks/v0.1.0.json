@@ -296,6 +296,12 @@
                     "state": "todo",
                     "id": 17,
                     "timestamp": "27/07/2021"
+                },
+                {
+                    "name": "sort by it",
+                    "state": "todo",
+                    "id": 11,
+                    "timestamp": "09/01/2022"
                 }
             ]
         },
@@ -306,21 +312,9 @@
             "timestamp": "27/07/2021",
             "subtasks": [
                 {
-                    "name": "change timestamp into deadline",
-                    "state": "todo",
-                    "id": 9,
-                    "timestamp": "27/07/2021"
-                },
-                {
                     "name": "print remaining time aligned to the right with color code",
                     "state": "todo",
                     "id": 10,
-                    "timestamp": "27/07/2021"
-                },
-                {
-                    "name": "new flag --sort asc desc to print flatlisted",
-                    "state": "todo",
-                    "id": 11,
                     "timestamp": "27/07/2021"
                 },
                 {
@@ -328,14 +322,14 @@
                     "state": "todo",
                     "id": 12,
                     "timestamp": "27/07/2021"
+                },
+                {
+                    "name": "sort by it",
+                    "state": "todo",
+                    "id": 9,
+                    "timestamp": "09/01/2022"
                 }
             ]
-        },
-        {
-            "name": "clean board",
-            "state": "todo",
-            "id": 21,
-            "timestamp": "28/07/2021"
         },
         {
             "name": "Action only <state | deadline | deadline range> to view only specifics",
@@ -447,12 +441,18 @@
                     "state": "todo",
                     "id": 48,
                     "timestamp": "09/01/2022"
+                },
+                {
+                    "name": "the regex should check if theres no space and a comma",
+                    "state": "todo",
+                    "id": 0,
+                    "timestamp": "09/01/2022"
                 }
             ]
         },
         {
             "name": "The conf file use should de optional",
-            "state": "todo",
+            "state": "wip",
             "priority": 3,
             "id": 49,
             "timestamp": "09/01/2022",
@@ -491,6 +491,38 @@
             "state": "done",
             "id": 60,
             "timestamp": "09/01/2022"
+        },
+        {
+            "name": "flag and con arg to disable stats",
+            "state": "todo",
+            "id": 61,
+            "timestamp": "09/01/2022"
+        },
+        {
+            "name": "stats given group by (like count of priority if priority ...)",
+            "state": "todo",
+            "id": 62,
+            "timestamp": "09/01/2022"
+        },
+        {
+            "name": "if extract arg is string, check if path to existing file and if so append to it",
+            "state": "todo",
+            "id": 68,
+            "timestamp": "09/01/2022"
+        },
+        {
+            "name": "when task deleted, still print it afterwards",
+            "state": "todo",
+            "id": 21,
+            "timestamp": "09/01/2022",
+            "description": "first retrieve then store then delete then print"
+        },
+        {
+            "name": "recursive sort",
+            "state": "todo",
+            "priority": 1,
+            "id": 69,
+            "timestamp": "10/01/2022"
         }
     ]
 }
