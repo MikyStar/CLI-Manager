@@ -3,8 +3,7 @@ import { bold, underline, italic } from "chalk"
 // @ts-ignore
 import pkg from '../../package.json'
 import { Action } from "./CliArgHandler"
-
-import { DEFAULT_CONFIG_FILE_NAME } from './Config'
+import { DEFAULT_CONFIG_FILE_NAME } from "./Config"
 import { DEFAULT_STORAGE_FILE_NAME } from './Storage'
 import { handledGroupings, handledOrder } from './TaskList'
 
@@ -120,6 +119,7 @@ class Help implements ManEntries
 			prototype: 'task config',
 			furtherDescription:
 			[
+				`It will create a ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
 				`You don't need to have a configuration file, it's used to pass default ${ bold( 'global arguments' ) } to the CLI, see section below.`,
 			],
 			globalArgs: true
