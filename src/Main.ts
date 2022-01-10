@@ -262,8 +262,8 @@ catch( error )
 			printError( error.message )
 			printMessage( Help.getMan( error.manEntry ) )
 		}
-
-		printError( error.message )
+		else
+			printError( error.message )
 	}
 
 	System.exit( -1 )
