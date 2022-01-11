@@ -455,25 +455,24 @@
             "state": "done",
             "priority": 3,
             "id": 49,
-            "timestamp": "09/01/2022",
-            "subtasks": []
+            "timestamp": "09/01/2022"
         },
         {
             "name": "Proper documentation",
-            "state": "todo",
+            "state": "done",
             "priority": 5,
             "id": 57,
             "timestamp": "09/01/2022",
             "subtasks": [
                 {
                     "name": "the optional config file",
-                    "state": "todo",
+                    "state": "done",
                     "id": 58,
                     "timestamp": "09/01/2022"
                 },
                 {
                     "name": "flags, anti-flag and equivalent in config file properly organized in a table",
-                    "state": "todo",
+                    "state": "done",
                     "id": 59,
                     "timestamp": "09/01/2022"
                 }
