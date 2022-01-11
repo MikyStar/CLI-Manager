@@ -1,6 +1,7 @@
 import { System } from './System'
 import { PrinterConfig } from './Printer'
 import { GroupByType, Order } from './TaskList'
+import { DEFAULT_STORAGE_FILE_NAME } from './Storage'
 
 ////////////////////////////////////////
 
@@ -8,8 +9,13 @@ export const DEFAULT_CONFIG_FILE_NAME = "task.config.json"
 
 export const DEFAULT_CONFIG_DATAS: ConfigFile =
 {
+	storageFile: DEFAULT_STORAGE_FILE_NAME,
+	group: 'state',
+	sort: 'desc',
 	shouldNotPrintAfter: false,
-	storageFile: "tasks.json"
+	hideCompleted: false,
+	hideDescription: false,
+	hideTree: false
 }
 
 export interface ConfigFile extends PrinterConfig
@@ -27,7 +33,7 @@ export interface ConfigFile extends PrinterConfig
 	hideCompleted ?: boolean
 
 	depth ?: number
-	groupBy ?: GroupByType
+	group ?: GroupByType
 	sort ?: Order
 }
 

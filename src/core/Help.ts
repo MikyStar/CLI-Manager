@@ -3,26 +3,27 @@ import { bold, underline, italic } from "chalk"
 // @ts-ignore
 import pkg from '../../package.json'
 import { Action } from "./CliArgHandler"
-
-import { DEFAULT_CONFIG_FILE_NAME } from './Config'
+import { DEFAULT_CONFIG_FILE_NAME } from "./Config"
 import { DEFAULT_STORAGE_FILE_NAME } from './Storage'
-import { handledGroupings } from './TaskList'
+import { handledGroupings, handledOrder } from './TaskList'
 
 ////////////////////////////////////////
 
 interface ManPage
 {
-	title ?: string,
-	prototype ?: string,
-	argDef ?: string[],
-	furtherDescription ?: string[],
-	globalArgs ?: boolean,
-	footer ?: boolean,
+	title ?: string
+	prototype ?: string
+	argDef ?: string[]
+	furtherDescription ?: string[]
+	globalArgs ?: boolean
+	footer ?: boolean
+	examples ?: string[]
 }
 
 export interface ManEntries
 {
-	init: ManPage
+	createStorage: ManPage
+	createConfig: ManPage
 
 	viewing: ManPage
 	editing: ManPage
@@ -50,7 +51,9 @@ class Help implements ManEntries
 
 	version: string[]
 
-	init: ManPage
+	createStorage: ManPage
+	createConfig: ManPage
+
 	viewing: ManPage
 
 	creatingTask: ManPage
@@ -65,6 +68,28 @@ class Help implements ManEntries
 
 	constructor()
 	{
+		this.globalArgs =
+		[
+			'',
+			underline( 'Global arguments:' ),
+			'',
+			italic( 'They can either be passed by CLI arguments, or set through the config file' ),
+			'',
+			`--storage <relative path> : The specific storage file to use if path different than default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }`,
+			'--depth <n> : Print every tasks and also n levels of subtasks',
+			`--group <(${ handledGroupings.map( str => str ) })> : Group by attribute`,
+			`--sort <(${ handledOrder.map( str => str ) })> : Sort order`,
+			`--hide-description : Hide tasks descriptions ; ${ bold( "'hideDescription' in the config file" ) }`,
+			`--show-description : Bypass the 'hideDescription' argument in config file`,
+			`--hide-tree : Hide tree branches ; ${ bold( "'hideTree' in the config file" ) }`,
+			`--hide-timestamp : No timestamp ; ${ bold( "'hideTimestamp' in the config file" ) }`,
+			`--hide-completed : Don\'t display completed tasks ; ${ bold( "'hideCompleted' in the config file" ) }`,
+			`--show-completed : Bypass the 'shouldNotPrintAfter' argument in config file`,
+			'--hide-sub-counter : No subtask counter in parent task',
+			`--no-print : Prevent printing your tasks after having ran your command ; ${ bold( "'shouldNotPrintAfter' in the config file" ) }`,
+			`--print : Bypass the 'shouldNotPrintAfter' argument in config file`,
+		]
+
 		this.footer =
 		[
 			'',
@@ -74,41 +99,30 @@ class Help implements ManEntries
 			`More informations and examples at ${ bold( pkg.repository.url )}`
 		]
 
-		this.globalArgs =
-		[
-			'',
-			underline( 'Global arguments:' ),
-			'',
-			italic( 'They can either be passed by CLI arguments, or set through the config file' ),
-			'',
-			'--storage <relative path> : The specific storage file to use',
-			'--config <relative path> : The specific configuration file to use',
-			'--depth n : Print every tasks and also n levels of subtasks',
-			'--hide-description : Hide tasks descriptions',
-			'--hide-tree : Hide tree branches',
-			'--hide-timestamp : No timestamp',
-			'--hide-sub-counter : No subtask counter in parent task',
-			'--no-print : Prevent printing your tasks after having ran your command',
-			`--group (${ handledGroupings.map( str => str ) }) : Group by attribute`
-		]
-
 		//////////
 
-		this.version =
-		[
-			`${ pkg.version }`,
-		]
+		this.version = [ `${ pkg.version }` ]
 
-		this.init =
+		this.createStorage =
 		{
-			title: 'Creating required files',
-			prototype: 'task init [--config <relative path>] [--storage <relative path>]',
+			title: 'Creating storage file',
+			prototype: 'task storage [<relative path>]',
 			argDef:
 			[
-				`--config : The configuration file, default ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
-				`--storage : The storage file, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }, `
-					+ 'could be used to create a new storage file for an existing configuration',
+				`<relative path> : If you want to change the path, default ${ bold( DEFAULT_STORAGE_FILE_NAME ) }`,
+			]
+		}
+
+		this.createConfig =
+		{
+			title: 'Creating the config file',
+			prototype: 'task config',
+			furtherDescription:
+			[
+				`It will create a ${ bold( DEFAULT_CONFIG_FILE_NAME ) }`,
+				`You don't need to have a configuration file, it's used to pass default ${ bold( 'global arguments' ) } to the CLI, see section below.`,
 			],
+			globalArgs: true
 		}
 
 		this.viewing =
@@ -234,13 +248,13 @@ class Help implements ManEntries
 	{
 		let toReturn = []
 
-		const entries: ManEntryKey[] = [ 'init', 'viewing', 'creatingTask', 'editing',
-			'checkingTask', 'incrementingTask', 'movingTask', 'deleting', 'extracting' ]
+		const entries: ManEntryKey[] = [ 'createStorage', 'createConfig', 'viewing', 'creatingTask', 'editing',
+			'incrementingTask', 'checkingTask', 'movingTask', 'deleting', 'extracting' ]
 
 		entries.forEach( entry =>
 		{
 			const man = this.makeMan({ ...this[ entry ], footer: false, globalArgs: false })
-			toReturn = [ ...toReturn, ...man, , '', '-----' ]
+			toReturn = [ ...toReturn, ...man, '', '-----' ]
 		});
 
 		return	[
@@ -256,8 +270,11 @@ class Help implements ManEntries
 
 		switch( action )
 		{
-			case Action.INIT:
-				toReturn = this.getMan( 'init' )
+			case Action.CREATE_STORAGE:
+				toReturn = this.getMan( 'createStorage' )
+				break;
+			case Action.CREATE_CONFIG:
+				toReturn = this.getMan( 'createConfig' )
 				break;
 			case Action.ADD_TASK:
 				toReturn = this.getMan( 'creatingTask' )
@@ -299,6 +316,9 @@ class Help implements ManEntries
 
 		if( manPage.furtherDescription )
 			toReturn = [ ...toReturn, '' , ...manPage.furtherDescription ]
+
+		if( manPage.examples )
+			toReturn = [ ...toReturn, '' , underline( 'Examples :' ), '', ...manPage.examples ]
 
 		if( manPage.globalArgs )
 			toReturn = [ ...toReturn, ...this.globalArgs ]

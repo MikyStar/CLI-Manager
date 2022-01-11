@@ -8,8 +8,9 @@ import { GroupBySyntaxError } from '../errors/CLISyntaxErrors'
 
 export enum Action
 {
+	CREATE_STORAGE = 'storage',
+	CREATE_CONFIG = 'config',
 	ADD_TASK = 'a',
-	INIT = 'init',
 	CHECK = 'c',
 	DELETE = 'd',
 	EDIT = 'e',
@@ -18,7 +19,7 @@ export enum Action
 	EXTRACT = 'x',
 }
 
-export enum BooleanFlag
+export enum BooleanFlag // TODO refactor with array string type like group & sort and aggreagate between global args and commands
 {
 	HELP = '--help',
 	VERSION = '--version',
@@ -33,15 +34,15 @@ export enum BooleanFlag
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
 	DONT_PRINT_AFTER = '--no-print',
+	DO_ACTUALLY_PRINT_AFTER = '--do-print', // TODO
 	DO_PRINT_AFTER = '--print',
 	HIDE_COMPLETED = '--hide-completed',
 	SHOW_COMPLETED = '--show-completed',
 }
 
-export enum ValueFlag
+export enum ValueFlag // TODO same as above
 {
 	STORAGE_FILE = '--storage',
-	CONFIG_FILE = '--config',
 	DEPTH = '--depth',
 	GROUP_BY = '--group',
 	SORT = '--sort',
@@ -70,11 +71,8 @@ export interface HandledFlags
 {
 	printing ?: PrinterConfig
 	dataAttributes ?: DataAttributes
-	files ?:
-	{
-		configLocation: string
-		storageLocation: string
-	}
+	storageLocation: string
+	config ?: boolean
 	isRecursive ?: boolean
 	isHelpNeeded ?: boolean
 	isVersion ?: boolean
@@ -101,11 +99,7 @@ export class CliArgHandler
 		{
 			printing: this.getPrinterConfig(),
 			dataAttributes: this.getDataAttributes(),
-			files:
-			{
-				configLocation: this.getValueFlag( ValueFlag.CONFIG_FILE ) as string,
-				storageLocation: this.getValueFlag( ValueFlag.STORAGE_FILE ) as string,
-			},
+			storageLocation: this.getValueFlag( ValueFlag.STORAGE_FILE ) as string,
 			isRecursive: this.getBoolFlag( BooleanFlag.RECURSIVE ),
 			isHelpNeeded: this.getBoolFlag( BooleanFlag.HELP ),
 			isVersion: this.getBoolFlag( BooleanFlag.VERSION )

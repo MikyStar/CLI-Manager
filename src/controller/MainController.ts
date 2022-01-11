@@ -4,7 +4,7 @@ import { Storage, DEFAULT_STORAGE_FILE_NAME, StorageFactory } from "../core/Stor
 import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "../core/Config";
 import { System } from "../core/System";
 
-import { FileNotFoundError } from '../errors/FileErrors'
+import { StorageError, ConfigError } from "../errors/CLISyntaxErrors";
 
 ////////////////////////////////////////
 
@@ -14,9 +14,7 @@ export class MainController
 
 	printer: Printer
 
-	configLocation : string
 	config ?: Config
-	storageLocation: string
 	storage ?: Storage
 
 	////////////////////
@@ -27,61 +25,61 @@ export class MainController
 	constructor()
 	{
 		this.argHandler = new CliArgHandler()
-		const { flags, words } = this.argHandler
-		const { files } = flags
-		const [ firstArg ] = words
-
-		this.configLocation = files.configLocation || DEFAULT_CONFIG_FILE_NAME
-		this.storageLocation = files.storageLocation
-
-		if( System.doesFileExists( this.configLocation ) )
-		{
-			this.config = new Config( this.configLocation )
-			this.storageLocation =  this.storageLocation || this.config.storageFile
-		}
-
-		if( !this.storageLocation )
-			this.storageLocation = DEFAULT_STORAGE_FILE_NAME
-
-		if( System.doesFileExists( this.storageLocation ) )
-			this.storage = new Storage( this.storageLocation )
-
-		const isInit = ( words.length > 0 ) && isAction( firstArg ) && ( firstArg.value === Action.INIT )
-		if( isInit )
-			this.handleInit()
+		const { flags } = this.argHandler
+		const { storageLocation } = flags
 
 		//////////
 
-		if( !this.config )
-			throw new FileNotFoundError( this.configLocation )
+		if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
+			this.config = new Config( DEFAULT_CONFIG_FILE_NAME )
 
-		if( !this.storage )
-			throw new FileNotFoundError( this.storageLocation )
+		this.handleCreatingFiles()
 
-		//////////
+		const finalStorageLocation = storageLocation || this.config?.storageFile || DEFAULT_STORAGE_FILE_NAME
+
+		if( System.doesFileExists( finalStorageLocation ) )
+			this.storage = new Storage( finalStorageLocation )
+		else
+			throw new StorageError( `Can't find the task storage file '${ finalStorageLocation }'` )
 
 		this.printer = PrinterFactory.create( this.argHandler, this.config, this.storage )
 	}
 
 	////////////////////
 
-	private handleInit = () =>
+	private handleCreatingFiles = () =>
 	{
-		const printer = new Printer()
+		const { words } = this.argHandler
+		const [ firstArg, secondArg ] = words
 
-		if( !this.config )
+		const isStorageCreate = ( words.length > 0 ) && isAction( firstArg ) && ( firstArg.value === Action.CREATE_STORAGE )
+		const isConfigCreate = ( words.length > 0 ) && isAction( firstArg ) && ( firstArg.value === Action.CREATE_CONFIG )
+
+		if( isConfigCreate || isStorageCreate )
 		{
-			System.writeJSONFile( this.configLocation, DEFAULT_CONFIG_DATAS )
-			printer.addFeedback( `Config file '${ this.configLocation }' created` )
-		}
+			const printer = new Printer()
 
-		if( !this.storage )
-		{
-			StorageFactory.init( this.storageLocation )
-			printer.addFeedback( `Storage file '${ this.storageLocation }' created` )
-		}
+			if( isConfigCreate )
+			{
+				if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
+					throw new ConfigError( `Config file '${ DEFAULT_CONFIG_FILE_NAME }' already exists` )
 
-		printer.printFeedback()
-		System.exit()
+				System.writeJSONFile( DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS )
+				printer.addFeedback( `Config file '${ DEFAULT_CONFIG_FILE_NAME }' created` )
+			}
+			else if( isStorageCreate )
+			{
+				const storagePath = ( secondArg?.value as string ) || DEFAULT_STORAGE_FILE_NAME
+
+				if( System.doesFileExists( storagePath ) )
+					throw new StorageError( `Storage file '${ storagePath }' already exists` )
+
+				StorageFactory.init( storagePath )
+				printer.addFeedback( `Storage file '${ storagePath }' created` )
+			}
+
+			printer.printFeedback()
+			System.exit()
+		}
 	}
 }
