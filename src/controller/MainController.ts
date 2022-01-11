@@ -30,7 +30,6 @@ export class MainController
 
 		//////////
 
-
 		if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
 			this.config = new Config( DEFAULT_CONFIG_FILE_NAME )
 
@@ -43,7 +42,6 @@ export class MainController
 		else
 			throw new StorageError( `Can't find the task storage file '${ finalStorageLocation }'` )
 
-
 		this.printer = PrinterFactory.create( this.argHandler, this.config, this.storage )
 	}
 
@@ -54,13 +52,13 @@ export class MainController
 		const { words } = this.argHandler
 		const [ firstArg, secondArg ] = words
 
-		const printer = new Printer()
-
 		const isStorageCreate = ( words.length > 0 ) && isAction( firstArg ) && ( firstArg.value === Action.CREATE_STORAGE )
 		const isConfigCreate = ( words.length > 0 ) && isAction( firstArg ) && ( firstArg.value === Action.CREATE_CONFIG )
 
 		if( isConfigCreate || isStorageCreate )
 		{
+			const printer = new Printer()
+
 			if( isConfigCreate )
 			{
 				if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
@@ -71,7 +69,7 @@ export class MainController
 			}
 			else if( isStorageCreate )
 			{
-				const storagePath = ( secondArg.value as string ) || DEFAULT_STORAGE_FILE_NAME
+				const storagePath = ( secondArg?.value as string ) || DEFAULT_STORAGE_FILE_NAME
 
 				if( System.doesFileExists( storagePath ) )
 					throw new StorageError( `Storage file '${ storagePath }' already exists` )
