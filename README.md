@@ -2,7 +2,7 @@
 
 Providing an easy and usefull Command Line Interface for managing tasks on the fly
 
-Will store inside a local file your tasks in a simple format so you can track them using version control.
+Will store inside a local file your tasks in a simple JSON format so you can track their evolution using version control.
 
 ---
 
@@ -12,11 +12,10 @@ Will store inside a local file your tasks in a simple format so you can track th
 - [Use](#use)
 	- [Init](#init)
 	- [Files](#files)
-		- [The config file](#the-config-file)
 		- [The storage file](#the-storage-file)
-- [Commands](#commands)
+		- [The config file](#the-config-file)
 	- [Printing arguments](#printing-arguments)
-	- [Task](#task)
+	- [Commands](#commands)
 - [Intended workflow](#intended-workflow)
 
 ---
@@ -26,7 +25,7 @@ Will store inside a local file your tasks in a simple format so you can track th
 Requires [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ```sh
-npm i -g # TODO
+npm i -g task
 
 task --version # Print installed version
 task --help # Print the manuel
@@ -46,43 +45,22 @@ task config # Will generate the optional config file 'task.config.json' to pass 
 
 ### Files
 
-- `task.config.json or the name you want`, the configuration file, optional
-- `tasks.json or the name you want`, the storage file
-
-#### The config file
-
-Named `task.config.json` in your working directory, it defines the default argument to pass to the CLI.
-
-An object defining default behaviour, such as [printing options](#printing-arguments)
-
-_Example:_
-```json
-{
-	"hideDescription": true,
-	"hideTimestamp": true,
-	"hideSubCounter": true,
-	"hideTree": true,
-	"shouldNotPrintAfter": false,
-	"hideCompleted": true,
-
-	"depth" : 3,
-
-	"storageFile": "./tasks/v0.1.0.json",
-}
-```
+- `tasks.json or the name you want`, a storage file
+- `task.config.json`, the configuration file, **optional**
 
 #### The storage file
 
 By default named `tasks.json` in your working directory, he stores your tasks and states
 
 > If your storage file is different than the default `tasks.json`, you either have to pass the _storage_ argument for every CLI commands
-> or use the _storageFile_ attribute in the [config file](#the-config-file)
-
-```sh
---storage <relative path> # Use or create a specific storage file
-```
+> or use the _storageFile_ attribute in the [config file](#the-config-file) see []
 
 _Example:_
+
+```sh
+task storage [<relative path>] # Create a task storage file, path optional
+```
+
 ```json
 {
 	"meta":
@@ -126,37 +104,60 @@ _states_:
 
 An `ordered` array of objects that defined task state progression
 
-> CLI commands are ment to use the config file to modify your tasks but you can manually edit them if you want !
+#### The config file
+
+**Optional** file named `task.config.json` in your working directory, it defines the default argument to pass to the CLI.
+
+_Example:_
+
+```sh
+task config # Create a task config file
+```
+
+```json
+{
+	"hideDescription": true,
+	"hideTree": true,
+	"shouldNotPrintAfter": false,
+	"hideCompleted": true,
+
+	"depth" : 3,
+
+	"storageFile": "./tasks/v0.1.0.json",
+}
+```
+
+Check [printing options](#printing-arguments) for more options
+
+---
+
+## Printing arguments
+
+Can either be passed as CLI arguments or stored in the [config file](#the-config-file)
+
+| CLI arg				| CLI 'bypass' arg		| Config file attribute						| Description								|
+| -----					| -----					| -----										| -----										|
+| --storage \<path>		| /						| "storageFile": "./path/storageFile.json"	| Which storage file to use, if not default	|
+| --depth \<n>			| /						| "depth": n								| Reduce the child subtask level depth		|
+| --hide-description	| --show-description	| "hideDescription": true					| Hide tasks descriprion					|
+| --hide-completed		| --show-completed		| "hideCompleted": true						| Hide tasks which reached final state		|
+| --hide-tree			| /						| "hideTree": true							| Hide tree branches						|
+| --no-print			| --print				| "shouldNotPrintAfter": true				| Don't print task list after edition		|
+| --group \<attribute>	| /						| "group": "state"							| Group by attribute (state, id, priority)	|
+| --sort \<asc|desc>	| /						| "sort": "desc"							| Sort order								|
+
+> **Priority:** CLI arg > CLI 'bypass' arg > Config file attribute
+
+---
 
 ## Commands
 
 You can use the _help_ flag if you want a quick reminder of the CLI commands
 
-_Example:_
 ```sh
 task --help # Full manuel
 task a --help # Print help for adding task
-```
 
-### Printing arguments
-
-Can either be passed as CLI arguments or stored in the `defaultArgs` object in the config file
-
-```sh
---depth n	# Every tasks and also n levels of subtasks
---hide-description		# No descriptions
---hide-tree		# No tree branches
---hide-timestamp	# No timestamp
---hide-sub-counter	# No subtask counter in parent task
---no-print	# Don't print tasks after an action
---group <state, priority,id> # Recursively group by attribute
-
-# ... More options with 'task --help'
-```
-
-### Task
-
-```sh
 # Adding tasks
 task a	# Create a new task with interactive prompt
 task a 'refactor logs'	# Create a task 'refactor logs'
@@ -187,14 +188,16 @@ task d 9,7,11	# Delting tasks 9, 7 and 11
 task x 9,7,11 newFile.json	# Move tasks 9, 7 and 11 to a new storage file ./newFile.json
 ```
 
+> CLI commands are ment to help you manage your tasks quicker but you can manually edit them if you want !
+
 # Intended Workflow
 
-Start by a simple `task init` at the root of your project
+Start by a simple `task storage` at the root of your project
 
 Create and manage your tasks and subtasks with CLI or direct file edition
 
-If you feel like you should break down your storage file as it become to crowded, cut out some of the tasks into a new storage file, and change the default storage path in your config file
+If you feel like you should break down your storage file as it become to crowded, cut out some of the tasks into a new storage file, and change the default storage path in your config file (`task config`)
 
-Keep track of stuff you need to do using VCS
+Keep track of stuff you need to do using a VCS like Git
 
-You may want to create a _tasks_ folder where you could add a new storage file for every release with `task init --storage ./tasks/v1.json`, with version control, it could act as a changelog for instance
+You may want to create a _tasks_ folder where you could add a new storage file for every release with `task storage ./tasks/v1.json`, with version control, it could act as a changelog for instance
