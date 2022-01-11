@@ -39,29 +39,19 @@ task --help # Print the manuel
 ## Init
 
 ```sh
-task init	# Will generate task.config.json and tasks.json under working directory
-task init --storage <relative path> --config <relative path> # Will generate both file where you want
-task init --storage <relative path> # Will just generate a new storage file
+task storage	# Will generate a task storage file 'tasks.json' under working directory
+task storage ./tasks/v0.1.0.json	# Will generate a task storage file under specified location
+task config # Will generate the optional config file 'task.config.json' to pass default arguments to the CLI
 ```
 
 ### Files
 
-After an _init_, will be created two files:
-
-- `task.config.json or the name you want`, the configuration file
+- `task.config.json or the name you want`, the configuration file, optional
 - `tasks.json or the name you want`, the storage file
 
 #### The config file
 
-By default named `task.config.json` in your working directory, he defines your custom states and default argument to provide for the CLI.
-
-> If your config file is different than the default `task.config.json` under your current working directory, you will have to pass the _config_ argument for every CLI commands
-
-```sh
---config <relative path> # Use or create a specific config file
-```
-
-_defaultArgs_:
+Named `task.config.json` in your working directory, it defines the default argument to pass to the CLI.
 
 An object defining default behaviour, such as [printing options](#printing-arguments)
 
@@ -81,43 +71,12 @@ _Example:_
 }
 ```
 
-_states_:
-
-An array of `ordered` objects that defined task state progression
-
-_Example:_
-```json
-{
-	"states": [
-		{
-			"name": "todo",
-			"hexColor": "#ff8f00",
-			"icon": "☐"
-		},
-		{
-			"name": "wip",
-			"hexColor": "#ab47bc",
-			"icon": "✹"
-		},
-		{
-			"name": "to test",
-			"hexColor": "#2196f3",
-			"icon": "♦"
-		},
-		{
-			"name": "done",
-			"hexColor": "#66bb6a",
-			"icon": "✔"
-		}
-	],
-}
-```
 #### The storage file
 
-By default named `tasks.json` in your working directory, he stores your tasks
+By default named `tasks.json` in your working directory, he stores your tasks and states
 
 > If your storage file is different than the default `tasks.json`, you either have to pass the _storage_ argument for every CLI commands
-> or use the _storageFile_ attribute in the _defaultArgs_ of the [config file](#the-config-file)
+> or use the _storageFile_ attribute in the [config file](#the-config-file)
 
 ```sh
 --storage <relative path> # Use or create a specific storage file
@@ -125,15 +84,47 @@ By default named `tasks.json` in your working directory, he stores your tasks
 
 _Example:_
 ```json
-[
+{
+	"meta":
 	{
-		"name": "Add more stuff",
-		"description": "There's a lot of things to do",
-		"state": "todo",
-		"id": 0,
-	}
-]
+		"states": [
+			{
+				"name": "todo",
+				"hexColor": "#ff8f00",
+				"icon": "☐"
+			},
+			{
+				"name": "wip",
+				"hexColor": "#ab47bc",
+				"icon": "✹"
+			},
+			{
+				"name": "to test",
+				"hexColor": "#2196f3",
+				"icon": "♦"
+			},
+			{
+				"name": "done",
+				"hexColor": "#66bb6a",
+				"icon": "✔"
+			}
+		]
+	},
+	"datas":
+	[
+		{
+			"name": "Add more stuff",
+			"description": "There's a lot of things to do",
+			"state": "todo",
+			"id": 0,
+		}
+	]
+}
 ```
+
+_states_:
+
+An `ordered` array of objects that defined task state progression
 
 > CLI commands are ment to use the config file to modify your tasks but you can manually edit them if you want !
 
@@ -158,7 +149,9 @@ Can either be passed as CLI arguments or stored in the `defaultArgs` object in t
 --hide-timestamp	# No timestamp
 --hide-sub-counter	# No subtask counter in parent task
 --no-print	# Don't print tasks after an action
---group <state, priority, tag, deadline, load, linked> # Recursively group by attribute
+--group <state, priority,id> # Recursively group by attribute
+
+# ... More options with 'task --help'
 ```
 
 ### Task
