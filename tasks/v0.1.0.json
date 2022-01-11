@@ -452,18 +452,11 @@
         },
         {
             "name": "The conf file use should de optional",
-            "state": "wip",
+            "state": "done",
             "priority": 3,
             "id": 49,
             "timestamp": "09/01/2022",
-            "subtasks": [
-                {
-                    "name": "Like default grouping, default sort, default storage file location",
-                    "state": "todo",
-                    "id": 50,
-                    "timestamp": "09/01/2022"
-                }
-            ]
+            "subtasks": []
         },
         {
             "name": "Proper documentation",
