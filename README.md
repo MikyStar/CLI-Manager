@@ -144,7 +144,7 @@ Can either be passed as CLI arguments or stored in the [config file](#the-config
 | --hide-tree			| /						| "hideTree": true							| Hide tree branches						|
 | --no-print			| --print				| "shouldNotPrintAfter": true				| Don't print task list after edition		|
 | --group \<attribute>	| /						| "group": "state"							| Group by attribute (state, id, priority)	|
-| --sort \<asc|desc>	| /						| "sort": "desc"							| Sort order								|
+| --sort \<asc\|desc>	| /						| "sort": "desc"							| Sort order								|
 
 > **Priority:** CLI arg > CLI 'bypass' arg > Config file attribute
 
