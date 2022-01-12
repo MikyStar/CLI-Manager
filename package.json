@@ -1,6 +1,6 @@
 {
 	"name": "cli-task-manager",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Providing an easy and usefull command line interface for managing tasks with local files",
 	"keywords": [
 		"cli",
@@ -16,6 +16,7 @@
 		"src",
 		"bin/cli.js"
 	],
+	"main": "src/Main.ts",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/MikyStar/CLI-Manager"
@@ -24,6 +25,8 @@
 		"start": "NODE_ENV=dev npm run tsc && node dist/Main.js",
 		"tsc": "tsc",
 		"test": "echo 'No jest tests written yet'",
+
+		"binary": "./scripts/make-binary.sh",
 
 		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
