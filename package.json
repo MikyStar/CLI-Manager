@@ -1,6 +1,6 @@
 {
-	"name": "task",
-	"version": "0.1.0",
+	"name": "cli-task-manager",
+	"version": "0.1.3",
 	"description": "Providing an easy and usefull command line interface for managing tasks with local files",
 	"keywords": [
 		"cli",
@@ -9,7 +9,14 @@
 	],
 	"author": "Mike AUBENAS",
 	"license": "ISC",
-	"bin": "./bin/cli.js",
+	"bin": {
+		"task": "./bin/cli.js"
+	},
+	"files": [
+		"src",
+		"bin/cli.js"
+	],
+	"main": "src/Main.ts",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/MikyStar/CLI-Manager"
@@ -19,6 +26,8 @@
 		"tsc": "tsc",
 		"test": "echo 'No jest tests written yet'",
 
+		"binary": "./scripts/make-binary.sh",
+
 		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
 
@@ -26,7 +35,7 @@
 		"dependencies:update": "ncu -u && npm run clear && npm install && npm run test",
 
 		"build": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli",
-		"clear": "rm -rf node_modules dist"
+		"clear": "rm -rf node_modules dist build bin"
 	},
 	"devDependencies": {
 		"@types/jest": "^27.4.0",
@@ -36,10 +45,8 @@
 		"typescript": "^4.5.4"
 	},
 	"dependencies": {
-		"@types/chalk": "^2.2.0",
-		"@types/moment": "^2.13.0",
 		"@types/prompts": "^2.0.14",
-		"chalk": "^5.0.0",
+		"chalk": "^4.1.0",
 		"dotenv": "^11.0.0",
 		"moment": "^2.29.1",
 		"prompts": "^2.4.2",
