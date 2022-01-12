@@ -302,17 +302,9 @@
         },
         {
             "name": "print problem for description of last subtask child",
-            "state": "todo",
+            "state": "done",
             "id": 77,
-            "timestamp": "05/08/2021",
-            "subtasks": [
-                {
-                    "name": "maybe no | for description if no subtasks",
-                    "state": "todo",
-                    "id": 79,
-                    "timestamp": "05/08/2021"
-                }
-            ]
+            "timestamp": "05/08/2021"
         }
     ]
 }
