@@ -28,5 +28,10 @@ prefixShabang ()
 
 mkdir -p build bin
 $buildCommand
+
+if [ -f "$binary" ]; then
+	rm $binary
+fi
+
 cp $buildedFile $binary
 prefixShabang
