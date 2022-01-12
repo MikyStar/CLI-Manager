@@ -195,8 +195,22 @@ export class Task implements ITask
 					{
 						let toReturn = indentation
 
-						if( !hideTree )
-							toReturn = indentation.split( TREE_CHARS.node ).join( TREE_CHARS.branch );
+						const { node, branch, lastNode } = TREE_CHARS
+
+						let toReplace, withWhat
+						if( indentation.match( node ) )
+						{
+							toReplace = node
+							withWhat = branch
+						}
+						else if( indentation.match( lastNode ) )
+						{
+							toReplace = lastNode
+							withWhat = INDENT_MARKER
+						}
+
+						if( !hideTree && ( toReplace && withWhat ) )
+							toReturn = indentation.split( toReplace ).join( withWhat );
 
 						return toReturn
 					}

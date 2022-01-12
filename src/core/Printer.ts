@@ -51,7 +51,6 @@ export class Printer
 
 		this.config = config
 		this.storage = storage
-		// this.storage = Object.assign( Object.create( Object.getPrototypeOf( storage ) ), storage ) // @see: https://stackoverflow.com/a/44782052
 	}
 
 	////////////////////
