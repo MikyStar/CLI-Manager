@@ -1,5 +1,5 @@
 {
-	"name": "cli-manager",
+	"name": "task",
 	"version": "0.1.0",
 	"description": "Providing an easy and usefull command line interface for managing tasks with local files",
 	"keywords": [
@@ -9,7 +9,7 @@
 	],
 	"author": "Mike AUBENAS",
 	"license": "ISC",
-	"main": "Main.js",
+	"bin": "./bin/cli.js",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/MikyStar/CLI-Manager"
@@ -26,7 +26,6 @@
 		"dependencies:update": "ncu -u && npm run clear && npm install && npm run test",
 
 		"build": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli",
-
 		"clear": "rm -rf node_modules dist"
 	},
 	"devDependencies": {
