@@ -1,4 +1,4 @@
-# CLI Manager
+# CLI Task Manager
 
 Providing an easy and usefull Command Line Interface for managing tasks on the fly
 
@@ -25,7 +25,7 @@ Will store inside a local file your tasks in a simple JSON format so you can tra
 Requires [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ```sh
-npm i -g task
+npm i -g cli-task-manager # Install package
 
 task --version # Print installed version
 task --help # Print the manuel
@@ -40,7 +40,7 @@ task --help # Print the manuel
 ```sh
 task storage	# Will generate a task storage file 'tasks.json' under working directory
 task storage ./tasks/v0.1.0.json	# Will generate a task storage file under specified location
-task config # Will generate the optional config file 'task.config.json' to pass default arguments to the CLI
+task config	# Will generate the optional config file 'task.config.json' to pass default arguments to the CLI
 ```
 
 ### Files
