@@ -26,8 +26,8 @@
             "timestamp": "13/01/2022"
         },
         {
-            "name": "remove the tsc step and use webpask only",
-            "state": "todo",
+            "name": "remove the tsc step and use webpack only",
+            "state": "done",
             "id": 0,
             "timestamp": "13/01/2022"
         }
