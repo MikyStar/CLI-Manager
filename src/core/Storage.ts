@@ -3,7 +3,6 @@ import { GroupByType, Order, TaskList } from './TaskList';
 import { System } from './System'
 
 import { FileAlreadyExistsError } from '../errors/FileErrors';
-import { ExtractSyntaxError } from '../errors/CLISyntaxErrors';
 import { TaskNotFoundError } from '../errors/TaskErrors';
 
 ////////////////////////////////////////
@@ -36,7 +35,7 @@ export const DEFAULT_STORAGE_DATAS: StorageFile =
 	[
 		{
 			name: "Add more stuff",
-			description: "There's a lot of things to do",
+			description: "Run 'task d 0' to delete me or 'task c 0' to check me",
 			state: "todo",
 			id: 0,
 		}
