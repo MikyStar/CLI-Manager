@@ -307,6 +307,12 @@
             "priority": 1,
             "id": 160,
             "timestamp": "10/01/2022"
+        },
+        {
+            "name": "option to reset ids from 0",
+            "state": "todo",
+            "id": 0,
+            "timestamp": "14/01/2022"
         }
     ]
 }
