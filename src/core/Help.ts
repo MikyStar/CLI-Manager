@@ -294,6 +294,9 @@ class Help implements ManEntries
 			case Action.MOVE:
 				toReturn = this.getMan( 'movingTask' )
 				break;
+			case Action.EXTRACT:
+				toReturn = this.getMan( 'extracting' )
+				break;
 		}
 
 		return toReturn
