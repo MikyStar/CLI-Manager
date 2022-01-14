@@ -9,7 +9,7 @@ import Help from './core/Help'
 import { MainController } from "./controller/MainController";
 
 import { CLISyntaxError, DeletingTaskSyntaxError, EditingSyntaxError, CheckingTaskSyntaxError
-	, IncrementingTaskSyntaxError, MovingTaskSyntaxError, ExtractSyntaxError } from './errors/CLISyntaxErrors';
+	, IncrementingTaskSyntaxError, MovingTaskSyntaxError, ExtractSyntaxError, StorageError } from './errors/CLISyntaxErrors';
 import { CatchableError } from "./errors/CatchableError";
 import { StorageFactory } from "./core/Storage";
 import { idsController } from "./controller/IDSController";
@@ -19,7 +19,7 @@ import { idsController } from "./controller/IDSController";
 try
 {
 	const controller = new MainController()
-	const { argHandler, storage, config, printer } = controller
+	const { argHandler, storage, config, printer, finalStorageLocation } = controller
 
 	const { flags, words } = argHandler
 	const [ firstArg, secondArg, thirdArg, ...restSentence ] = words
@@ -65,6 +65,9 @@ try
 
 	if( isAction( firstArg ) )
 	{
+		if( !storage )
+			throw new StorageError( `Can't find the task storage file '${ finalStorageLocation }'` )
+
 		switch( firstArg.value )
 		{
 			case Action.ADD_TASK:
