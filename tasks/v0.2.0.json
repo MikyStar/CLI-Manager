@@ -21,7 +21,7 @@
     "datas": [
         {
             "name": "fix: for help, storage config and version i should not need a storage file",
-            "state": "todo",
+            "state": "done",
             "priority": 1,
             "id": 0,
             "timestamp": "14/01/2022"
