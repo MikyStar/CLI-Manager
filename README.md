@@ -19,6 +19,7 @@ Will store inside a local file your tasks in a simple JSON format so you can tra
 	- [Printing arguments](#printing-arguments)
 	- [Commands](#commands)
 - [Intended workflow](#intended-workflow)
+- [Changelog](#changelog)
 
 ---
 
@@ -203,3 +204,11 @@ If you feel like you should break down your storage file as it become to crowded
 Keep track of stuff you need to do using a VCS like Git
 
 You may want to create a _tasks_ folder where you could add a new storage file for every release with `task storage ./tasks/v1.json`, with version control, it could act as a changelog for instance
+
+Using `t` as an alias is also simpler
+
+---
+
+# Changelog
+
+Check the `tasks` folder to see what has been done !
