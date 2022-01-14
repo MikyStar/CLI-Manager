@@ -205,6 +205,8 @@ Keep track of stuff you need to do using a VCS like Git
 
 You may want to create a _tasks_ folder where you could add a new storage file for every release with `task storage ./tasks/v1.json`, with version control, it could act as a changelog for instance
 
+Using `t` as an alias is also simpler
+
 ---
 
 # Changelog
