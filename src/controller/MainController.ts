@@ -17,6 +17,8 @@ export class MainController
 	config ?: Config
 	storage ?: Storage
 
+	finalStorageLocation: string
+
 	////////////////////
 
 	/**
@@ -35,12 +37,10 @@ export class MainController
 
 		this.handleCreatingFiles()
 
-		const finalStorageLocation = storageLocation || this.config?.storageFile || DEFAULT_STORAGE_FILE_NAME
+		this.finalStorageLocation = storageLocation || this.config?.storageFile || DEFAULT_STORAGE_FILE_NAME
 
-		if( System.doesFileExists( finalStorageLocation ) )
-			this.storage = new Storage( finalStorageLocation )
-		else
-			throw new StorageError( `Can't find the task storage file '${ finalStorageLocation }'` )
+		if( System.doesFileExists( this.finalStorageLocation ) )
+			this.storage = new Storage( this.finalStorageLocation )
 
 		this.printer = PrinterFactory.create( this.argHandler, this.config, this.storage )
 	}
