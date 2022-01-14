@@ -4,6 +4,8 @@ Providing an easy and usefull Command Line Interface for managing tasks on the f
 
 Will store inside a local file your tasks in a simple JSON format so you can track their evolution using version control.
 
+![Use](./assets/use.gif)
+
 ---
 
 # Table of content
