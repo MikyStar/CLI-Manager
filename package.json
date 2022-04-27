@@ -31,24 +31,24 @@
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
 
 		"dependencies:check": "ncu -e 2",
-		"dependencies:update": "ncu -u && npm run clear && npm install && npm run test",
+		"dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
 
 		"clear": "rm -rf node_modules build bin"
 	},
 	"devDependencies": {
 		"tslint": "^5.20.1",
-		"typescript": "^4.5.4"
+		"typescript": "^4.6.3"
 	},
 	"dependencies": {
 		"@types/prompts": "^2.0.14",
 		"chalk": "^4.1.2",
-		"dotenv": "^11.0.0",
-		"moment": "^2.29.1",
+		"dotenv": "^16.0.0",
+		"moment": "^2.29.3",
 		"prompts": "^2.4.2",
-		"ts-loader": "^9.2.6",
-		"ts-node": "^10.4.0",
-		"webpack": "^5.66.0",
-		"webpack-cli": "^4.9.1",
+		"ts-loader": "^9.2.9",
+		"ts-node": "^10.7.0",
+		"webpack": "^5.72.0",
+		"webpack-cli": "^4.9.2",
 		"webpack-node-externals": "^3.0.0"
 	}
 }
