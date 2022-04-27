@@ -1,4 +1,4 @@
-import { bold, underline, italic } from "chalk"
+import chalk from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
@@ -68,6 +68,8 @@ class Help implements ManEntries
 
 	constructor()
 	{
+		const { bold, underline, italic } = chalk
+
 		this.globalArgs =
 		[
 			'',
@@ -306,6 +308,8 @@ class Help implements ManEntries
 
 	private makeMan = ( manPage : ManPage ) =>
 	{
+		const { bold, underline, italic } = chalk
+
 		let toReturn : string[] = []
 
 		if( manPage.title )

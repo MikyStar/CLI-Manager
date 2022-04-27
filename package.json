@@ -23,9 +23,7 @@
 	},
 	"scripts": {
 		"start": "NODE_ENV=dev npm run build && node build/Main.js",
-		"build": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli",
-
-		"test": "echo 'No jest tests written yet'",
+		"build": "webpack-cli",
 
 		"make-binary": "./scripts/make-binary.sh",
 
@@ -38,15 +36,12 @@
 		"clear": "rm -rf node_modules build bin"
 	},
 	"devDependencies": {
-		"@types/jest": "^27.4.0",
-		"jest": "^27.4.7",
-		"ts-jest": "^27.1.2",
 		"tslint": "^5.20.1",
 		"typescript": "^4.5.4"
 	},
 	"dependencies": {
 		"@types/prompts": "^2.0.14",
-		"chalk": "^4.1.0",
+		"chalk": "^4.1.2",
 		"dotenv": "^11.0.0",
 		"moment": "^2.29.1",
 		"prompts": "^2.4.2",
