@@ -1,0 +1,43 @@
+{
+    "meta": {
+        "states": [
+            {
+                "name": "todo",
+                "hexColor": "#ff8f00",
+                "icon": "☐"
+            },
+            {
+                "name": "wip",
+                "hexColor": "#ab47bc",
+                "icon": "✹"
+            },
+            {
+                "name": "done",
+                "hexColor": "#66bb6a",
+                "icon": "✔"
+            }
+        ]
+    },
+    "datas": [
+        {
+            "name": "Option clearBeforePrint",
+            "state": "done",
+            "id": 1,
+            "timestamp": "29/04/2022",
+            "subtasks": [
+                {
+                    "name": "from cli arg",
+                    "state": "done",
+                    "id": 2,
+                    "timestamp": "29/04/2022"
+                },
+                {
+                    "name": "from config file attribute",
+                    "state": "done",
+                    "id": 3,
+                    "timestamp": "29/04/2022"
+                }
+            ]
+        }
+    ]
+}

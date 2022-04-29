@@ -15,6 +15,7 @@ export interface PrinterConfig
 	hideSubCounter ?: boolean
 	hideTree ?: boolean
 	hideCompleted ?: boolean
+	clearBefore ?: boolean
 
 	depth ?: number
 	group ?: GroupByType
@@ -181,7 +182,7 @@ export class Printer
 			]
 		}
 
-		printMessage( fullBuffer )
+		printMessage( fullBuffer, this.config.clearBefore )
 	}
 
 	printView = () =>
@@ -195,10 +196,10 @@ export class Printer
 			this.charAccrossScreen( '-' ),
 		]
 
-		printMessage( fullBuffer )
+		printMessage( fullBuffer, this.config.clearBefore )
 	}
 
-	printFeedback = () => printMessage( [ '', ...this.feedback ] )
+	printFeedback = () => printMessage( [ '', ...this.feedback ], this.config.clearBefore )
 
 	private getFileStats = () =>
 	{
@@ -267,10 +268,13 @@ export const PrinterFactory =
 
 ////////////////////////////////////////
 
-export const printMessage = ( message : string | string[], chalkColor ?: string ) =>
+export const printMessage = ( message : string | string[], clearBefore?: boolean, chalkColor ?: string ) =>
 {
 	if( ( message === '' ) || ( message === [] ) )
 		return
+
+	if( clearBefore )
+		console.clear()
 
 	const MARGIN = ' '
 	message = Array.isArray( message ) ? message : [ message ]
@@ -285,4 +289,4 @@ export const printMessage = ( message : string | string[], chalkColor ?: string 
 	console.log('')
 }
 
-export const printError = ( message: string | string[] ) => printMessage( message, 'red' )
+export const printError = ( message: string | string[], clearBefore ?: boolean ) => printMessage( message, clearBefore,'red' )

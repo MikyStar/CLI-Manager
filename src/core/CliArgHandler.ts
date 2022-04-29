@@ -38,6 +38,8 @@ export enum BooleanFlag // TODO refactor with array string type like group & sor
 	DO_PRINT_AFTER = '--print',
 	HIDE_COMPLETED = '--hide-completed',
 	SHOW_COMPLETED = '--show-completed',
+	CLEAR_BEFORE = '--clear',
+	DONT_CLEAR_BEFORE = '--no-clear',
 }
 
 export enum ValueFlag // TODO same as above
@@ -150,12 +152,16 @@ export class CliArgHandler
 		const flagHideCompleted = this.getBoolFlag( BooleanFlag.HIDE_COMPLETED )
 		const flagShowCompleted = this.getBoolFlag( BooleanFlag.SHOW_COMPLETED )
 
+		const flagClearBefore = this.getBoolFlag( BooleanFlag.CLEAR_BEFORE )
+		const flagDontClearBefore = this.getBoolFlag( BooleanFlag.DONT_CLEAR_BEFORE )
+
 		const flagShouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
 		const flagShouldPrintAfter = this.getBoolFlag( BooleanFlag.DO_PRINT_AFTER )
 
 		const hideDescription = flagHideDescription || ( flagShowDescription ? !flagShowDescription : undefined )
 		const hideCompleted = flagHideCompleted || ( flagShowCompleted ? !flagShowCompleted : undefined )
 		const shouldNotPrintAfter = flagShouldNotPrintAfter || ( flagShouldPrintAfter ? !flagShouldPrintAfter : undefined )
+		const clearBefore = flagClearBefore || ( flagDontClearBefore ? !flagDontClearBefore : undefined )
 
 		return	{
 					hideDescription,
@@ -164,6 +170,7 @@ export class CliArgHandler
 					hideTree,
 					hideCompleted,
 					shouldNotPrintAfter,
+					clearBefore,
 
 					depth,
 					group,
