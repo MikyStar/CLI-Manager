@@ -15,7 +15,8 @@ export const DEFAULT_CONFIG_DATAS: ConfigFile =
 	shouldNotPrintAfter: false,
 	hideCompleted: false,
 	hideDescription: false,
-	hideTree: false
+	hideTree: false,
+	clearBefore: false
 }
 
 export interface ConfigFile extends PrinterConfig
@@ -31,6 +32,7 @@ export interface ConfigFile extends PrinterConfig
 	hideSubCounter ?: boolean
 	hideTree ?: boolean
 	hideCompleted ?: boolean
+	clearBefore ?: boolean
 
 	depth ?: number
 	group ?: GroupByType
@@ -56,7 +58,8 @@ export class Config implements ConfigFile
 	hideTimestamp ?: boolean
 	hideSubCounter ?: boolean
 	hideTree ?: boolean
-	hideCompleted?: boolean;
+	hideCompleted?: boolean
+	clearBefore?: boolean
 
 	depth ?: number
 	group ?: GroupByType
