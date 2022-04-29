@@ -4,5 +4,6 @@
 	"storageFile": "./tasks/v0.3.0.json",
 	"group": "state",
 	"sort": "desc",
-	"hideCompleted": true
+	"hideCompleted": false,
+	"clearBefore": true
 }

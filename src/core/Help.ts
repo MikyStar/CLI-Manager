@@ -90,6 +90,8 @@ class Help implements ManEntries
 			'--hide-sub-counter : No subtask counter in parent task',
 			`--no-print : Prevent printing your tasks after having ran your command ; ${ bold( "'shouldNotPrintAfter' in the config file" ) }`,
 			`--print : Bypass the 'shouldNotPrintAfter' argument in config file`,
+			`--clear : Clear the terminal before printing ; ${ bold( "'clearBefore' in the config file" ) }`,
+			`--no-clear : Bypass the 'clearBefore' argument in the config file`,
 		]
 
 		this.footer =
