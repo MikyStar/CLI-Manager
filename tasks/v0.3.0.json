@@ -57,6 +57,26 @@
             "state": "todo",
             "id": 0,
             "timestamp": "14/01/2022"
+        },
+        {
+            "name": "Option clearBeforePrint",
+            "state": "wip",
+            "id": 1,
+            "timestamp": "29/04/2022",
+            "subtasks": [
+                {
+                    "name": "from cli arg",
+                    "state": "todo",
+                    "id": 2,
+                    "timestamp": "29/04/2022"
+                },
+                {
+                    "name": "from config file attribute",
+                    "state": "todo",
+                    "id": 3,
+                    "timestamp": "29/04/2022"
+                }
+            ]
         }
     ]
 }
