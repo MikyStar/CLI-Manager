@@ -80,6 +80,14 @@ export interface HandledFlags
 	isVersion ?: boolean
 }
 
+interface ArgInfos
+{
+	/** If a user has inputed a terminal action flag command (ex: --help, --version ...) */
+	isThereCliFlagCommand: boolean
+	isThereCLIArgs: boolean
+	isThereOnlyOneCLIArgs: boolean
+}
+
 ////////////////////////////////////////
 
 export class CliArgHandler
@@ -88,6 +96,7 @@ export class CliArgHandler
 
 	flags: HandledFlags
 	words: RawArg[]
+	infos: ArgInfos
 
 	////////////////////
 
@@ -108,6 +117,15 @@ export class CliArgHandler
 		}
 
 		this.words = [ ...this.untreatedArgs ]
+
+		const { isHelpNeeded, isVersion } = this.flags
+
+		this.infos =
+		{
+			isThereCliFlagCommand: isHelpNeeded || isVersion,
+			isThereCLIArgs: this.words.length > 0,
+			isThereOnlyOneCLIArgs: this.words.length === 1
+		}
 	}
 
 	////////////////////

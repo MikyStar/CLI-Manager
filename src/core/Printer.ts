@@ -50,7 +50,7 @@ export class Printer
 	{
 		this.feedback = []
 
-		this.config = config
+		this.config = config = {}
 		this.storage = storage
 	}
 
@@ -182,7 +182,7 @@ export class Printer
 			]
 		}
 
-		printMessage( fullBuffer, this.config.clearBefore )
+		this.printMessage( fullBuffer )
 	}
 
 	printView = () =>
@@ -196,10 +196,19 @@ export class Printer
 			this.charAccrossScreen( '-' ),
 		]
 
-		printMessage( fullBuffer, this.config.clearBefore )
+		this.printMessage( fullBuffer )
 	}
 
-	printFeedback = () => printMessage( [ '', ...this.feedback ], this.config.clearBefore )
+	printFeedback = () => this.printMessage( [ '', ...this.feedback ] )
+
+	////////////////////
+
+	private printMessage = ( message : string | string[] ) =>
+	{
+		const clearBefore = this.config ? ( this.config.clearBefore || false ) : false
+
+		printMessage(message, clearBefore)
+	}
 
 	private getFileStats = () =>
 	{
@@ -208,8 +217,6 @@ export class Printer
 
 		return [ this.separator( '-' ) , '', ' ' + fileName, '', stats, '' ]
 	}
-
-	////////////////////
 
 	private charAccrossScreen = ( char : string ) =>
 	{

@@ -1,6 +1,6 @@
 {
 	"name": "cli-task-manager",
-	"version": "0.2.3",
+	"version": "0.2.7",
 	"description": "Providing an easy and usefull command line interface for managing tasks with local files",
 	"keywords": [
 		"cli",
@@ -26,6 +26,7 @@
 		"build": "webpack-cli",
 
 		"make-binary": "./scripts/make-binary.sh",
+		"prepublishOnly": "npm run make-binary",
 
 		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
