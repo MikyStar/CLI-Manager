@@ -28,10 +28,10 @@ export class MainController
 	constructor()
 	{
 		this.argHandler = new CliArgHandler()
-		const { flags } = this.argHandler
-		const { storageLocation } = flags
 
 		//////////
+
+		this.handleFlagCommandArgs()
 
 		if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
 			this.config = new Config( DEFAULT_CONFIG_FILE_NAME )
@@ -46,7 +46,9 @@ export class MainController
 
 		this.handleCreatingFiles()
 
-		this.finalStorageLocation = storageLocation || this.config?.storageFile || DEFAULT_STORAGE_FILE_NAME
+		this.finalStorageLocation = this.argHandler.flags.storageLocation
+			|| this.config?.storageFile
+			|| DEFAULT_STORAGE_FILE_NAME
 
 		if( System.doesFileExists( this.finalStorageLocation ) )
 			this.storage = new Storage( this.finalStorageLocation )
@@ -55,6 +57,35 @@ export class MainController
 	}
 
 	////////////////////
+
+	private handleFlagCommandArgs = () =>
+	{
+		const printer = new Printer()
+
+		const { flags, infos: argInfos, words } = this.argHandler
+		const [ firstArg, ..._ ] = words
+		const { isHelpNeeded, isVersion } = flags
+		const { isThereCliFlagCommand, isThereOnlyOneCLIArgs } = argInfos
+
+		if( isThereCliFlagCommand )
+		{
+			if( isHelpNeeded )
+			{
+				if( isThereOnlyOneCLIArgs && isAction( firstArg ) )
+				{
+					printer.addFeedback(
+						Help.handleAction( firstArg.value as Action )
+					).printFeedback()
+				}
+				else
+					printer.addFeedback( Help.fullMan() ).printFeedback()
+			}
+			else if( isVersion )
+				printer.addFeedback( Help.version ).printFeedback()
+
+			System.exit()
+		}
+	}
 
 	private handleCreatingFiles = () =>
 	{

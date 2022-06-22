@@ -21,42 +21,26 @@ try
 	const controller = new MainController()
 	const { argHandler, storage, config, printer, finalStorageLocation } = controller
 
-	const { flags, words } = argHandler
-	const [ firstArg, secondArg, thirdArg, ...restSentence ] = words
-	const { dataAttributes, isHelpNeeded, isVersion, isRecursive } = flags
+	const { flags, words, infos: argInfos } = argHandler
+	const [ firstArg, secondArg, thirdArg, ..._ ] = words
+	const { dataAttributes, isRecursive } = flags
 	const { state, description, priority } = dataAttributes
-
-	const isThereCliFlagCommand = isHelpNeeded || isVersion
-	const isThereCLIArgs = words.length > 0
-	const isThereOnlyOneCLIArgs = words.length === 1
+	const { isThereCLIArgs, isThereCliFlagCommand, isThereOnlyOneCLIArgs } = argInfos
 
 	//////////
 
-	if( !isThereCLIArgs )
+	if( !isThereCLIArgs && !isThereCliFlagCommand)
 	{
-		if( isThereCliFlagCommand )
-		{
-			if( isHelpNeeded )
-				printer.addFeedback( Help.fullMan() ).printFeedback()
-			else if( isVersion )
-				printer.addFeedback( Help.version ).printFeedback()
-		}
-		else
-			printer.setView( 'full' ).printView()
+		printer.setView( 'full' ).printView()
 
 		System.exit()
 	}
 
-	if( isThereOnlyOneCLIArgs )
+	if( isThereOnlyOneCLIArgs && isTask( firstArg ) )
 	{
-		if( isTask( firstArg ) )
-		{
-			const tasksId = firstArg.value as number[]
+		const tasksId = firstArg.value as number[]
 
-			printer.setView( 'specific', tasksId ).printView()
-		}
-		else if( isAction( firstArg ) && isHelpNeeded )
-			printer.addFeedback( Help.handleAction( firstArg.value as Action ) ).printFeedback()
+		printer.setView( 'specific', tasksId ).printView()
 
 		System.exit()
 	}
