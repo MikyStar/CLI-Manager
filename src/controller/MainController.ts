@@ -34,6 +34,15 @@ export class MainController
 
 		if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
 			this.config = new Config( DEFAULT_CONFIG_FILE_NAME )
+		else
+		{
+			const printer = new Printer()
+
+			printer.addFeedback( 'Start by creating a config file !').printFeedback()
+			printer.setView('full').printView()
+
+			System.exit()
+		}
 
 		this.handleCreatingFiles()
 
