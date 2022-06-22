@@ -50,7 +50,7 @@ export class Printer
 	{
 		this.feedback = []
 
-		this.config = config
+		this.config = config = {}
 		this.storage = storage
 	}
 

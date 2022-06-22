@@ -3,6 +3,7 @@ import { Printer, PrinterFactory } from "../core/Printer";
 import { Storage, DEFAULT_STORAGE_FILE_NAME, StorageFactory } from "../core/Storage";
 import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "../core/Config";
 import { System } from "../core/System";
+import Help from "../core/Help";
 
 import { StorageError, ConfigError } from "../errors/CLISyntaxErrors";
 
@@ -36,10 +37,9 @@ export class MainController
 			this.config = new Config( DEFAULT_CONFIG_FILE_NAME )
 		else
 		{
-			const printer = new Printer()
-
-			printer.addFeedback( 'Start by creating a config file !').printFeedback()
-			printer.setView('full').printView()
+			new Printer()
+				.addFeedback( 'Start by creating a config file !\n')
+				.addFeedback( Help.getMan('createConfig') ).printFeedback()
 
 			System.exit()
 		}
