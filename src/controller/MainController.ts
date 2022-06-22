@@ -35,20 +35,12 @@ export class MainController
 
 		if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
 			this.config = new Config( DEFAULT_CONFIG_FILE_NAME )
-		else
-		{
-			new Printer()
-				.addFeedback( 'Start by creating a config file !\n')
-				.addFeedback( Help.getMan('createConfig') ).printFeedback()
-
-			System.exit()
-		}
-
-		this.handleCreatingFiles()
 
 		this.finalStorageLocation = this.argHandler.flags.storageLocation
 			|| this.config?.storageFile
 			|| DEFAULT_STORAGE_FILE_NAME
+
+		this.handleCreatingFiles()
 
 		if( System.doesFileExists( this.finalStorageLocation ) )
 			this.storage = new Storage( this.finalStorageLocation )
@@ -120,6 +112,27 @@ export class MainController
 
 			printer.printFeedback()
 			System.exit()
+		}
+
+		if(this.argHandler.words.length === 0)
+		{
+			if( !System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
+			{
+				new Printer()
+					.addFeedback( 'Start by creating a config file !\n')
+					.addFeedback( Help.getMan('createConfig') ).printFeedback()
+
+				System.exit()
+			}
+
+			if( !System.doesFileExists( this.finalStorageLocation ) )
+			{
+				new Printer()
+					.addFeedback( 'Go ahead and create a storage file !\n')
+					.addFeedback( Help.getMan('createStorage') ).printFeedback()
+
+				System.exit()
+			}
 		}
 	}
 }
