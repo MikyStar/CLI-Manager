@@ -26,6 +26,7 @@
 		"build": "webpack-cli",
 
 		"make-binary": "./scripts/make-binary.sh",
+		"prepublishOnly": "npm run make-binary",
 
 		"security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
 		"security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
