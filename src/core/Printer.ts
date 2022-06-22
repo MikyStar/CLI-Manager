@@ -2,7 +2,7 @@ import chalk from "chalk"
 
 import { TaskList, GroupByType, Order } from './TaskList';
 import { Storage } from './Storage';
-import { CliArgHandler } from "./CliArgHandler";
+import { CliArgHandler } from "../controller/CliArgHandler";
 import { Config } from "./Config";
 
 ////////////////////////////////////////

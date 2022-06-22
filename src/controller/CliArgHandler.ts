@@ -1,5 +1,5 @@
-import { PrinterConfig } from './Printer'
-import { GroupByType, handledGroupings, Order } from './TaskList'
+import { PrinterConfig } from '../core/Printer'
+import { GroupByType, handledGroupings, Order } from '../core/TaskList'
 
 import { MultipleValuesMismatchError } from '../errors'
 import { GroupBySyntaxError } from '../errors/CLISyntaxErrors'

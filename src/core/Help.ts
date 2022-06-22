@@ -2,7 +2,7 @@ import chalk from "chalk"
 
 // @ts-ignore
 import pkg from '../../package.json'
-import { Action } from "./CliArgHandler"
+import { Action } from "../controller/CliArgHandler"
 import { DEFAULT_CONFIG_FILE_NAME } from "./Config"
 import { DEFAULT_STORAGE_FILE_NAME } from './Storage'
 import { handledGroupings, handledOrder } from './TaskList'

@@ -1,4 +1,4 @@
-import { Action, isTask, isAction, isText } from "./core/CliArgHandler";
+import { Action, isTask, isAction, isText } from "./controller/CliArgHandler";
 import { Prompt } from "./core/Prompt";
 import { ITask, Task } from "./core/Task";
 import { PrinterFactory, printError, printMessage } from "./core/Printer";

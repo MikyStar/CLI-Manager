@@ -1,4 +1,4 @@
-import { CliArgHandler, Action, isAction } from "../core/CliArgHandler";
+import { CliArgHandler, Action, isAction } from "./CliArgHandler";
 import { Printer, PrinterFactory } from "../core/Printer";
 import { Storage, DEFAULT_STORAGE_FILE_NAME, StorageFactory } from "../core/Storage";
 import { Config, DEFAULT_CONFIG_FILE_NAME, DEFAULT_CONFIG_DATAS } from "../core/Config";
