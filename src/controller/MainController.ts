@@ -35,7 +35,7 @@ export class MainController
 
 		if( System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
 			this.config = new Config( DEFAULT_CONFIG_FILE_NAME )
-		else
+		else if(this.argHandler.words.length === 0)
 		{
 			new Printer()
 				.addFeedback( 'Start by creating a config file !\n')
