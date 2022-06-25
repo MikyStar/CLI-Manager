@@ -20,7 +20,7 @@ export class ActionHandler
 		const { dataAttributes, isRecursive } = flags
 		const { state, description, priority } = dataAttributes
 		const { isThereOnlyOneCLIArgs } = argInfos
-		const [ firstArg, secondArg, thirdArg, ..._ ] = words
+		const [ firstArg, secondArg, thirdArg ] = words
 
 		if( !storage )
 			throw new StorageError( `Can't find the task storage file '${ finalStorageLocation }'` )

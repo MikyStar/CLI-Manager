@@ -55,7 +55,7 @@ export class MainController
 		const printer = new Printer()
 
 		const { flags, infos: argInfos, words } = this.argHandler
-		const [ firstArg, ..._ ] = words
+		const [ firstArg ] = words
 		const { isHelpNeeded, isVersion } = flags
 		const { isThereCliFlagCommand, isThereOnlyOneCLIArgs } = argInfos
 

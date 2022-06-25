@@ -18,7 +18,7 @@ try
 	const { argHandler, printer } = controller
 
 	const { words, infos: argInfos } = argHandler
-	const [ firstArg, ..._ ] = words
+	const [ firstArg ] = words
 	const { isThereCLIArgs, isThereCliFlagCommand, isThereOnlyOneCLIArgs } = argInfos
 
 	//////////
