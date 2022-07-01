@@ -116,15 +116,6 @@ export class MainController
 
 		if(this.argHandler.words.length === 0)
 		{
-			if( !System.doesFileExists( DEFAULT_CONFIG_FILE_NAME ) )
-			{
-				new Printer()
-					.addFeedback( 'Start by creating a config file !\n')
-					.addFeedback( Help.getMan('createConfig') ).printFeedback()
-
-				System.exit()
-			}
-
 			if( !System.doesFileExists( this.finalStorageLocation ) )
 			{
 				new Printer()

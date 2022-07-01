@@ -11,7 +11,13 @@ export namespace System
 {
 	export const exit = ( code = 0 ) => process.exit( code )
 
-	export const getAbsolutePath = ( relativePath: string ) => path.join( process.cwd(), relativePath )
+	/**
+	 * Returns as is if it's already absolute, otherwise make it absolute
+	 */
+	export const getAbsolutePath = ( filePath: string ) =>
+		path.isAbsolute(filePath)
+		? filePath
+		: path.join( process.cwd(), filePath )
 
 	////////////////////
 
