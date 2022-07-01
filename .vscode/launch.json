@@ -18,7 +18,11 @@
 			"cwd": "${workspaceRoot}",
 			"protocol": "inspector",
 			"runtimeArgs": ["-r", "ts-node/register"],
-			"args": ["${workspaceRoot}/src/Main.ts" ],
+			"args": [
+				"${workspaceRoot}/src/Main.ts",
+				"--storage", "${userHome}/.global-tasks.json",
+				"a", "0", "'this should be a subtask'"
+			],
 			"runtimeExecutable": "/Users/mike/.nvm/versions/node/v14.4.0/bin/node",
 			"skipFiles": [
 				"${workspaceFolder}/node_modules/**/*",
