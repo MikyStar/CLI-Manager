@@ -28,18 +28,24 @@ export enum BooleanFlag // TODO refactor with array string type like group & sor
 
 	/////
 
-	HIDE_DESCRIPTION = '--hide-description',
-	SHOW_DESCRIPTION = '--show-description',
 	HIDE_TREE = '--hide-tree',
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
+}
+
+export enum OnOffFlag
+{
+	HIDE_DESCRIPTION = '--hide-description',
+	SHOW_DESCRIPTION = '--show-description',
+
 	DONT_PRINT_AFTER = '--no-print',
-	DO_ACTUALLY_PRINT_AFTER = '--do-print', // TODO
 	DO_PRINT_AFTER = '--print',
-	HIDE_COMPLETED = '--hide-completed',
-	SHOW_COMPLETED = '--show-completed',
+
 	CLEAR_BEFORE = '--clear',
 	DONT_CLEAR_BEFORE = '--no-clear',
+
+	HIDE_COMPLETED = '--hide-completed',
+	SHOW_COMPLETED = '--show-completed',
 }
 
 export enum ValueFlag // TODO same as above
@@ -57,7 +63,7 @@ export interface RawArg
 {
 	value: string | string[] | number | number[] | true
 	type: ArgType
-	flagType ?: ValueFlag | BooleanFlag
+	flagType ?: ValueFlag | BooleanFlag | OnOffFlag
 }
 
 type ArgType = 'action' | 'task' | 'text' | 'flag' | 'priority'
@@ -164,22 +170,10 @@ export class CliArgHandler
 
 		/////
 
-		const flagHideDescription = this.getBoolFlag( BooleanFlag.HIDE_DESCRIPTION )
-		const flagShowDescription = this.getBoolFlag( BooleanFlag.SHOW_DESCRIPTION )
-
-		const flagHideCompleted = this.getBoolFlag( BooleanFlag.HIDE_COMPLETED )
-		const flagShowCompleted = this.getBoolFlag( BooleanFlag.SHOW_COMPLETED )
-
-		const flagClearBefore = this.getBoolFlag( BooleanFlag.CLEAR_BEFORE )
-		const flagDontClearBefore = this.getBoolFlag( BooleanFlag.DONT_CLEAR_BEFORE )
-
-		const flagShouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
-		const flagShouldPrintAfter = this.getBoolFlag( BooleanFlag.DO_PRINT_AFTER )
-
-		const hideDescription = flagHideDescription || ( flagShowDescription ? !flagShowDescription : undefined )
-		const hideCompleted = flagHideCompleted || ( flagShowCompleted ? !flagShowCompleted : undefined )
-		const shouldNotPrintAfter = flagShouldNotPrintAfter || ( flagShouldPrintAfter ? !flagShouldPrintAfter : undefined )
-		const clearBefore = flagClearBefore || ( flagDontClearBefore ? !flagDontClearBefore : undefined )
+		const hideDescription = this.handleOnOffFlags(OnOffFlag.HIDE_DESCRIPTION)
+		const hideCompleted = this.handleOnOffFlags(OnOffFlag.HIDE_COMPLETED)
+		const shouldNotPrintAfter = this.handleOnOffFlags(OnOffFlag.DONT_PRINT_AFTER)
+		const clearBefore = this.handleOnOffFlags(OnOffFlag.CLEAR_BEFORE)
 
 		return	{
 					hideDescription,
@@ -194,6 +188,37 @@ export class CliArgHandler
 					group,
 					sort
 				}
+	}
+
+	private handleOnOffFlags = ( flag: OnOffFlag ) : boolean | undefined =>
+	{
+		/**
+		 * I should get the last occurance position of the flag and it's opposite and see which one is the last
+		 */
+
+		const orderedMap: OnOffFlag[] = [
+			OnOffFlag.HIDE_DESCRIPTION, OnOffFlag.SHOW_DESCRIPTION,
+			OnOffFlag.HIDE_COMPLETED, OnOffFlag.SHOW_COMPLETED,
+			OnOffFlag.DONT_PRINT_AFTER, OnOffFlag.DO_PRINT_AFTER,
+			OnOffFlag.CLEAR_BEFORE, OnOffFlag.DONT_CLEAR_BEFORE
+		]
+
+		const actualFlagPos = orderedMap.findIndex(el => el === flag)
+		const antiFlag: OnOffFlag = orderedMap[ actualFlagPos + 1 ]
+
+		const occurances: OnOffFlag[] = this.untreatedArgs
+			.filter(el => el.flagType === flag || el.flagType === antiFlag )
+			.map(el => el.flagType as OnOffFlag)
+
+		// TODO splice untrated args afterwards
+
+		if( occurances.length === 0 )
+			return undefined
+
+		const lastFlag = occurances[ occurances.length - 1]
+		const isLastFlagInput = lastFlag === flag
+
+		return isLastFlagInput
 	}
 
 	private getDataAttributes = () : DataAttributes =>
