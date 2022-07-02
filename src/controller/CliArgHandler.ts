@@ -96,9 +96,9 @@ interface ArgInfos
 	isThereOnlyOneCLIArgs: boolean
 }
 
-interface ArgOccurance<T extends FlagType>
+interface ArgOccurance
 {
-	flag: T
+	arg: RawArg
 	index: number
 }
 
@@ -212,7 +212,7 @@ export class CliArgHandler
 		const antiPos = actualFlagPos + (isAntiAfter ? +1 : -1)
 		const antiFlag: OnOffFlag = orderedMap[ antiPos ]
 
-		const occurances = this.extractOccurances<OnOffFlag>((arg) =>
+		const occurances = this.extractOccurances((arg) =>
 			arg.type === 'flag' && ( arg.flagType === flag || arg.flagType === antiFlag )
 		)
 
@@ -221,7 +221,7 @@ export class CliArgHandler
 
 		const lastFlag = occurances[ occurances.length - 1]
 
-		return lastFlag.flag === flag
+		return lastFlag.arg.flagType === flag
 	}
 
 	/**
@@ -229,13 +229,13 @@ export class CliArgHandler
 	 * returns them and delete them from the untreatedArgs array
 	 * If none find, returns undefined
 	 */
-	private extractOccurances = <T extends FlagType>(callback : (arg: RawArg, index ?: number) => boolean ): ArgOccurance<T>[] | undefined =>
+	private extractOccurances = (callback : (arg: RawArg, index ?: number) => boolean ): ArgOccurance[] | undefined =>
 	{
-		const occurances: ArgOccurance<T>[] = []
+		const occurances: ArgOccurance[] = []
 
-		this.untreatedArgs.forEach((el, index) => {
-			if(callback(el, index))
-				occurances.push({ flag: el.flagType as T, index })
+		this.untreatedArgs.forEach((arg, index) => {
+			if(callback(arg, index))
+				occurances.push({ arg, index })
 		})
 
 		if( occurances.length === 0 )
@@ -346,7 +346,7 @@ export class CliArgHandler
 
 	private getBoolFlag = ( flag: BooleanFlag ) : boolean | undefined =>
 	{
-		const occurances = this.extractOccurances<BooleanFlag>((arg) =>
+		const occurances = this.extractOccurances((arg) =>
 			( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value === true )
 		)
 
@@ -358,18 +358,14 @@ export class CliArgHandler
 
 	private getValueFlag = ( flag: ValueFlag ) =>
 	{
-		// todo find all occurances and get the last, delete them all
-		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value !== undefined ) )
+		const occurances = this.extractOccurances((arg) =>
+		( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value !== undefined )
+		)
 
-		if( index === -1 )
+		if( occurances === undefined )
 			return undefined
-		else
-		{
-			const value = this.untreatedArgs[ index ].value
-			this.untreatedArgs.splice( index, 1 )
 
-			return value
-		}
+		return occurances[ occurances.length - 1 ].arg.value
 	}
 
 	private getPriority = () : number =>
