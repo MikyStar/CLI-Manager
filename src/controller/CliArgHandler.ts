@@ -370,18 +370,14 @@ export class CliArgHandler
 
 	private getPriority = () : number =>
 	{
-		// todo find all occurances and get the last, delete them all
-		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'priority' ) && ( arg.value !== undefined ) )
+		const occurances = this.extractOccurances((arg) =>
+			( arg.type === 'priority' ) && ( arg.value !== undefined )
+		)
 
-		if( index === -1 )
+		if( occurances === undefined )
 			return undefined
-		else
-		{
-			const value = this.untreatedArgs[ index ].value
-			this.untreatedArgs.splice( index, 1 )
 
-			return value as number
-		}
+		return occurances[ occurances.length - 1 ].arg.value as number
 	}
 }
 
