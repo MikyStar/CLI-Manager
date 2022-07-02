@@ -59,11 +59,13 @@ export enum ValueFlag // TODO same as above
 	TAG = '-t',
 }
 
+type FlagType = ValueFlag | BooleanFlag | OnOffFlag
+
 export interface RawArg
 {
 	value: string | string[] | number | number[] | true
 	type: ArgType
-	flagType ?: ValueFlag | BooleanFlag | OnOffFlag
+	flagType ?: FlagType
 }
 
 type ArgType = 'action' | 'task' | 'text' | 'flag' | 'priority'
@@ -92,6 +94,12 @@ interface ArgInfos
 	isThereCliFlagCommand: boolean
 	isThereCLIArgs: boolean
 	isThereOnlyOneCLIArgs: boolean
+}
+
+interface ArgOccurance<T extends FlagType>
+{
+	flag: T
+	index: number
 }
 
 ////////////////////////////////////////
@@ -204,10 +212,29 @@ export class CliArgHandler
 		const antiPos = actualFlagPos + (isAntiAfter ? +1 : -1)
 		const antiFlag: OnOffFlag = orderedMap[ antiPos ]
 
-		const occurances: { flag: OnOffFlag, index: number }[] = []
+		const occurances = this.extractOccurances<OnOffFlag>((arg) =>
+			arg.type === 'flag' && ( arg.flagType === flag || arg.flagType === antiFlag )
+		)
+
+		if( occurances === undefined )
+			return undefined
+
+		const lastFlag = occurances[ occurances.length - 1]
+
+		return lastFlag.flag === flag
+	}
+
+	/**
+	 * Find occurances in input order with their position that math the callback,
+	 * returns them and delete them from the untreatedArgs array
+	 */
+	private extractOccurances = <T extends FlagType>(callback : (arg: RawArg, index ?: number) => boolean ): ArgOccurance<T>[] | undefined =>
+	{
+		const occurances: ArgOccurance<T>[] = []
+
 		this.untreatedArgs.forEach((el, index) => {
-			if(el.type === 'flag' && ( el.flagType === flag || el.flagType === antiFlag ) )
-				occurances.push({ flag: el.flagType, index })
+			if(callback(el, index))
+				occurances.push({ flag: el.flagType as T, index })
 		})
 
 		if( occurances.length === 0 )
@@ -217,9 +244,7 @@ export class CliArgHandler
 		for (let i = occurances.length - 1; i >= 0; i--)
 			this.untreatedArgs.splice(occurances[ i ].index, 1);
 
-		const lastFlag = occurances[ occurances.length - 1]
-
-		return lastFlag.flag === flag
+		return occurances
 	}
 
 	private getDataAttributes = () : DataAttributes =>
