@@ -227,6 +227,7 @@ export class CliArgHandler
 	/**
 	 * Find occurances in input order with their position that math the callback,
 	 * returns them and delete them from the untreatedArgs array
+	 * If none find, returns undefined
 	 */
 	private extractOccurances = <T extends FlagType>(callback : (arg: RawArg, index ?: number) => boolean ): ArgOccurance<T>[] | undefined =>
 	{
@@ -345,20 +346,19 @@ export class CliArgHandler
 
 	private getBoolFlag = ( flag: BooleanFlag ) : boolean | undefined =>
 	{
-		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value === true ) )
+		const occurances = this.extractOccurances<BooleanFlag>((arg) =>
+			( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value === true )
+		)
 
-		if( index === -1 )
+		if( occurances === undefined )
 			return undefined
-		else
-		{
-			this.untreatedArgs.splice( index, 1 )
 
-			return true
-		}
+		return true
 	}
 
 	private getValueFlag = ( flag: ValueFlag ) =>
 	{
+		// todo find all occurances and get the last, delete them all
 		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value !== undefined ) )
 
 		if( index === -1 )
@@ -374,6 +374,7 @@ export class CliArgHandler
 
 	private getPriority = () : number =>
 	{
+		// todo find all occurances and get the last, delete them all
 		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'priority' ) && ( arg.value !== undefined ) )
 
 		if( index === -1 )
