@@ -1,4 +1,4 @@
-import { RawArg } from '../core/CliArgHandler'
+import { RawArg } from './CliArgHandler'
 import { Storage } from '../core/Storage'
 import { Task } from '../core/Task'
 

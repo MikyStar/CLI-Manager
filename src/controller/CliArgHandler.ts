@@ -1,5 +1,5 @@
-import { PrinterConfig } from './Printer'
-import { GroupByType, handledGroupings, Order } from './TaskList'
+import { PrinterConfig } from '../core/Printer'
+import { GroupByType, handledGroupings, Order } from '../core/TaskList'
 
 import { MultipleValuesMismatchError } from '../errors'
 import { GroupBySyntaxError } from '../errors/CLISyntaxErrors'
@@ -28,18 +28,24 @@ export enum BooleanFlag // TODO refactor with array string type like group & sor
 
 	/////
 
-	HIDE_DESCRIPTION = '--hide-description',
-	SHOW_DESCRIPTION = '--show-description',
 	HIDE_TREE = '--hide-tree',
 	HIDE_TIMESTAMP = '--hide-timestamp',
 	HIDE_SUB_COUNTER = '--hide-sub-counter',
+}
+
+export enum OnOffFlag
+{
+	HIDE_DESCRIPTION = '--hide-description',
+	SHOW_DESCRIPTION = '--show-description',
+
 	DONT_PRINT_AFTER = '--no-print',
-	DO_ACTUALLY_PRINT_AFTER = '--do-print', // TODO
 	DO_PRINT_AFTER = '--print',
-	HIDE_COMPLETED = '--hide-completed',
-	SHOW_COMPLETED = '--show-completed',
+
 	CLEAR_BEFORE = '--clear',
 	DONT_CLEAR_BEFORE = '--no-clear',
+
+	HIDE_COMPLETED = '--hide-completed',
+	SHOW_COMPLETED = '--show-completed',
 }
 
 export enum ValueFlag // TODO same as above
@@ -53,11 +59,13 @@ export enum ValueFlag // TODO same as above
 	TAG = '-t',
 }
 
+type FlagType = ValueFlag | BooleanFlag | OnOffFlag
+
 export interface RawArg
 {
 	value: string | string[] | number | number[] | true
 	type: ArgType
-	flagType ?: ValueFlag | BooleanFlag
+	flagType ?: FlagType
 }
 
 type ArgType = 'action' | 'task' | 'text' | 'flag' | 'priority'
@@ -86,6 +94,12 @@ interface ArgInfos
 	isThereCliFlagCommand: boolean
 	isThereCLIArgs: boolean
 	isThereOnlyOneCLIArgs: boolean
+}
+
+interface ArgOccurance
+{
+	arg: RawArg
+	index: number
 }
 
 ////////////////////////////////////////
@@ -164,22 +178,10 @@ export class CliArgHandler
 
 		/////
 
-		const flagHideDescription = this.getBoolFlag( BooleanFlag.HIDE_DESCRIPTION )
-		const flagShowDescription = this.getBoolFlag( BooleanFlag.SHOW_DESCRIPTION )
-
-		const flagHideCompleted = this.getBoolFlag( BooleanFlag.HIDE_COMPLETED )
-		const flagShowCompleted = this.getBoolFlag( BooleanFlag.SHOW_COMPLETED )
-
-		const flagClearBefore = this.getBoolFlag( BooleanFlag.CLEAR_BEFORE )
-		const flagDontClearBefore = this.getBoolFlag( BooleanFlag.DONT_CLEAR_BEFORE )
-
-		const flagShouldNotPrintAfter = this.getBoolFlag( BooleanFlag.DONT_PRINT_AFTER )
-		const flagShouldPrintAfter = this.getBoolFlag( BooleanFlag.DO_PRINT_AFTER )
-
-		const hideDescription = flagHideDescription || ( flagShowDescription ? !flagShowDescription : undefined )
-		const hideCompleted = flagHideCompleted || ( flagShowCompleted ? !flagShowCompleted : undefined )
-		const shouldNotPrintAfter = flagShouldNotPrintAfter || ( flagShouldPrintAfter ? !flagShouldPrintAfter : undefined )
-		const clearBefore = flagClearBefore || ( flagDontClearBefore ? !flagDontClearBefore : undefined )
+		const hideDescription = this.handleOnOffFlags(OnOffFlag.HIDE_DESCRIPTION)
+		const hideCompleted = this.handleOnOffFlags(OnOffFlag.HIDE_COMPLETED)
+		const shouldNotPrintAfter = this.handleOnOffFlags(OnOffFlag.DONT_PRINT_AFTER)
+		const clearBefore = this.handleOnOffFlags(OnOffFlag.CLEAR_BEFORE)
 
 		return	{
 					hideDescription,
@@ -194,6 +196,56 @@ export class CliArgHandler
 					group,
 					sort
 				}
+	}
+
+	private handleOnOffFlags = ( flag: OnOffFlag ) : boolean | undefined =>
+	{
+		const orderedMap: OnOffFlag[] = [
+			OnOffFlag.HIDE_DESCRIPTION, OnOffFlag.SHOW_DESCRIPTION,
+			OnOffFlag.HIDE_COMPLETED, OnOffFlag.SHOW_COMPLETED,
+			OnOffFlag.DONT_PRINT_AFTER, OnOffFlag.DO_PRINT_AFTER,
+			OnOffFlag.CLEAR_BEFORE, OnOffFlag.DONT_CLEAR_BEFORE
+		]
+
+		const actualFlagPos = orderedMap.findIndex(el => el === flag)
+		const isAntiAfter = actualFlagPos % 2 === 0
+		const antiPos = actualFlagPos + (isAntiAfter ? +1 : -1)
+		const antiFlag: OnOffFlag = orderedMap[ antiPos ]
+
+		const occurances = this.extractOccurances((arg) =>
+			arg.type === 'flag' && ( arg.flagType === flag || arg.flagType === antiFlag )
+		)
+
+		if( occurances === undefined )
+			return undefined
+
+		const lastFlag = occurances[ occurances.length - 1]
+
+		return lastFlag.arg.flagType === flag
+	}
+
+	/**
+	 * Find occurances in input order with their position that math the callback,
+	 * returns them and delete them from the untreatedArgs array
+	 * If none find, returns undefined
+	 */
+	private extractOccurances = (callback : (arg: RawArg, index ?: number) => boolean ): ArgOccurance[] | undefined =>
+	{
+		const occurances: ArgOccurance[] = []
+
+		this.untreatedArgs.forEach((arg, index) => {
+			if(callback(arg, index))
+				occurances.push({ arg, index })
+		})
+
+		if( occurances.length === 0 )
+			return undefined
+
+		/** @see: https://www.codegrepper.com/code-examples/javascript/array+splice+in+for+loop+javascript */
+		for (let i = occurances.length - 1; i >= 0; i--)
+			this.untreatedArgs.splice(occurances[ i ].index, 1);
+
+		return occurances
 	}
 
 	private getDataAttributes = () : DataAttributes =>
@@ -232,6 +284,7 @@ export class CliArgHandler
 				const isTask = isNumber( theArg )
 				const isAction = Object.values( Action ).includes( theArg as Action )
 				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
+				const isOnOffFlag = Object.values( OnOffFlag ).includes( theArg as OnOffFlag )
 				const isValueFlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
 				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUP_BY
 				const isPriority = ( theArg.match( /^!+$/ )?.length === 1 ) || false
@@ -242,6 +295,8 @@ export class CliArgHandler
 					parsedArgs.push( { value: theArg, type: 'action' } )
 				else if( isBooleanFlag )
 					parsedArgs.push( { value: true, type: 'flag', flagType: theArg as BooleanFlag } )
+				else if( isOnOffFlag )
+					parsedArgs.push( { value: true, type: 'flag', flagType: theArg as OnOffFlag } )
 				else if( isValueFlag )
 				{
 					const followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
@@ -291,46 +346,38 @@ export class CliArgHandler
 
 	private getBoolFlag = ( flag: BooleanFlag ) : boolean | undefined =>
 	{
-		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value === true ) )
+		const occurances = this.extractOccurances((arg) =>
+			( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value === true )
+		)
 
-		if( index === -1 )
+		if( occurances === undefined )
 			return undefined
-		else
-		{
-			this.untreatedArgs.splice( index, 1 )
 
-			return true
-		}
+		return true
 	}
 
 	private getValueFlag = ( flag: ValueFlag ) =>
 	{
-		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value !== undefined ) )
+		const occurances = this.extractOccurances((arg) =>
+		( arg.type === 'flag' ) && ( arg.flagType === flag ) && ( arg.value !== undefined )
+		)
 
-		if( index === -1 )
+		if( occurances === undefined )
 			return undefined
-		else
-		{
-			const value = this.untreatedArgs[ index ].value
-			this.untreatedArgs.splice( index, 1 )
 
-			return value
-		}
+		return occurances[ occurances.length - 1 ].arg.value
 	}
 
 	private getPriority = () : number =>
 	{
-		const index = this.untreatedArgs.findIndex( arg => ( arg.type === 'priority' ) && ( arg.value !== undefined ) )
+		const occurances = this.extractOccurances((arg) =>
+			( arg.type === 'priority' ) && ( arg.value !== undefined )
+		)
 
-		if( index === -1 )
+		if( occurances === undefined )
 			return undefined
-		else
-		{
-			const value = this.untreatedArgs[ index ].value
-			this.untreatedArgs.splice( index, 1 )
 
-			return value as number
-		}
+		return occurances[ occurances.length - 1 ].arg.value as number
 	}
 }
 

@@ -2,8 +2,9 @@ import chalk from "chalk"
 
 import { TaskList, GroupByType, Order } from './TaskList';
 import { Storage } from './Storage';
-import { CliArgHandler } from "./CliArgHandler";
+import { CliArgHandler } from "../controller/CliArgHandler";
 import { Config } from "./Config";
+import Help from "./Help";
 
 ////////////////////////////////////////
 
@@ -50,7 +51,7 @@ export class Printer
 	{
 		this.feedback = []
 
-		this.config = config = {}
+		this.config = config || {}
 		this.storage = storage
 	}
 
@@ -126,7 +127,9 @@ export class Printer
 	{
 		let toReturn : string[] = []
 
-		this.cloneStorage().tasks.forEach( task => toReturn.push( ...task.stringify( this.storage.meta.states, this.config ) ) );
+		this.cloneStorage().tasks.forEach( task =>
+			toReturn.push( ...task.stringify( this.storage.meta.states, this.config ) )
+		);
 
 		toReturn.push( '', ...this.getFileStats() )
 
@@ -137,6 +140,9 @@ export class Printer
 	{
 		if( !this.viewParams )
 			return []
+
+		if ( this.storage.tasks.length === 0 )
+			return [ chalk.bold( 'Your storage file is empty' ), '', ...Help.getMan('creatingTask') ]
 
 		switch( this.viewParams.view )
 		{

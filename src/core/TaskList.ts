@@ -111,7 +111,7 @@ export class TaskList extends Array<Task>
 		task.id = taskID
 		task.timestamp = moment().format( TIMESTAMP_FORMAT )
 
-		if( subTaskOf )
+		if( subTaskOf !== undefined )
 		{
 			this.retrieveTask( subTaskOf, ({ task: parent }) =>
 			{
@@ -315,7 +315,8 @@ export class TaskList extends Array<Task>
 		states.forEach( ( state, index ) =>
 		{
 			const count = this.search( 'state', state.name ).length
-			const percent = ( count / totalCount ) * 100
+			const _percent = ( count / totalCount ) * 100
+			const percent = isNaN(_percent) ? 0 : _percent
 
 			if( ( index !== 0 ) && ( index !== states.length ) )
 				toReturn += ' ► '
