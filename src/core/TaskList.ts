@@ -111,7 +111,7 @@ export class TaskList extends Array<Task>
 		task.id = taskID
 		task.timestamp = moment().format( TIMESTAMP_FORMAT )
 
-		if( subTaskOf )
+		if( subTaskOf !== undefined )
 		{
 			this.retrieveTask( subTaskOf, ({ task: parent }) =>
 			{
