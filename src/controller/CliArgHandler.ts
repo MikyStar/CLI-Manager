@@ -200,18 +200,22 @@ export class CliArgHandler
 		]
 
 		const actualFlagPos = orderedMap.findIndex(el => el === flag)
-		const antiFlag: OnOffFlag = orderedMap[ actualFlagPos + 1 ]
+		const isAntiAfter = actualFlagPos % 2 === 0
+		const antiPos = actualFlagPos + (isAntiAfter ? +1 : -1)
+		const antiFlag: OnOffFlag = orderedMap[ antiPos ]
 
 		const occurances: { flag: OnOffFlag, index: number }[] = []
 		this.untreatedArgs.forEach((el, index) => {
-			if(el.flagType === flag || el.flagType === antiFlag)
+			if(el.type === 'flag' && ( el.flagType === flag || el.flagType === antiFlag ) )
 				occurances.push({ flag: el.flagType, index })
 		})
 
 		if( occurances.length === 0 )
 			return undefined
 
-		occurances.forEach(arg => this.untreatedArgs.splice( arg.index, 1 ) )
+		/** @see: https://www.codegrepper.com/code-examples/javascript/array+splice+in+for+loop+javascript */
+		for (let i = occurances.length - 1; i >= 0; i--)
+			this.untreatedArgs.splice(occurances[ i ].index, 1);
 
 		const lastFlag = occurances[ occurances.length - 1]
 
@@ -254,6 +258,7 @@ export class CliArgHandler
 				const isTask = isNumber( theArg )
 				const isAction = Object.values( Action ).includes( theArg as Action )
 				const isBooleanFlag = Object.values( BooleanFlag ).includes( theArg as BooleanFlag )
+				const isOnOffFlag = Object.values( OnOffFlag ).includes( theArg as OnOffFlag )
 				const isValueFlag = Object.values( ValueFlag ).includes( theArg as ValueFlag )
 				const isGroupBy = ( theArg as ValueFlag ) === ValueFlag.GROUP_BY
 				const isPriority = ( theArg.match( /^!+$/ )?.length === 1 ) || false
@@ -264,6 +269,8 @@ export class CliArgHandler
 					parsedArgs.push( { value: theArg, type: 'action' } )
 				else if( isBooleanFlag )
 					parsedArgs.push( { value: true, type: 'flag', flagType: theArg as BooleanFlag } )
+				else if( isOnOffFlag )
+					parsedArgs.push( { value: true, type: 'flag', flagType: theArg as OnOffFlag } )
 				else if( isValueFlag )
 				{
 					const followingValue : string | number = args[ i + 1 ] // TODO I might want the flag value to be an comma separated array
