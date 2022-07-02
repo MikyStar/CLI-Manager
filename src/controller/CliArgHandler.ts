@@ -192,10 +192,6 @@ export class CliArgHandler
 
 	private handleOnOffFlags = ( flag: OnOffFlag ) : boolean | undefined =>
 	{
-		/**
-		 * I should get the last occurance position of the flag and it's opposite and see which one is the last
-		 */
-
 		const orderedMap: OnOffFlag[] = [
 			OnOffFlag.HIDE_DESCRIPTION, OnOffFlag.SHOW_DESCRIPTION,
 			OnOffFlag.HIDE_COMPLETED, OnOffFlag.SHOW_COMPLETED,
@@ -206,19 +202,20 @@ export class CliArgHandler
 		const actualFlagPos = orderedMap.findIndex(el => el === flag)
 		const antiFlag: OnOffFlag = orderedMap[ actualFlagPos + 1 ]
 
-		const occurances: OnOffFlag[] = this.untreatedArgs
-			.filter(el => el.flagType === flag || el.flagType === antiFlag )
-			.map(el => el.flagType as OnOffFlag)
-
-		// TODO splice untrated args afterwards
+		const occurances: { flag: OnOffFlag, index: number }[] = []
+		this.untreatedArgs.forEach((el, index) => {
+			if(el.flagType === flag || el.flagType === antiFlag)
+				occurances.push({ flag: el.flagType, index })
+		})
 
 		if( occurances.length === 0 )
 			return undefined
 
-		const lastFlag = occurances[ occurances.length - 1]
-		const isLastFlagInput = lastFlag === flag
+		occurances.forEach(arg => this.untreatedArgs.splice( arg.index, 1 ) )
 
-		return isLastFlagInput
+		const lastFlag = occurances[ occurances.length - 1]
+
+		return lastFlag.flag === flag
 	}
 
 	private getDataAttributes = () : DataAttributes =>
