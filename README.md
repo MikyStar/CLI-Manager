@@ -29,6 +29,7 @@ Requires [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 
 ```sh
 # Install package
+
 npm i -g cli-task-manager
 # Or
 pnpm add -g cli-task-manager
