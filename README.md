@@ -28,7 +28,12 @@ Will store inside a local file your tasks in a simple JSON format so you can tra
 Requires [NPM](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ```sh
-npm i -g cli-task-manager # Install package
+# Install package
+npm i -g cli-task-manager
+# Or
+pnpm add -g cli-task-manager
+# Or
+yarn add -g cli-task-manager
 
 task --version # Print installed version
 task --help # Print the manuel
@@ -177,7 +182,7 @@ task 9,13	# Print details on what's in task n°9 and 13
 # Editing tasks
 task e 9	# Edit taks attributes with interactive prompt
 task e 9 'renaming the task' -s 'wip'	# Rename task n°9 and change its state
-task e 9,7,2 -s 'to test'	# Change state to 'done'
+task e 9,7,2 -s 'to test'	# Change state to 'to test'
 task c 7	# Put task to final state, 'Check'
 task i 11,14	# Pass tasks 11 and 14 to next state, "Increment"
 task i 11,14 -r	# Pass tasks 11 and 14 and their subtasks to next state, "Increment"
