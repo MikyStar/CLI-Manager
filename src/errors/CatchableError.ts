@@ -1,12 +1,10 @@
-export class CatchableError extends Error
-{
-	details: any
+export class CatchableError extends Error {
+  details: any;
 
-	//////////
+  //////////
 
-	constructor( message: string, details ?: any )
-	{
-		super( message )
-		this.details = details;
-	}
+  constructor(message: string, details?: any) {
+    super(message);
+    this.details = details;
+  }
 }
