@@ -1,6 +1,6 @@
 {
   "name": "cli-task-manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Providing an easy and usefull command line interface for managing tasks with local files",
   "keywords": [
     "cli",
