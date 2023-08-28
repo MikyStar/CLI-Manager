@@ -21,13 +21,13 @@
     "datas": [
         {
             "name": "format with prettier",
-            "state": "todo",
+            "state": "done",
             "id": 0,
             "timestamp": "28/08/2023"
         },
         {
             "name": "lint with eslint",
-            "state": "todo",
+            "state": "done",
             "id": 1,
             "timestamp": "28/08/2023"
         },
