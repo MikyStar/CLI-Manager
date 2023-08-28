@@ -78,40 +78,38 @@ task storage [<relative path>] # Create a task storage file, path optional
 
 ```json
 {
-	"meta":
-	{
-		"states": [
-			{
-				"name": "todo",
-				"hexColor": "#ff8f00",
-				"icon": "☐"
-			},
-			{
-				"name": "wip",
-				"hexColor": "#ab47bc",
-				"icon": "✹"
-			},
-			{
-				"name": "to test",
-				"hexColor": "#2196f3",
-				"icon": "♦"
-			},
-			{
-				"name": "done",
-				"hexColor": "#66bb6a",
-				"icon": "✔"
-			}
-		]
-	},
-	"datas":
-	[
-		{
-			"name": "Add more stuff",
-			"description": "There's a lot of things to do",
-			"state": "todo",
-			"id": 0,
-		}
-	]
+  "meta": {
+    "states": [
+      {
+        "name": "todo",
+        "hexColor": "#ff8f00",
+        "icon": "☐"
+      },
+      {
+        "name": "wip",
+        "hexColor": "#ab47bc",
+        "icon": "✹"
+      },
+      {
+        "name": "to test",
+        "hexColor": "#2196f3",
+        "icon": "♦"
+      },
+      {
+        "name": "done",
+        "hexColor": "#66bb6a",
+        "icon": "✔"
+      }
+    ]
+  },
+  "datas": [
+    {
+      "name": "Add more stuff",
+      "description": "There's a lot of things to do",
+      "state": "todo",
+      "id": 0
+    }
+  ]
 }
 ```
 
@@ -131,14 +129,14 @@ task config # Create a task config file
 
 ```json
 {
-	"hideDescription": true,
-	"hideTree": true,
-	"shouldNotPrintAfter": false,
-	"hideCompleted": true,
+  "hideDescription": true,
+  "hideTree": true,
+  "shouldNotPrintAfter": false,
+  "hideCompleted": true,
 
-	"depth" : 3,
+  "depth" : 3,
 
-	"storageFile": "./tasks/v0.1.0.json",
+  "storageFile": "./tasks/v0.1.0.json",
 }
 ```
 
