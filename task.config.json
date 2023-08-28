@@ -1,7 +1,7 @@
 {
 	"hideDescription": false,
 	"shouldNotPrintAfter": false,
-	"storageFile": "./tasks/v0.3.0.json",
+	"storageFile": "./tasks/v1.0.2.json",
 	"group": "state",
 	"sort": "desc",
 	"hideCompleted": false,
