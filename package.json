@@ -24,9 +24,10 @@
   "scripts": {
     "start": "NODE_ENV=dev npm run build && node build/Main.js",
     "build": "webpack-cli",
-    "lint": "eslint src --ext .ts --fix",
     "make-binary": "./scripts/make-binary.sh",
     "prepublishOnly": "npm run make-binary",
+    "lint": "eslint src --ext .ts --fix",
+    "prepare": "husky install",
     "security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
     "security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
     "dependencies:check": "ncu -e 2",
@@ -34,16 +35,19 @@
     "clear": "rm -rf node_modules build bin"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^17.7.0",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.0",
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
     "tslint": "^5.20.1",
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "@commitlint/cli": "^17.7.1",
     "@types/prompts": "^2.0.14",
     "chalk": "^4.1.2",
     "dotenv": "^16.0.0",

@@ -39,9 +39,15 @@
         },
         {
             "name": "add husky for githooks",
-            "state": "todo",
+            "state": "done",
             "id": 3,
             "timestamp": "28/08/2023"
+        },
+        {
+            "name": "switch to pnpm",
+            "state": "todo",
+            "id": 4,
+            "timestamp": "30/08/2023"
         }
     ]
 }
