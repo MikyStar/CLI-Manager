@@ -45,7 +45,7 @@
         },
         {
             "name": "switch to pnpm",
-            "state": "todo",
+            "state": "done",
             "id": 4,
             "timestamp": "30/08/2023"
         }
