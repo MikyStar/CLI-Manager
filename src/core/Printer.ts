@@ -233,7 +233,7 @@ export const PrinterFactory = {
 ////////////////////////////////////////
 
 export const printMessage = (message: string | string[], clearBefore?: boolean, chalkColor?: string) => {
-  if (message === '' || message === []) return;
+  if (message === '' || (Array.isArray(message) && message.length === 0)) return;
 
   if (clearBefore) console.clear();
 

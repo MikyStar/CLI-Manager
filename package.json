@@ -22,7 +22,7 @@
     "url": "https://github.com/MikyStar/CLI-Manager"
   },
   "scripts": {
-    "start": "NODE_ENV=dev npm run build && node build/Main.js",
+    "start": "NODE_ENV=dev npm run build && node build/main.js",
     "build": "webpack-cli",
     "make-binary": "./scripts/make-binary.sh",
     "prepublishOnly": "npm run make-binary",
