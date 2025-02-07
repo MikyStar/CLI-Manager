@@ -18,12 +18,12 @@ Will store inside a local file your tasks in a simple JSON format so you can tra
 
 - [Installation](#installation)
 - [Use](#use)
-	- [Init](#init)
-	- [Files](#files)
-		- [The storage file](#the-storage-file)
-		- [The config file](#the-config-file)
-	- [Printing arguments](#printing-arguments)
-	- [Commands](#commands)
+  - [Init](#init)
+  - [Files](#files)
+    - [The storage file](#the-storage-file)
+    - [The config file](#the-config-file)
+  - [Printing arguments](#printing-arguments)
+  - [Commands](#commands)
 - [Intended workflow](#intended-workflow)
 - [Changelog](#changelog)
 
@@ -78,40 +78,38 @@ task storage [<relative path>] # Create a task storage file, path optional
 
 ```json
 {
-	"meta":
-	{
-		"states": [
-			{
-				"name": "todo",
-				"hexColor": "#ff8f00",
-				"icon": "☐"
-			},
-			{
-				"name": "wip",
-				"hexColor": "#ab47bc",
-				"icon": "✹"
-			},
-			{
-				"name": "to test",
-				"hexColor": "#2196f3",
-				"icon": "♦"
-			},
-			{
-				"name": "done",
-				"hexColor": "#66bb6a",
-				"icon": "✔"
-			}
-		]
-	},
-	"datas":
-	[
-		{
-			"name": "Add more stuff",
-			"description": "There's a lot of things to do",
-			"state": "todo",
-			"id": 0,
-		}
-	]
+  "meta": {
+    "states": [
+      {
+        "name": "todo",
+        "hexColor": "#ff8f00",
+        "icon": "☐"
+      },
+      {
+        "name": "wip",
+        "hexColor": "#ab47bc",
+        "icon": "✹"
+      },
+      {
+        "name": "to test",
+        "hexColor": "#2196f3",
+        "icon": "♦"
+      },
+      {
+        "name": "done",
+        "hexColor": "#66bb6a",
+        "icon": "✔"
+      }
+    ]
+  },
+  "datas": [
+    {
+      "name": "Add more stuff",
+      "description": "There's a lot of things to do",
+      "state": "todo",
+      "id": 0
+    }
+  ]
 }
 ```
 
@@ -131,14 +129,14 @@ task config # Create a task config file
 
 ```json
 {
-	"hideDescription": true,
-	"hideTree": true,
-	"shouldNotPrintAfter": false,
-	"hideCompleted": true,
+  "hideDescription": true,
+  "hideTree": true,
+  "shouldNotPrintAfter": false,
+  "hideCompleted": true,
 
-	"depth" : 3,
+  "depth" : 3,
 
-	"storageFile": "./tasks/v0.1.0.json",
+  "storageFile": "./tasks/v0.1.0.json",
 }
 ```
 
@@ -150,17 +148,18 @@ Check [printing options](#printing-arguments) for more options
 
 Can either be passed as CLI arguments or stored in the [config file](#the-config-file)
 
-| CLI arg				| CLI 'bypass' arg		| Config file attribute						| Description								|
-| -----					| -----					| -----										| -----										|
-| --storage \<path>		| /						| "storageFile": "./path/storageFile.json"	| Which storage file to use, if not default	|
-| --depth \<n>			| /						| "depth": n								| Reduce the child subtask level depth		|
-| --hide-description	| --show-description	| "hideDescription": true					| Hide tasks descriprion					|
-| --hide-completed		| --show-completed		| "hideCompleted": true						| Hide tasks which reached final state		|
-| --hide-tree			| /						| "hideTree": true							| Hide tree branches						|
-| --no-print			| --print				| "shouldNotPrintAfter": true				| Don't print task list after edition		|
-| --group \<attribute>	| /						| "group": "state"							| Group by attribute (state, id, priority)	|
-| --sort \<asc\|desc>	| /						| "sort": "desc"							| Sort order								|
-| --clear				| --no-clear			| "clearBefore": false						| Clear before printing						|
+| CLI arg              | CLI 'bypass' arg   | Config file attribute                    | Description                               |
+|----------------------|--------------------|------------------------------------------|-------------------------------------------|
+| --storage \<path>    | /                  | "storageFile": "./path/storageFile.json" | Which storage file to use, if not default |
+| --depth \<n>         | /                  | "depth": n                               | Reduce the child subtask level depth      |
+| --hide-description   | --show-description | "hideDescription": true                  | Hide tasks descriprion                    |
+| --hide-completed     | --show-completed   | "hideCompleted": true                    | Hide tasks which reached final state      |
+| --hide-tree          | /                  | "hideTree": true                         | Hide tree branches                        |
+| --no-print           | --print            | "shouldNotPrintAfter": true              | Don't print task list after edition       |
+| --group \<attribute> | /                  | "group": "state"                         | Group by attribute (state, id, priority)  |
+| --sort \<asc\| desc> | /                  | "sort": "desc"                           | Sort order                                |
+| --clear              | --no-clear         | "clearBefore": false                     | Clear before printing                     |
+
 
 > **Priority:** CLI arg > CLI 'bypass' arg > Config file attribute
 
