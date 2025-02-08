@@ -1,6 +1,6 @@
 {
   "name": "cli-task-manager",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Providing an easy and usefull command line interface for managing tasks with local files",
   "keywords": [
     "cli",
@@ -22,41 +22,39 @@
     "url": "https://github.com/MikyStar/CLI-Manager"
   },
   "scripts": {
-    "start": "NODE_ENV=dev npm run build && node build/main.js",
+    "start": "NODE_ENV=dev pnpm build && node build/main.js",
     "build": "webpack-cli",
     "make-binary": "./scripts/make-binary.sh",
-    "prepublishOnly": "npm run make-binary",
-    "lint": "eslint src --ext .ts --fix",
+    "prepublishOnly": "pnpm make-binary",
+    "lint": "eslint src --fix",
     "prepare": "husky install",
-    "security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
-    "security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
+    "security:audit": "pnpm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
+    "security:fix": "pnpm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
     "dependencies:check": "ncu -e 2",
-    "dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
+    "dependencies:update": "ncu -u && pnpm clear && pnpm i && pnpm security:audit",
     "clear": "rm -rf node_modules build bin"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.7.0",
-    "@typescript-eslint/eslint-plugin": "^6.5.0",
-    "eslint": "^8.48.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-import-resolver-typescript": "^3.6.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-prettier": "^5.0.0",
-    "husky": "^8.0.3",
-    "tslint": "^5.20.1",
-    "typescript": "^4.6.3"
+    "@commitlint/config-conventional": "^19.7.1",
+    "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "eslint": "^9.20.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-prettier": "^5.2.3",
+    "husky": "^9.1.7",
+    "@commitlint/cli": "^19.7.1",
+    "@types/prompts": "^2.4.9",
+    "ts-loader": "^9.5.2",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-node-externals": "^3.0.0",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@commitlint/cli": "^17.7.1",
-    "@types/prompts": "^2.0.14",
     "chalk": "^4.1.2",
-    "dotenv": "^16.0.0",
-    "moment": "^2.29.3",
-    "prompts": "^2.4.2",
-    "ts-loader": "^9.2.9",
-    "ts-node": "^10.7.0",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-node-externals": "^3.0.0"
+    "dotenv": "^16.4.7",
+    "moment": "^2.30.1",
+    "prompts": "^2.4.2"
   }
 }
