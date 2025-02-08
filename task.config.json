@@ -1,9 +1,9 @@
 {
-	"hideDescription": false,
-	"shouldNotPrintAfter": false,
-	"storageFile": "./tasks/v1.0.2.json",
-	"group": "state",
-	"sort": "desc",
-	"hideCompleted": false,
-	"clearBefore": true
+  "hideDescription": false,
+  "shouldNotPrintAfter": false,
+  "storageFile": "./tasks/v1.0.2.json",
+  "group": "state",
+  "sort": "desc",
+  "hideCompleted": false,
+  "clearBefore": true
 }
