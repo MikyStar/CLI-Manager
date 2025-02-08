@@ -43,8 +43,8 @@ export namespace Prompt {
       const id = storage.addTask(task);
 
       return id;
-    } catch (error) {
-      console.warn('No task added');
+    } catch (err) {
+      console.warn('No task added', err);
     }
   };
 }
