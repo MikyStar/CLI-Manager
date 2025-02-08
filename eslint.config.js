@@ -6,6 +6,7 @@ const importPlugin = require("eslint-plugin-import");
 module.exports = [
   {
     files: ["**/*.ts"],
+    ignores: ["node_modules", "bin"],
     languageOptions: {
       parser: tsparser,
       ecmaVersion: "latest",
