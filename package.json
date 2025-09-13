@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "NODE_ENV=dev pnpm build && node build/main.js",
-    "build": "webpack-cli",
+    "build": "esbuild src/Main.ts --bundle --minify --platform=node --outfile=build/main.js",
     "make-binary": "./scripts/make-binary.sh",
     "prepublishOnly": "pnpm make-binary",
     "lint:print": "eslint src",
@@ -36,20 +36,17 @@
     "clear": "rm -rf node_modules build bin"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
+    "@types/prompts": "^2.4.9",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
+    "esbuild": "^0.25.9",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-import-resolver-typescript": "^3.7.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.3",
     "husky": "^9.1.7",
-    "@commitlint/cli": "^19.7.1",
-    "@types/prompts": "^2.4.9",
-    "ts-loader": "^9.5.2",
-    "webpack": "^5.97.1",
-    "webpack-cli": "^6.0.1",
-    "webpack-node-externals": "^3.0.0",
     "typescript": "^5.7.3"
   },
   "dependencies": {
