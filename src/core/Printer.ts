@@ -8,7 +8,7 @@ import Help from './Help';
 
 ////////////////////////////////////////
 
-export interface PrinterConfig {
+export type PrinterConfig = {
   shouldNotPrintAfter?: boolean;
   hideDescription?: boolean;
   hideTimestamp?: boolean;
@@ -20,12 +20,12 @@ export interface PrinterConfig {
   depth?: number;
   group?: GroupByType;
   sort?: Order;
-}
+};
 
-export interface ViewParams {
+export type ViewParams = {
   view: ViewType;
   target?: ViewTargetType;
-}
+};
 
 type ViewType = 'full' | 'specific';
 type ViewTargetType = string | string[] | number | number[];

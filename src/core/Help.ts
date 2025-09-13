@@ -9,7 +9,7 @@ import { handledGroupings, handledOrder } from './TaskList';
 
 ////////////////////////////////////////
 
-interface ManPage {
+type ManPage = {
   title?: string;
   prototype?: string;
   argDef?: string[];
@@ -17,9 +17,9 @@ interface ManPage {
   globalArgs?: boolean;
   footer?: boolean;
   examples?: string[];
-}
+};
 
-export interface ManEntries {
+export type ManEntries = {
   createStorage: ManPage;
   createConfig: ManPage;
 
@@ -33,7 +33,7 @@ export interface ManEntries {
   movingTask: ManPage;
 
   extracting: ManPage;
-}
+};
 
 type ManEntryKey = keyof ManEntries;
 

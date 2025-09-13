@@ -19,7 +19,7 @@ export namespace System {
   ////////////////////
 
   export const readJSONFile = (relativePath: string): any => {
-    let file;
+    let file: string;
     let datas = {};
 
     try {

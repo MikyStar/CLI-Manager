@@ -39,20 +39,20 @@ export const DEFAULT_STORAGE_DATAS: StorageFile = {
 
 ////////////////////////////////////////
 
-export interface Meta {
+export type Meta = {
   states: TaskState[];
-}
+};
 
-export interface TaskState {
+export type TaskState = {
   name: string;
   hexColor: string;
   icon: string;
-}
+};
 
-export interface StorageFile {
+export type StorageFile = {
   meta: Meta;
   datas: ITask[];
-}
+};
 
 ////////////////////////////////////////
 

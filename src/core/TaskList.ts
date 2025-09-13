@@ -21,11 +21,11 @@ export type Order = (typeof handledOrder)[number];
 
 ////////////////////////////////////////
 
-interface RetrieveTaskCallback {
+type RetrieveTaskCallback = {
   task: Task;
   taskIndex: number;
   parentTask: Task;
-}
+};
 
 ////////////////////////////////////////
 
