@@ -32,7 +32,7 @@ export class ActionHandler {
 
     switch (firstArg.value) {
       case Action.ADD_TASK: {
-        let id;
+        let id: number | Promise<number>;
 
         if (isThereOnlyOneCLIArgs) id = Prompt.addTask(storage);
         else {
