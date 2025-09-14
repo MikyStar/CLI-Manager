@@ -1,3 +1,6 @@
+// @ts-ignore
+import pkg from '../package.json';
+
 import { isTask, isAction } from './controller/CliArgHandler';
 import { printError, printMessage } from './core/Printer';
 import { System } from './core/System';
@@ -42,8 +45,12 @@ try {
     System.exit();
   }
 } catch (error) {
-  if (!(error instanceof CatchableError)) console.error(error);
-  else {
+  if (!(error instanceof CatchableError)) {
+    const issuesUrl = `${pkg.repository.url}/issues`;
+
+    console.error(error);
+    printError(`This was not a properly handled error case, please submit an issue at ${issuesUrl}`);
+  } else {
     if (error instanceof CLISyntaxError) {
       printError(error.message);
       printMessage(Help.getMan(error.manEntry));
