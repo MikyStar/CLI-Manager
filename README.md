@@ -115,7 +115,9 @@ task storage [<relative path>] # Create a task storage file, path optional
 
 _states_:
 
-An `ordered` array of objects that defined task state progression
+An `ordered` array of objects that defined task state progression, feel free to add or remove any of them, their colors or icon.
+
+> But every tasks of a storage file need to have their state listed in the meta.states
 
 #### The config file
 
@@ -174,7 +176,6 @@ task --help # Full manuel
 task a --help # Print help for adding task
 
 # Adding tasks
-task a	# Create a new task with interactive prompt
 task a 'refactor logs'	# Create a task 'refactor logs'
 task a 'better interface' '!!'	# Create 1 task 'better interface' with a priority of 2
 task a 'long task' -d 'Some description'	# Create a task with a Description
