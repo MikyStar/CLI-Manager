@@ -30,7 +30,7 @@ export class ActionHandler {
 
     switch (firstArg.value) {
       case Action.ADD_TASK: {
-        let id: number | Promise<number>;
+        let id: number;
 
         const task: Task = new Task({
           name: argHandler.getFirstText(),
