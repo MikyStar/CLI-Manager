@@ -115,7 +115,11 @@ export class Task implements ITask {
     ////////////////////
 
     const isFinalState = this.state === availableStates[availableStates.length - 1].name;
-    const taskState = availableStates.filter((state) => this.state === state.name)[0];
+    const taskState = availableStates.filter((state) => this.state === state.name)[0] || {
+      name: this.state || 'unknown',
+      hexColor: '#808080',
+      icon: '•'
+    };
 
     const coloredID = chalk.hex(taskState.hexColor)(`${this.id}.`);
 
