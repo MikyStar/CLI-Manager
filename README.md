@@ -67,8 +67,7 @@ task config	# Will generate the optional config file 'task.config.json' to pass 
 
 By default named `tasks.json` in your working directory, he stores your tasks and states
 
-> If your storage file is different than the default `tasks.json`, you either have to pass the _storage_ argument for every CLI commands
-> or use the _storageFile_ attribute in the [config file](#the-config-file) see []
+> If your storage file is different than the default `tasks.json`, you either have to pass the _storage_ argument for every [CLI commands](#printing-arguments) or use the _storageFile_ attribute in the [config file](#the-config-file)
 
 _Example:_
 
