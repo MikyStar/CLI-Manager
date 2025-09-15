@@ -20,29 +20,10 @@
     },
     "datas": [
         {
-            "name": "format with prettier",
-            "state": "done",
+            "name": "add renovate bot",
+            "state": "todo",
             "id": 0,
             "timestamp": "28/08/2023"
-        },
-        {
-            "name": "lint with eslint",
-            "state": "done",
-            "id": 1,
-            "timestamp": "28/08/2023"
-        },
-        ,
-        {
-            "name": "add husky for githooks",
-            "state": "done",
-            "id": 3,
-            "timestamp": "28/08/2023"
-        },
-        {
-            "name": "switch to pnpm",
-            "state": "done",
-            "id": 4,
-            "timestamp": "30/08/2023"
         }
     ]
 }

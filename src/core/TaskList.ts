@@ -21,25 +21,47 @@ export type Order = (typeof handledOrder)[number];
 
 ////////////////////////////////////////
 
-interface RetrieveTaskCallback {
+type RetrieveTaskCallback = {
   task: Task;
   taskIndex: number;
   parentTask: Task;
-}
+};
 
 ////////////////////////////////////////
 
 export class TaskList extends Array<Task> {
   allIDs: number[];
+  availableStatesNames: string[];
 
   //////////
 
-  constructor(items?: ITask[]) {
+  constructor(items?: ITask[], meta?: Meta) {
     super();
 
     this.allIDs = [];
+    this.availableStatesNames = [];
 
-    items && this.push(...items.map((item) => new Task(item)));
+    if (meta) {
+      this.availableStatesNames = meta.states.map((state) => state.name);
+    }
+
+    if (items) {
+      this.push(
+        ...items.map((item) => {
+          const task = new Task(item);
+
+          if (meta) {
+            const doesStateExists = this.availableStatesNames.includes(task.state);
+
+            if (!doesStateExists) {
+              throw new TaskStateUnknownError(task.id, task.state);
+            }
+          }
+
+          return task;
+        }),
+      );
+    }
   }
 
   //////////
@@ -95,10 +117,17 @@ export class TaskList extends Array<Task> {
         return id;
       }
     };
+
     const taskID = task.id && !this.allIDs.includes(task.id) ? task.id : createUniqueId();
 
     task.id = taskID;
     task.timestamp = moment().format(TIMESTAMP_FORMAT);
+
+    const doesStateExists = this.availableStatesNames.includes(task.state);
+
+    if (!doesStateExists) {
+      throw new TaskStateUnknownError(task.id, task.state);
+    }
 
     if (subTaskOf !== undefined) {
       this.retrieveTask(subTaskOf, ({ task: parent }) => {
@@ -115,6 +144,12 @@ export class TaskList extends Array<Task> {
   editTask = (tasksID: number[], newAttributes: ITask, isRecurive?: boolean) => {
     tasksID.forEach((id) => {
       this.retrieveTask(id, ({ task }) => {
+        const doesStateExists = this.availableStatesNames.includes(newAttributes.state || task.state);
+
+        if (!doesStateExists) {
+          throw new TaskStateUnknownError(task.id, newAttributes.state);
+        }
+
         const impactedTasks = isRecurive ? task.straightTask() : [task];
 
         for (const [k, v] of Object.entries(newAttributes)) impactedTasks.forEach((aTask) => (aTask[k] = v));
@@ -124,17 +159,14 @@ export class TaskList extends Array<Task> {
     return tasksID;
   };
 
-  incrementTask = (tasksID: number[], meta: Meta, isRecurive?: boolean) => {
-    const { states } = meta;
-    const statesNames = states.map((state) => state.name);
-
+  incrementTask = (tasksID: number[], isRecurive?: boolean) => {
     const handleIncrement = (task: Task) => {
-      const currentStateIndex = statesNames.indexOf(task.state);
+      const currentStateIndex = this.availableStatesNames.indexOf(task.state);
 
       if (currentStateIndex === -1) throw new TaskStateUnknownError(task.id, task.state);
 
-      if (currentStateIndex !== statesNames.length - 1)
-        this.editTask([task.id], { state: statesNames[currentStateIndex + 1] }, isRecurive);
+      if (currentStateIndex !== this.availableStatesNames.length - 1)
+        this.editTask([task.id], { state: this.availableStatesNames[currentStateIndex + 1] }, isRecurive);
       else throw new NoFurtherStateError(task.id);
     };
 

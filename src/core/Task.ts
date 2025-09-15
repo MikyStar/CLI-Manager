@@ -9,7 +9,7 @@ export const TIMESTAMP_FORMAT = 'DD/MM/YYYY';
 
 ////////////////////////////////////////
 
-export interface ITask {
+export type ITask = {
   name?: string;
   description?: string;
   id?: number;
@@ -17,7 +17,7 @@ export interface ITask {
   timestamp?: string;
   state?: string;
   priority?: number;
-}
+};
 
 export interface StringifyArgs extends PrinterConfig {
   parentIndent?: string;

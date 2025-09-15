@@ -39,20 +39,20 @@ export const DEFAULT_STORAGE_DATAS: StorageFile = {
 
 ////////////////////////////////////////
 
-export interface Meta {
+export type Meta = {
   states: TaskState[];
-}
+};
 
-export interface TaskState {
+export type TaskState = {
   name: string;
   hexColor: string;
   icon: string;
-}
+};
 
-export interface StorageFile {
+export type StorageFile = {
   meta: Meta;
   datas: ITask[];
-}
+};
 
 ////////////////////////////////////////
 
@@ -71,7 +71,7 @@ export class Storage {
     this.relativePath = relativePath;
 
     const { meta, datas } = System.readJSONFile(this.relativePath) as StorageFile;
-    this.tasks = new TaskList(datas);
+    this.tasks = new TaskList(datas, meta);
     this.meta = meta;
   }
 
@@ -90,7 +90,7 @@ export class Storage {
   };
 
   incrementTask = (tasksID: number[], isRecurive?: boolean) => {
-    const id = this.tasks.incrementTask(tasksID, this.meta, isRecurive);
+    const id = this.tasks.incrementTask(tasksID, isRecurive);
     this.save();
     return id;
   };

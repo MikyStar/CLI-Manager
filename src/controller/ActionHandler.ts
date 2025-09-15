@@ -1,5 +1,4 @@
 import { PrinterFactory } from '../core/Printer';
-import { Prompt } from '../core/Prompt';
 import { StorageFactory } from '../core/Storage';
 import { ITask, Task } from '../core/Task';
 import {
@@ -22,36 +21,32 @@ export class ActionHandler {
     this.mainController = mainController;
 
     const { argHandler, storage, config, printer, finalStorageLocation } = this.mainController;
-    const { words, flags, infos: argInfos } = argHandler;
+    const { words, flags } = argHandler;
     const { dataAttributes, isRecursive } = flags;
     const { state, description, priority } = dataAttributes;
-    const { isThereOnlyOneCLIArgs } = argInfos;
     const [firstArg, secondArg, thirdArg] = words;
 
     if (!storage) throw new StorageError(`Can't find the task storage file '${finalStorageLocation}'`);
 
     switch (firstArg.value) {
       case Action.ADD_TASK: {
-        let id;
+        let id: number;
 
-        if (isThereOnlyOneCLIArgs) id = Prompt.addTask(storage);
-        else {
-          const task: Task = new Task({
-            name: argHandler.getFirstText(),
-            state: state || storage.meta.states[0].name,
-            description,
-            priority,
-          });
+        const task: Task = new Task({
+          name: argHandler.getFirstText(),
+          state: state || storage.meta.states[0].name,
+          description,
+          priority,
+        });
 
-          let subTaskOf = undefined;
-          if (isTask(secondArg)) {
-            const id = secondArg.value as number;
-            subTaskOf = id;
-            printer.setView('specific', id);
-          } else printer.setView('full');
+        let subTaskOf = undefined;
+        if (isTask(secondArg)) {
+          const id = secondArg.value as number;
+          subTaskOf = id;
+          printer.setView('specific', id);
+        } else printer.setView('full');
 
-          id = storage.addTask(task, subTaskOf);
-        }
+        id = storage.addTask(task, subTaskOf);
 
         printer.addFeedback(`Task n°${id} added`).print();
         break;
