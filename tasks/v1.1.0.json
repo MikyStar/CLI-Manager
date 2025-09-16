@@ -1,0 +1,35 @@
+{
+    "meta": {
+        "states": [
+            {
+                "name": "todo",
+                "hexColor": "#ff8f00",
+                "icon": "☐"
+            },
+            {
+                "name": "wip",
+                "hexColor": "#ab47bc",
+                "icon": "✹"
+            },
+            {
+                "name": "done",
+                "hexColor": "#66bb6a",
+                "icon": "✔"
+            }
+        ]
+    },
+    "datas": [
+        {
+            "name": "prompt for new task",
+            "state": "todo",
+            "id": 1,
+            "timestamp": "16/09/2025"
+        },
+        {
+            "name": "prompt for editing task",
+            "state": "todo",
+            "id": 0,
+            "timestamp": "16/09/2025"
+        }
+    ]
+}
