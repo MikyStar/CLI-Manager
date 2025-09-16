@@ -175,6 +175,8 @@ task --help # Full manuel
 task a --help # Print help for adding task
 
 # Adding tasks
+task a # Create a new task with interactive prompt
+task a 5 # Create a new subtask of task 5 with interactive prompt
 task a 'refactor logs'	# Create a task 'refactor logs'
 task a 'better interface' '!!'	# Create 1 task 'better interface' with a priority of 2
 task a 'long task' -d 'Some description'	# Create a task with a Description

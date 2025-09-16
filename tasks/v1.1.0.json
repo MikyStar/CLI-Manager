@@ -21,7 +21,7 @@
     "datas": [
         {
             "name": "prompt for new task",
-            "state": "todo",
+            "state": "wip",
             "id": 1,
             "timestamp": "16/09/2025"
         },

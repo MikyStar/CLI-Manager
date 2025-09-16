@@ -1,6 +1,7 @@
 import { PrinterFactory } from '../core/Printer';
 import { StorageFactory } from '../core/Storage';
 import { ITask, Task } from '../core/Task';
+import { Prompt } from '../core/Prompt';
 import {
   EditingSyntaxError,
   CheckingTaskSyntaxError,
@@ -17,9 +18,15 @@ import { MainController } from './MainController';
 export class ActionHandler {
   mainController: MainController;
 
+  //////////
+
   constructor(mainController: MainController) {
     this.mainController = mainController;
+  }
 
+  //////////
+
+  handleAction = async (): Promise<void> => {
     const { argHandler, storage, config, printer, finalStorageLocation } = this.mainController;
     const { words, flags } = argHandler;
     const { dataAttributes, isRecursive } = flags;
@@ -30,23 +37,30 @@ export class ActionHandler {
 
     switch (firstArg.value) {
       case Action.ADD_TASK: {
-        let id: number;
+        let id: number | Promise<number>;
 
-        const task: Task = new Task({
-          name: argHandler.getFirstText(),
-          state: state || storage.meta.states[0].name,
-          description,
-          priority,
-        });
+        const shouldPrompt = words.length === 1 || (words.length === 2 && isTask(secondArg));
 
-        let subTaskOf = undefined;
-        if (isTask(secondArg)) {
-          const id = secondArg.value as number;
-          subTaskOf = id;
+        if (shouldPrompt) {
+          id = await Prompt.addTask(storage, secondArg?.value as number);
           printer.setView('specific', id);
-        } else printer.setView('full');
+        } else {
+          const task: Task = new Task({
+            name: argHandler.getFirstText(),
+            state: state || storage.meta.states[0].name,
+            description,
+            priority,
+          });
 
-        id = storage.addTask(task, subTaskOf);
+          let subTaskOf = undefined;
+          if (isTask(secondArg)) {
+            const id = secondArg.value as number;
+            subTaskOf = id;
+            printer.setView('specific', id);
+          } else printer.setView('full');
+
+          id = storage.addTask(task, subTaskOf);
+        }
 
         printer.addFeedback(`Task n°${id} added`).print();
         break;
@@ -181,5 +195,5 @@ export class ActionHandler {
         break;
       }
     }
-  }
+  };
 }
