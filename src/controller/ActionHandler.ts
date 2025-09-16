@@ -32,14 +32,13 @@ export class ActionHandler {
     const { dataAttributes, isRecursive } = flags;
     const { state, description, priority } = dataAttributes;
     const [firstArg, secondArg, thirdArg] = words;
+    const shouldPrompt = words.length === 1 || (words.length === 2 && isTask(secondArg));
 
     if (!storage) throw new StorageError(`Can't find the task storage file '${finalStorageLocation}'`);
 
     switch (firstArg.value) {
       case Action.ADD_TASK: {
         let id: number | Promise<number>;
-
-        const shouldPrompt = words.length === 1 || (words.length === 2 && isTask(secondArg));
 
         if (shouldPrompt) {
           id = await Prompt.addTask(storage, secondArg?.value as number);
@@ -76,7 +75,12 @@ export class ActionHandler {
 
         const name = argHandler.getFirstText();
 
-        if (isTask(secondArg)) {
+        if (shouldPrompt) {
+          const id = secondArg?.value as number;
+          await Prompt.editTask(storage, id);
+
+          printer.setView('specific', id);
+        } else if (isTask(secondArg)) {
           const newAttributes: ITask = {
             name,
             state,

@@ -5,17 +5,10 @@ import { Task } from './Task';
 
 ////////////////////////////////////////
 
-export namespace Prompt {
-  export const addTask = async (storage: Storage, subTaskOfId?: number) => {
-    const parseToChoice = (str: string) => {
-      return { title: str, value: str };
-    };
-
-    const stateChoices = [];
-    storage.meta.states.forEach((state) => stateChoices.push(parseToChoice(state.name)));
-
+export class Prompt {
+  static addTask = async (storage: Storage, subTaskOfId?: number): Promise<number> => {
     try {
-      const inputs = await prompts([
+      const { name, state, description } = await prompts([
         {
           type: 'text',
           name: 'name',
@@ -25,7 +18,7 @@ export namespace Prompt {
           type: 'select',
           name: 'state',
           message: 'State',
-          choices: stateChoices,
+          choices: getStateChoices(storage),
         },
         {
           type: 'text',
@@ -35,9 +28,9 @@ export namespace Prompt {
       ]);
 
       const task: Task = new Task({
-        name: inputs.name,
-        state: inputs.state,
-        description: inputs.description,
+        name,
+        state,
+        description,
       });
 
       const id = storage.addTask(task, subTaskOfId);
@@ -47,4 +40,62 @@ export namespace Prompt {
       console.warn('No task added', err);
     }
   };
+
+  static editTask = async (storage: Storage, taskId: number): Promise<void> => {
+    try {
+      let beforeTask: Task;
+      storage.tasks.retrieveTask(taskId, async ({ task }) => {
+        beforeTask = task;
+      });
+
+      const { name, state, description } = beforeTask;
+      console.log(name, state, description);
+
+      const inputs = await prompts([
+        {
+          type: 'text',
+          name: 'name',
+          message: 'Task name',
+          initial: name,
+        },
+        {
+          type: 'select',
+          name: 'state',
+          message: 'State',
+          choices: getStateChoices(storage),
+          initial: state,
+        },
+        {
+          type: 'text',
+          name: 'description',
+          message: 'Description',
+          initial: description,
+        },
+      ]);
+
+      const afterTask: Task = new Task({
+        name: inputs.name || name,
+        state: inputs.state || state,
+        description: inputs.description || description,
+      });
+
+      storage.editTask([taskId], afterTask);
+    } catch (err) {
+      console.warn('No task edited', err);
+    }
+  };
 }
+
+////////////////////////////////////////
+
+const parseToChoice = (str: string) => {
+  return { title: str, value: str };
+};
+
+const getStateChoices = (storage: Storage) => {
+  return storage.meta.states.map((state) => parseToChoice(state.name));
+};
+
+// const doPrompt = async () => {
+//   // TODO
+// };
