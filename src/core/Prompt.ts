@@ -1,4 +1,5 @@
 import prompts from 'prompts';
+import chalk from 'chalk';
 
 import { Storage } from './Storage';
 import { Task } from './Task';
@@ -28,9 +29,9 @@ export class Prompt {
       ]);
 
       const task: Task = new Task({
-        name,
+        name: name.trim(),
         state,
-        description,
+        description: description.trim(),
       });
 
       const id = storage.addTask(task, subTaskOfId);
@@ -52,6 +53,8 @@ export class Prompt {
 
       const availableStates = getStateChoices(storage);
       const indexOfChosenState = availableStates.findIndex(({ value }) => value === state);
+
+      console.log(chalk.italic('Press tab to edit previously set text or start typing for a new value'));
 
       const inputs = await prompts([
         {
@@ -76,9 +79,9 @@ export class Prompt {
       ]);
 
       const afterTask: Task = new Task({
-        name: inputs.name || name,
+        name: inputs.name.trim() || name,
         state: inputs.state || state,
-        description: inputs.description || description,
+        description: inputs.description.trim() || description,
       });
 
       storage.editTask([taskId], afterTask);
