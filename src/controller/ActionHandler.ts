@@ -1,6 +1,7 @@
 import { PrinterFactory } from '../core/Printer';
 import { StorageFactory } from '../core/Storage';
 import { ITask, Task } from '../core/Task';
+import { Prompt } from '../core/Prompt';
 import {
   EditingSyntaxError,
   CheckingTaskSyntaxError,
@@ -17,11 +18,17 @@ import { MainController } from './MainController';
 export class ActionHandler {
   mainController: MainController;
 
+  //////////
+
   constructor(mainController: MainController) {
     this.mainController = mainController;
+  }
 
+  //////////
+
+  handleAction = async (): Promise<void> => {
     const { argHandler, storage, config, printer, finalStorageLocation } = this.mainController;
-    const { words, flags } = argHandler;
+    const { words, flags, infos } = argHandler;
     const { dataAttributes, isRecursive } = flags;
     const { state, description, priority } = dataAttributes;
     const [firstArg, secondArg, thirdArg] = words;
@@ -30,23 +37,30 @@ export class ActionHandler {
 
     switch (firstArg.value) {
       case Action.ADD_TASK: {
-        let id: number;
+        let id: number | Promise<number>;
 
-        const task: Task = new Task({
-          name: argHandler.getFirstText(),
-          state: state || storage.meta.states[0].name,
-          description,
-          priority,
-        });
+        const shouldPrompt = words.length === 1 || (words.length === 2 && isTask(secondArg));
 
-        let subTaskOf = undefined;
-        if (isTask(secondArg)) {
-          const id = secondArg.value as number;
-          subTaskOf = id;
+        if (shouldPrompt) {
+          id = await Prompt.addTask(storage, secondArg?.value as number);
           printer.setView('specific', id);
-        } else printer.setView('full');
+        } else {
+          const task: Task = new Task({
+            name: argHandler.getFirstText(),
+            state: state || storage.meta.states[0].name,
+            description,
+            priority,
+          });
 
-        id = storage.addTask(task, subTaskOf);
+          let subTaskOf = undefined;
+          if (isTask(secondArg)) {
+            const id = secondArg.value as number;
+            subTaskOf = id;
+            printer.setView('specific', id);
+          } else printer.setView('full');
+
+          id = storage.addTask(task, subTaskOf);
+        }
 
         printer.addFeedback(`Task n°${id} added`).print();
         break;
@@ -55,14 +69,22 @@ export class ActionHandler {
       ////////////////////
 
       case Action.EDIT: {
-        if (!isTask(secondArg))
+        if (!isTask(secondArg)) {
           throw new EditingSyntaxError(
             "Your second arguments should be one or more tasks id join by ',' or a board name",
           );
+        }
 
-        const name = argHandler.getFirstText();
+        const shouldPrompt = words.length === 2 && isTask(secondArg) && !infos.isThereDataAttribute;
 
-        if (isTask(secondArg)) {
+        if (shouldPrompt) {
+          const id = secondArg?.value as number;
+          await Prompt.editTask(storage, id);
+
+          printer.addFeedback(`Task '${id}' edited`).setView('specific', id);
+        } else if (isTask(secondArg)) {
+          const name = argHandler.getFirstText();
+
           const newAttributes: ITask = {
             name,
             state,
@@ -89,8 +111,9 @@ export class ActionHandler {
       ////////////////////
 
       case Action.CHECK: {
-        if (!isTask(secondArg))
+        if (!isTask(secondArg)) {
           throw new CheckingTaskSyntaxError("Your second arguments should be a number or numbers join by ','");
+        }
 
         const { ids, textID, textTask } = idsController(storage, secondArg.value as number | number[]);
 
@@ -104,8 +127,9 @@ export class ActionHandler {
       ////////////////////
 
       case Action.INCREMENT: {
-        if (!isTask(secondArg))
+        if (!isTask(secondArg)) {
           throw new IncrementingTaskSyntaxError(`Second arg '${secondArg.value}' should be one or more task`);
+        }
 
         const { ids, textID, textTask } = idsController(storage, secondArg.value as number | number[]);
 
@@ -118,8 +142,9 @@ export class ActionHandler {
       ////////////////////
 
       case Action.DELETE: {
-        if (!isTask(secondArg))
+        if (!isTask(secondArg)) {
           throw new DeletingTaskSyntaxError(`Second arg '${secondArg.value}' should be one or more task`);
+        }
 
         const { ids, textID, textTask } = idsController(storage, secondArg.value as number | number[]);
 
@@ -142,13 +167,17 @@ export class ActionHandler {
       ////////////////////
 
       case Action.MOVE: {
-        if (!isTask(secondArg))
+        if (!isTask(secondArg)) {
           throw new MovingTaskSyntaxError(`Second arg '${secondArg.value}' should be one or more task id`);
+        }
 
-        if (!isTask(thirdArg)) throw new MovingTaskSyntaxError(`Third arg '${thirdArg.value}' should be one task id`);
+        if (!isTask(thirdArg)) {
+          throw new MovingTaskSyntaxError(`Third arg '${thirdArg.value}' should be one task id`);
+        }
 
-        if (Array.isArray(thirdArg.value))
+        if (Array.isArray(thirdArg.value)) {
           throw new MovingTaskSyntaxError(`Please provide only one destination task id`);
+        }
 
         const { ids, textID, textTask } = idsController(storage, secondArg.value as number | number[]);
 
@@ -164,10 +193,13 @@ export class ActionHandler {
       ////////////////////
 
       case Action.EXTRACT: {
-        if (!isTask(secondArg))
+        if (!isTask(secondArg)) {
           throw new ExtractSyntaxError(`Second arg '${secondArg.value}' should be one or more task id`);
+        }
 
-        if (!isText(thirdArg)) throw new ExtractSyntaxError(`Thrid arg '${thirdArg.value}' should be text`);
+        if (!isText(thirdArg)) {
+          throw new ExtractSyntaxError(`Thrid arg '${thirdArg.value}' should be text`);
+        }
 
         const { tasks, textID, textTask } = idsController(storage, secondArg.value as number | number[]);
         const destination = thirdArg.value as string;
@@ -181,5 +213,5 @@ export class ActionHandler {
         break;
       }
     }
-  }
+  };
 }
