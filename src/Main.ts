@@ -15,7 +15,7 @@ import { ActionHandler } from './controller/ActionHandler';
 
 ////////////////////////////////////////
 
-const main = async () => {
+(async () => {
   try {
     const controller = new MainController();
     const { argHandler, printer } = controller;
@@ -61,8 +61,4 @@ const main = async () => {
 
     System.exit(-1);
   }
-};
-
-////////////////////
-
-main();
+})();

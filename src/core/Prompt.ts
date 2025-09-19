@@ -49,7 +49,9 @@ export class Prompt {
       });
 
       const { name, state, description } = beforeTask;
-      console.log(name, state, description);
+
+      const availableStates = getStateChoices(storage);
+      const indexOfChosenState = availableStates.findIndex(({ value }) => value === state);
 
       const inputs = await prompts([
         {
@@ -62,8 +64,8 @@ export class Prompt {
           type: 'select',
           name: 'state',
           message: 'State',
-          choices: getStateChoices(storage),
-          initial: state,
+          choices: availableStates,
+          initial: indexOfChosenState,
         },
         {
           type: 'text',
