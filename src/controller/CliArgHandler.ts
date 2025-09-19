@@ -87,6 +87,7 @@ interface ArgInfos {
   isThereCliFlagCommand: boolean;
   isThereCLIArgs: boolean;
   isThereOnlyOneCLIArgs: boolean;
+  isThereDataAttribute: boolean;
 }
 
 interface ArgOccurance {
@@ -121,12 +122,13 @@ export class CliArgHandler {
 
     this.words = [...this.untreatedArgs];
 
-    const { isHelpNeeded, isVersion } = this.flags;
+    const { isHelpNeeded, isVersion, dataAttributes } = this.flags;
 
     this.infos = {
       isThereCliFlagCommand: isHelpNeeded || isVersion,
       isThereCLIArgs: this.words.length > 0,
       isThereOnlyOneCLIArgs: this.words.length === 1,
+      isThereDataAttribute: !!(dataAttributes?.state || dataAttributes?.description || dataAttributes?.priority),
     };
   }
 
