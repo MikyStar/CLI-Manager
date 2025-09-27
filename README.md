@@ -1,6 +1,5 @@
 ![npm version](https://img.shields.io/npm/v/cli-task-manager)
 ![npm downloads](https://img.shields.io/npm/dm/cli-task-manager)
-![Snyk Vulnerabilities for npm package](https://img.shields.io/snyk/vulnerabilities/npm/cli-task-manager)
 ![npm license](https://img.shields.io/npm/l/cli-task-manager)
 [![code climate maintainability](https://api.codeclimate.com/v1/badges/2f735b091e3790be6c8f/maintainability)](https://codeclimate.com/github/MikyStar/CLI-Manager/maintainability)
 
