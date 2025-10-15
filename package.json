@@ -25,7 +25,6 @@
     "start": "NODE_ENV=dev pnpm build && node ./bin/cli.js",
     "build": "node build.js",
     "make-binary": "./scripts/make-binary.sh",
-    "prepublishOnly": "pnpm make-binary",
     "lint:print": "eslint src",
     "lint:fix": "eslint src --fix",
     "prepare": "husky install",
