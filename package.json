@@ -1,6 +1,6 @@
 {
   "name": "cli-task-manager",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Providing an easy and usefull command line interface for managing tasks with local files",
   "keywords": [
     "cli",
@@ -24,7 +24,6 @@
   "scripts": {
     "start": "NODE_ENV=dev pnpm build && node ./bin/cli.js",
     "build": "node build.js",
-    "make-binary": "./scripts/make-binary.sh",
     "lint:print": "eslint src",
     "lint:fix": "eslint src --fix",
     "prepare": "husky install",
@@ -35,21 +34,21 @@
     "clear": "rm -rf node_modules build bin"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.7.1",
-    "@commitlint/config-conventional": "^19.7.1",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
     "@types/prompts": "^2.4.9",
-    "@typescript-eslint/eslint-plugin": "^8.23.0",
-    "esbuild": "^0.25.9",
-    "eslint": "^9.20.0",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-import-resolver-typescript": "^3.7.0",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.61.1",
+    "esbuild": "^0.28.1",
+    "eslint": "^10.5.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.6",
     "husky": "^9.1.7",
-    "typescript": "^5.7.3"
+    "typescript": "^6.0.3"
   },
   "dependencies": {
-    "chalk": "^4.1.2",
+    "chalk": "^5.6.2",
     "moment": "^2.30.1",
     "prompts": "^2.4.2"
   }
